@@ -1,0 +1,96 @@
+
+# Spatial Vector Operation
+
+```{r}
+library(sf)
+library(dplyr)
+library(ggplot2)
+```
+
+
+## Thematic queries
+
+- SQL queries can be performed with file import
+
+```{r}
+
+tlm3d_path <- "data/Spatial_Analysis_II/swiss_TLM3D.gpkg"
+
+tlm_seen <- read_sf(tlm3d_path, query = "SELECT objektart, geom FROM tlm_bb WHERE objektart = 'Stehende Gewaesser'")
+```
+
+
+- However, datasets can also be queried after import using `data.frame` methods (such as subset or `dplyr::filter`)
+
+```{r}
+
+tlm_bb <- read_sf(tlm3d_path, "tlm_bb")
+
+# Subsetting with base-R
+tlm_seen <- tlm_bb[tlm_bb$objektart == "Stehende Gewaesser", ]
+
+# Subsetting using dplyr::filter
+tlm_seen <- filter(tlm_bb, objektart == "Stehende Gewaesser")
+```
+
+
+## Spatial queries
+
+- For example, *All forests within luzern"
+- Spatial query functions include:
+  - `st_within`
+  - `st_touches`
+  - `st_within`
+  - `st_contains`
+  - `st_overlaps`
+  - and a couple more
+- These return so called *sparse matrices*: a `list` the same length as `x`, which, for each element in `x`, contains the indices of `y` where thethe condition is met. For example:
+  
+
+```{r}
+
+# let's just take one lake to make this query faster:
+
+luzern <- read_sf("data/Spatial_Analysis_II/swissBOUNDARIES3D.gpkg")
+
+
+tlm_wald <- filter(tlm_bb, objektart == "Wald")
+
+tlm_wald <- st_transform(tlm_wald, 2056)
+
+
+query_res <- st_intersects(tlm_wald, luzern)
+
+query_res
+```
+
+- This list can be used to subset `x` (`TRUE` where the list is not empty):
+
+```{r}
+wald_within500 <- tlm_wald[lengths(query_res) > 0,]
+
+
+ggplot(luzern) + 
+  geom_sf(color = "darkblue") +
+  geom_sf(data = wald_within500, fill = "darkgreen")
+
+```
+
+
+- The code above was for illustration purposes. The code can be written more concise: 
+
+
+```{r}
+#| eval: false
+
+# using sf-methods in base-R
+tlm_wald[luzern,, op = st_intersects]
+
+# using st_filter
+st_filter(tlm_wald, luzern, .predicate = st_intersects)
+
+```
+
+
+
+<!-- continue here: spatial manipulations, Spatial Analysis I, slide 26 -->

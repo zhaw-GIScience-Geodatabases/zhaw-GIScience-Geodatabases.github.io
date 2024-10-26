@@ -1,0 +1,110 @@
+
+# Vector data i/o
+
+- The library `{sf}` can import data from various sources:
+  - A multitude of file formats from disk (powered `gdal` / `ogr2ogr`)
+  - Various geospatial databases such as `PostGIS`
+  - From other sources (such as `WKT`, `WKB` other geospatial R-libraires)
+
+
+## GDAL / ogr2ogr
+
+- GDAL 
+  - is an open source translator library for raster and vector geospatial data formats.
+  - stands for Geospatial Data Abstraction Library
+  - is used [in most geospatial software](https://gdal.org/en/latest/software_using_gdal.html#software-using-gdal), be it FOSS or proprietary. The list includes: ArcGIS, QGIS, R (`sf`) and Python (`geopandas`)
+  
+  
+## GDAL Vector drivers (read)
+
+- Since GDAL supports [a long list](https://gdal.org/en/latest/drivers/vector/index.html) of different geospatial file formats, these are in turn supported by `{sf}`
+- Run the function `st_drivers` for a full list
+- `{sf}` tries to guess the correct driver based on the file extension (see below)
+
+
+```{r}
+#| echo: false
+library(sf)
+```
+
+
+```{r}
+# sf uses the geojson driver, based on the file extension
+# (data from moodle →  Spatial Databases II → Database Files)
+stationen_schweiz <- read_sf("data/uebung1/stationen_schweiz.geojson")
+```
+
+
+```{r}
+# sf uses the shapefile driver, based on the file extension
+# (data from moodle →  Spatial Analysis I → Exercise Data) 
+hoheitsgebiet <- read_sf("data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR.shp")
+```
+
+
+## Multiple layers in one file
+
+- Some file formats, e.g. Geopackages (\*.gpkg) or Geodatabases (\*.gdb) support multiple datasets in a single file. 
+- If no specific layer is requested `read_sf()` will import the first available layer
+- If more than 1 layers are available, `read_sf()` will return a warning
+- The function `st_layers()` will list all available layers
+
+
+```{r}
+#| warning: true
+# Note the warning:
+
+tlm3d_path <- "data/Spatial_Analysis_II/swiss_TLM3D.gpkg"
+
+tlm3d <- read_sf(tlm3d_path)
+```
+
+```{r}
+# This will list all layers, including some metadata
+st_layers(tlm3d_path)
+```
+
+```{r}
+tlm_bb <- read_sf(tlm3d_path, "tlm_bb")
+```
+
+
+## SQL queries during import
+
+
+- `read_sf()` understands an Spatialite SQL query provided in the `query = ` argument
+- In case `query = ` is used, skip the `layers = ` argument, since the layers is specified in the query
+
+```{r}
+tlm_seen <- read_sf(tlm3d_path, query = "SELECT objektart, geom FROM tlm_bb WHERE objektart = 'Stehende Gewaesser'")
+```
+
+
+
+
+
+
+
+
+## GDAL Vector drivers (write)
+
+- The function `st_write()` is used to export an `sf` object to file
+- Most vector drivers support reading *and writing* (see `st_drivers` / column `write`)
+- Many file formats support appending to the dataset (see `append = `)
+
+
+```{r}
+#| echo: false
+#| output: false
+
+target_file <- "data-out/seen.geojson"
+if(file.exists(target_file))file.remove(target_file)
+```
+
+```{r}
+st_write(tlm_seen, "data-out/seen.geojson")
+```
+
+<!-- todo: reading / writing spatial databases -->
+
+
