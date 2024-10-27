@@ -242,12 +242,16 @@ flughafen_sf
 ```
 
 
-## Plotting simple features
+## Plotting simple features {#sec-plotting}
 
 - Various libraries support plotting `sf` objects:
-  - base R (sf provides a `plot`-mehtod)
+  - base R (sf provides a `plot`-method)
   - General purpose libraries such as `ggplot2`
   - Dedicated geospatial plotting libraries such as `tmap`
+- Use:
+  - base R: If you want to take a quick look at your data. Base R has the most compact syntax and is extremely fast in plotting
+  - `ggplot2`: If you only have (small-ish) vector data (no raster) and/or want to leverage the power of `ggplot2`
+  - `tmap`: If you want to use all features a dedicated library for geospatial data has to offer: North arrow, scale bar, interactive (web) maps
 
 ```{r}
 #| layout-nrow: 1
@@ -273,6 +277,28 @@ tm_shape(flughafen_sf) + tm_polygons() +
   
 ```
 
+- The `tmap` library can render the map either in a static plot as above (the default) or as an interactive web map (see below)
+
+```{r}
+
+# set tmap_mode to "view" for an interactive web map
+tmap_mode("view")
+
+tm_shape(flughafen_sf) + tm_polygons() +
+  tm_shape(piste_sf) + tm_lines() +
+  tm_shape(fracht_sf) + tm_dots()
+
+```
+
+
+
+## 🪕 Tasks
+
+1. Create some simple feature geometries (`sfg`) of objects you know "by hand"
+  - Create at least one `POINT`, one `LINESTRING` and one `POLYGON` geometry
+  - You can capture the coordinates of the nodes from [map.geo.admin](https://map.geo.admin.ch/) if these are is Switzerland and [openstreetmap](https://www.openstreetmap.org) (or similar) if they aren't
+2. Create simple feature columns from you `sfg`s. Make sure that you assign the correct CRS
+3. Create simple features (`sf`) from your `sfc`s and add some attributes
 
 
 

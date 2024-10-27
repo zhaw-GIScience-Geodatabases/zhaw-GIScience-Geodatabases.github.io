@@ -2,10 +2,10 @@
 # Vector data i/o
 
 - The library `{sf}` can import data from various sources:
-  - A multitude of file formats from disk (powered `gdal` / `ogr2ogr`)
-  - Various geospatial databases such as `PostGIS`
-  - From other sources (such as `WKT`, `WKB` other geospatial R-libraires)
-
+  1. A multitude of file formats from disk (powered `gdal` / `ogr2ogr`)
+  2. Various geospatial databases such as `PostGIS` 
+  3. From other sources (such as `WKT`, `WKB` other geospatial R-libraires)
+- We will only introduce the first method, since this is the most common use case
 
 ## GDAL / ogr2ogr
 
@@ -81,11 +81,6 @@ tlm_seen <- read_sf(tlm3d_path, query = "SELECT objektart, geom FROM tlm_bb WHER
 
 
 
-
-
-
-
-
 ## GDAL Vector drivers (write)
 
 - The function `st_write()` is used to export an `sf` object to file
@@ -104,6 +99,15 @@ if(file.exists(target_file))file.remove(target_file)
 ```{r}
 st_write(tlm_seen, "data-out/seen.geojson")
 ```
+
+## 🪕 Tasks
+
+1. Import the datasets from Spatial Analysis I and II using R
+2. Explore these datasets by printing the `sf` objects to the console
+3. Try different visualization methods (see @sec-plotting)
+
+
+
 
 <!-- todo: reading / writing spatial databases -->
 
