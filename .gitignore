@@ -4,3 +4,7 @@
 .Ruserdata
 
 /.quarto/
+
+data
+data-out
+_book
