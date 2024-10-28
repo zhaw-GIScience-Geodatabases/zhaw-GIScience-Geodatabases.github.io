@@ -1,18 +1,25 @@
+---
+knitr:
+  opts_chunk: 
+    tidy: false
+---
+
+
 # Simple Features
 
 ## Simple feature standard
 
-- Simple features is an open standard (ISO 19125-1:2004) developed and endorsed by the Open Geospatial Consortium (OGC)
-- The standard is widely implemented in spatial databases (such as PostGIS), desktop GIS (e.g., ArcGIS, QGIS), programming languages (R, Python) and forms the vector data basis for libraries such as GDAL. 
+- Simple features is an open standard (ISO 19125-1:2004) developed and endorsed by the [Open Geospatial Consortium (OGC)](https://www.ogc.org/)
+- The standard is widely implemented in spatial databases (such as PostGIS), desktop GIS (such as ArcGIS, QGIS), scripting languages (such as R, Python) and forms the vector data basis for libraries such as GDAL. 
 
 
 ## What is a feature?
 
 The standard says: 
 
-> A simple feature is defined [...] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices.” 
+> A simple feature is defined [...] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices. 
 
-- A feature is thought of as a thing, or an object in the real world, such as a building or a tree. 
+- A feature is thought of as a thing / an object in the real world, such as a building or a tree. 
 - Features have: 
   1. a geometry describing where on Earth the feature is located
   2. attributes, which describe other properties. 
@@ -186,12 +193,15 @@ fracht_sfc <- st_sfc(fracht, crs = 2056)
 fracht_sfc
 ```
 
+<hr class="br">
 
 ```{r}
 piste_sfc <- st_sfc(piste, crs = 2056)
 
 piste_sfc
 ```
+
+<hr class="br">
 
 
 ```{r}
@@ -222,12 +232,15 @@ fracht_sf$name <- "Ost"
 is.data.frame(fracht_sf)
 ```
 
+<hr class="br">
 
 ```{r}
 # Geometries are sticky
 fracht_sf[, "name"] 
 ```
 
+
+<hr class="br">
 
 ```{r}
 piste_sf <- st_as_sf(piste_sfc)
@@ -259,23 +272,28 @@ flughafen_sf
 #|   - base R
 #|   - library `ggplot2`
 #|   - library `tmap`
-
+#
+# Using base R
 plot(st_geometry(flughafen_sf))
 plot(piste_sf, add = TRUE)
 plot(fracht_sf, add = TRUE)
-
+#
+# Using ggplot2
 library(ggplot2)
 ggplot() +
   geom_sf(data = flughafen_sf) +
   geom_sf(data = piste_sf) +
   geom_sf(data = fracht_sf)
-
+#
+# Using tmap
 library(tmap)
 tm_shape(flughafen_sf) + tm_polygons() +
   tm_shape(piste_sf) + tm_lines() +
   tm_shape(fracht_sf) + tm_dots()
   
 ```
+
+<hr class="br">
 
 - The `tmap` library can render the map either in a static plot as above (the default) or as an interactive web map (see below)
 

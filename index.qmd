@@ -1,2 +1,7 @@
 # Welcome {.unnumbered .unlisted}
 
+Welcome to the Part *Geocomputation* in the Course *GIScience and Geodatabases*. This course is taught in the Bachelor Degree [Applied Digital Life Sciences](https://www.zhaw.ch/en/lsfm/studies/bachelor/applied-digital-life-sciences/) at the Zurich University of Applied Sciences (ZHAW). 
+
+
+<!-- image source (CC0) https://pixabay.com/illustrations/computer-table-cabinet-room-7498415/ -->
+![](images/computer-7498415_1280.jpg)
