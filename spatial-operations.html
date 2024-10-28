@@ -109,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     // the following function adds padding to all h2 elements, so that I can 
   // easily present the content of the page in a more readable way
   function presenter(){
-    var paragraphs = document.querySelectorAll("h2, h3");
+    var paragraphs = document.querySelectorAll("h2, h3, hr.br");
     paragraphs.forEach(function (paragraph) {
       paragraph.classList.toggle("speaker");
     });
@@ -217,7 +217,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data i/o</span></a>
+  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data I/O</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -284,10 +284,13 @@ window.Quarto = {
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tlm3d_path <span class="ot">&lt;-</span> <span class="st">"data/Spatial_Analysis_II/swiss_TLM3D.gpkg"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tlm_seen <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(tlm3d_path, <span class="at">query =</span> <span class="st">"SELECT objektart, geom FROM tlm_bb WHERE objektart = 'Stehende Gewaesser'"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>tlm_seen <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  tlm3d_path, </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">query =</span> <span class="st">"SELECT objektart, geom FROM tlm_bb WHERE objektart = 'Stehende Gewaesser'"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <ul>
-<li>However, datasets can also be queried after import using <code>data.frame</code> methods (such as subset or <code>dplyr::filter</code>)</li>
+<li>However, datasets can also be queried after import using <code>data.frame</code> methods (such as <code>[</code> or <code>dplyr::filter</code>)</li>
 </ul>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tlm_bb <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(tlm3d_path, <span class="st">"tlm_bb"</span>)</span>
@@ -301,13 +304,17 @@ window.Quarto = {
 </section>
 <section id="spatial-queries-using-binary-predicate-functions" class="level2">
 <h2 class="anchored" data-anchor-id="spatial-queries-using-binary-predicate-functions">Spatial queries using binary predicate functions</h2>
+<p>Take the following example:</p>
+<blockquote class="blockquote">
+<p>Select all forests in the canton of Luzern</p>
+</blockquote>
 <ul>
-<li>For example, <em>Select all forests in the canton of Luzern</em></li>
-<li>Spatial query functions include: <code>st_contains()</code>, <code>st_contains()</code>, <code>st_contains()</code>, <code>st_contains()</code>, and many more (see <a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">here</a>)</li>
-<li>These spatial queries are called <em>geometric binary predicates</em> (see link above).</li>
+<li>Spatial query functions include: <code>st_contains()</code>, <code>st_contains()</code>, <code>st_contains()</code>, <code>st_contains()</code>, and many more</li>
+<li>These spatial queries are called <a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">geometric binary predicates</a></li>
 <li>This family of functions return so called <em>sparse matrices</em>: a <code>list</code> the same length as <code>x</code>, which, for each element in <code>x</code>, contains the indices of <code>y</code> where the condition is met. For example:</li>
 <li>They <em>could</em> return cross matrices, but these usually have a larger memory, since they have are <span class="math inline">\(x \times y\)</span> in size</li>
 </ul>
+<hr class="br">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>luzern <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/Spatial_Analysis_II/swissBOUNDARIES3D.gpkg"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -320,7 +327,8 @@ window.Quarto = {
 <span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>query_res <span class="ot">&lt;-</span> <span class="fu">st_intersects</span>(tlm_wald, luzern)</span>
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>query_res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Note the length of the output equals nrow(tlm_wald)</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>query_res</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Sparse geometry binary predicate list of length 8096, where the
 predicate was `intersects'
@@ -341,13 +349,16 @@ first 10 elements:
 <li>(The first 10 elements are empty, because these are not within Luzern)</li>
 <li>This list can be used to subset <code>x</code> (<code>TRUE</code> where the list is not empty):</li>
 </ul>
+<hr class="br">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>wald_luzern <span class="ot">&lt;-</span> tlm_wald[<span class="fu">lengths</span>(query_res) <span class="sc">&gt;</span> <span class="dv">0</span>,]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(luzern) <span class="sc">+</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> wald_luzern, <span class="at">fill =</span> <span class="st">"darkgreen"</span>) <span class="sc">+</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fill =</span> <span class="cn">NA</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Note the use of lenghts (with an s) to get the length of each element in the </span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># list</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>wald_luzern <span class="ot">&lt;-</span> tlm_wald[<span class="fu">lengths</span>(query_res) <span class="sc">&gt;</span> <span class="dv">0</span>,]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(luzern) <span class="sc">+</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> wald_luzern, <span class="at">fill =</span> <span class="st">"darkgreen"</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">color =</span> <span class="st">"red"</span>, <span class="at">fill =</span> <span class="cn">NA</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-intersects" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
@@ -374,6 +385,9 @@ Figure&nbsp;3.1: Note how some forests are outside the canton’s border. This i
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># using st_filter</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">st_filter</span>(tlm_wald, luzern, <span class="at">.predicate =</span> st_intersects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<ul>
+<li>The default value for <code>op</code> and .predicate is <code>st_intersects</code>, so these arguments could also have been omitted</li>
+</ul>
 </section>
 <section id="overlay-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="overlay-analysis">Overlay Analysis</h2>
@@ -385,6 +399,7 @@ Figure&nbsp;3.1: Note how some forests are outside the canton’s border. This i
 <li>There are several other functions that work on pairs of geometries. See <a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">Geometric operations on pairs of simple feature geometry sets</a></li>
 <li>There are even more functions that work on single geometries, e.g.&nbsp;<code>st_buffer</code>. See <a href="https://r-spatial.github.io/sf/reference/geos_unary.html">Geometric unary operations on simple feature geometry sets</a></li>
 </ul>
+<hr class="br">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glue)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
@@ -850,8 +865,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./vector-io.html" class="pagination-link" aria-label="Vector data i/o">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Vector data i/o</span></span>
+      <a href="./vector-io.html" class="pagination-link" aria-label="Vector data I/O">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Vector data I/O</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

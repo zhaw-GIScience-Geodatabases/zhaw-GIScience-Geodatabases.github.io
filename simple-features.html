@@ -129,7 +129,7 @@ div.csl-indent {
     // the following function adds padding to all h2 elements, so that I can 
   // easily present the content of the page in a more readable way
   function presenter(){
-    var paragraphs = document.querySelectorAll("h2, h3");
+    var paragraphs = document.querySelectorAll("h2, h3, hr.br");
     paragraphs.forEach(function (paragraph) {
       paragraph.classList.toggle("speaker");
     });
@@ -220,7 +220,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data i/o</span></a>
+  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data I/O</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -286,18 +286,18 @@ div.csl-indent {
 <section id="simple-feature-standard" class="level2">
 <h2 class="anchored" data-anchor-id="simple-feature-standard">Simple feature standard</h2>
 <ul>
-<li>Simple features is an open standard (ISO 19125-1:2004) developed and endorsed by the Open Geospatial Consortium (OGC)</li>
-<li>The standard is widely implemented in spatial databases (such as PostGIS), desktop GIS (e.g., ArcGIS, QGIS), programming languages (R, Python) and forms the vector data basis for libraries such as GDAL.</li>
+<li>Simple features is an open standard (ISO 19125-1:2004) developed and endorsed by the <a href="https://www.ogc.org/">Open Geospatial Consortium (OGC)</a></li>
+<li>The standard is widely implemented in spatial databases (such as PostGIS), desktop GIS (such as ArcGIS, QGIS), scripting languages (such as R, Python) and forms the vector data basis for libraries such as GDAL.</li>
 </ul>
 </section>
 <section id="what-is-a-feature" class="level2">
 <h2 class="anchored" data-anchor-id="what-is-a-feature">What is a feature?</h2>
 <p>The standard says:</p>
 <blockquote class="blockquote">
-<p>A simple feature is defined […] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices.”</p>
+<p>A simple feature is defined […] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices.</p>
 </blockquote>
 <ul>
-<li>A feature is thought of as a thing, or an object in the real world, such as a building or a tree.</li>
+<li>A feature is thought of as a thing / an object in the real world, such as a building or a tree.</li>
 <li>Features have:
 <ol type="1">
 <li>a geometry describing where on Earth the feature is located</li>
@@ -527,6 +527,7 @@ Bounding box:  xmin: 2685374 ymin: 1256519 xmax: 2685374 ymax: 1256519
 Projected CRS: CH1903+ / LV95</code></pre>
 </div>
 </div>
+<hr class="br">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>piste_sfc <span class="ot">&lt;-</span> <span class="fu">st_sfc</span>(piste, <span class="at">crs =</span> <span class="dv">2056</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -539,6 +540,7 @@ Bounding box:  xmin: 2682705 ymin: 1255553 xmax: 2684336 ymax: 1258929
 Projected CRS: CH1903+ / LV95</code></pre>
 </div>
 </div>
+<hr class="br">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>flughafen_sfc <span class="ot">&lt;-</span> <span class="fu">st_sfc</span>(flughafen, <span class="at">crs =</span> <span class="dv">2056</span>)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -573,6 +575,7 @@ Projected CRS: CH1903+ / LV95</code></pre>
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
+<hr class="br">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Geometries are sticky</span></span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>fracht_sf[, <span class="st">"name"</span>] </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -586,6 +589,7 @@ Projected CRS: CH1903+ / LV95
 1  Ost POINT (2685374 1256519)</code></pre>
 </div>
 </div>
+<hr class="br">
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>piste_sf <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(piste_sfc)</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -623,18 +627,24 @@ Projected CRS: CH1903+ / LV95
 <li><code>tmap</code>: If you want to use all features a dedicated library for geospatial data has to offer: North arrow, scale bar, interactive (web) maps</li>
 </ul></li>
 </ul>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(flughafen_sf))</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(piste_sf, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fracht_sf, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> flughafen_sf) <span class="sc">+</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> piste_sf) <span class="sc">+</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> fracht_sf)</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(flughafen_sf) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(piste_sf) <span class="sc">+</span> <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(fracht_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Using base R</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(flughafen_sf))</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(piste_sf, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fracht_sf, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Using ggplot2</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> flughafen_sf) <span class="sc">+</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> piste_sf) <span class="sc">+</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> fracht_sf)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Using tmap</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tmap)</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(flughafen_sf) <span class="sc">+</span> <span class="fu">tm_polygons</span>() <span class="sc">+</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(piste_sf) <span class="sc">+</span> <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(fracht_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell quarto-layout-panel" data-layout-nrow="1">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
@@ -663,6 +673,7 @@ Projected CRS: CH1903+ / LV95
 </div>
 </div>
 </div>
+<hr class="br">
 <ul>
 <li>The <code>tmap</code> library can render the map either in a static plot as above (the default) or as an interactive web map (see below)</li>
 </ul>
@@ -674,8 +685,8 @@ Projected CRS: CH1903+ / LV95
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(piste_sf) <span class="sc">+</span> <span class="fu">tm_lines</span>() <span class="sc">+</span></span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(fracht_sf) <span class="sc">+</span> <span class="fu">tm_dots</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="leaflet html-widget html-fill-item" id="htmlwidget-88be7a86f6b932a0d040" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-88be7a86f6b932a0d040">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"createMapPane","args":["tmap401",401]},{"method":"createMapPane","args":["tmap402",402]},{"method":"createMapPane","args":["tmap403",403]},{"method":"addProviderTiles","args":["Esri.WorldGrayCanvas",null,"Esri.WorldGrayCanvas",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["OpenStreetMap",null,"OpenStreetMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["Esri.WorldTopoMap",null,"Esri.WorldTopoMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addPolygons","args":[[[[{"lng":[8.55426024116079,8.573830049741858,8.533682117066119,8.55426024116079],"lat":[47.44672832053686,47.45783559902862,47.48287746996957,47.44672832053686]}]]],"Flughafen.Zürich","flughafen_sf",{"interactive":true,"className":"","pane":"tmap401","stroke":true,"color":"#666666","weight":1,"opacity":1,"fill":true,"fillColor":"#D9D9D9","fillOpacity":1,"dashArray":"none","smoothFactor":1,"noClip":false},"<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Flughafen Zürich<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>name<\/nobr><\/td><td align=\"right\"><nobr>Flughafen Zürich<\/nobr><\/td><\/tr><\/table><\/div>",null,"Flughafen Zürich",{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPolylines","args":[[[[{"lng":[8.556803983793177,8.535807808950727],"lat":[47.44536350804275,47.47593131959491]}]]],"X34","piste_sf",{"interactive":true,"className":"","pane":"tmap402","stroke":true,"color":"#000000","weight":1,"opacity":1,"fill":false,"fillColor":"#000000","fillOpacity":0.2,"dashArray":"none","smoothFactor":1,"noClip":false},"<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>34<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>nr<\/nobr><\/td><td align=\"right\"><nobr>34<\/nobr><\/td><\/tr><\/table><\/div>",null,"34",{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addCircleMarkers","args":[47.45391700024815,8.570749319133624,2.82842712474619,"Ost","fracht_sf",{"interactive":true,"className":"","pane":"tmap403","stroke":true,"color":"#666666","weight":1,"opacity":0.5,"fill":true,"fillColor":"#000000","fillOpacity":1},null,null,"<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Ost<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>name<\/nobr><\/td><td align=\"right\"><nobr>Ost<\/nobr><\/td><\/tr><\/table><\/div>",null,"Ost",{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLayersControl","args":[["Esri.WorldGrayCanvas","OpenStreetMap","Esri.WorldTopoMap"],["flughafen_sf","piste_sf","fracht_sf"],{"collapsed":true,"autoZIndex":true,"position":"topleft"}]}],"limits":{"lat":[47.44536350804275,47.48287746996957],"lng":[8.533682117066119,8.573830049741858]},"fitBounds":[47.44672832053686,8.533682117066119,47.48287746996957,8.573830049741858,[]]},"evals":[],"jsHooks":[]}</script>
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-414c602386c8c8765fe8" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-414c602386c8c8765fe8">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"createMapPane","args":["tmap401",401]},{"method":"createMapPane","args":["tmap402",402]},{"method":"createMapPane","args":["tmap403",403]},{"method":"addProviderTiles","args":["Esri.WorldGrayCanvas",null,"Esri.WorldGrayCanvas",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["OpenStreetMap",null,"OpenStreetMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addProviderTiles","args":["Esri.WorldTopoMap",null,"Esri.WorldTopoMap",{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"pane":"tilePane"}]},{"method":"addPolygons","args":[[[[{"lng":[8.55426024116079,8.573830049741858,8.533682117066119,8.55426024116079],"lat":[47.44672832053686,47.45783559902862,47.48287746996957,47.44672832053686]}]]],"Flughafen.Zürich","flughafen_sf",{"interactive":true,"className":"","pane":"tmap401","stroke":true,"color":"#666666","weight":1,"opacity":1,"fill":true,"fillColor":"#D9D9D9","fillOpacity":1,"dashArray":"none","smoothFactor":1,"noClip":false},"<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Flughafen Zürich<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>name<\/nobr><\/td><td align=\"right\"><nobr>Flughafen Zürich<\/nobr><\/td><\/tr><\/table><\/div>",null,"Flughafen Zürich",{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addPolylines","args":[[[[{"lng":[8.556803983793177,8.535807808950727],"lat":[47.44536350804275,47.47593131959491]}]]],"X34","piste_sf",{"interactive":true,"className":"","pane":"tmap402","stroke":true,"color":"#000000","weight":1,"opacity":1,"fill":false,"fillColor":"#000000","fillOpacity":0.2,"dashArray":"none","smoothFactor":1,"noClip":false},"<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>34<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>nr<\/nobr><\/td><td align=\"right\"><nobr>34<\/nobr><\/td><\/tr><\/table><\/div>",null,"34",{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addCircleMarkers","args":[47.45391700024815,8.570749319133624,2.82842712474619,"Ost","fracht_sf",{"interactive":true,"className":"","pane":"tmap403","stroke":true,"color":"#666666","weight":1,"opacity":0.5,"fill":true,"fillColor":"#000000","fillOpacity":1},null,null,"<style> div.leaflet-popup-content {width:auto !important;overflow-y:auto; overflow-x:hidden;}<\/style><div style=\"max-height:25em;padding-right:0px;\"><table>\n\t\t\t   <thead><tr><th colspan=\"2\"><b>Ost<\/b><\/th><\/thead><\/tr><tr><td style=\"color: #888888;\"><nobr>name<\/nobr><\/td><td align=\"right\"><nobr>Ost<\/nobr><\/td><\/tr><\/table><\/div>",null,"Ost",{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null]},{"method":"addLayersControl","args":[["Esri.WorldGrayCanvas","OpenStreetMap","Esri.WorldTopoMap"],["flughafen_sf","piste_sf","fracht_sf"],{"collapsed":true,"autoZIndex":true,"position":"topleft"}]}],"limits":{"lat":[47.44536350804275,47.48287746996957],"lng":[8.533682117066119,8.573830049741858]},"fitBounds":[47.44672832053686,8.533682117066119,47.48287746996957,8.573830049741858,[]]},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -1140,8 +1151,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./vector-io.html" class="pagination-link" aria-label="Vector data i/o">
-        <span class="nav-page-text"><span class="chapter-title">Vector data i/o</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./vector-io.html" class="pagination-link" aria-label="Vector data I/O">
+        <span class="nav-page-text"><span class="chapter-title">Vector data I/O</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

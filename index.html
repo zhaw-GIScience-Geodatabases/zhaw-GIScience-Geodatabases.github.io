@@ -75,7 +75,7 @@ ul.task-list li input[type="checkbox"] {
     // the following function adds padding to all h2 elements, so that I can 
   // easily present the content of the page in a more readable way
   function presenter(){
-    var paragraphs = document.querySelectorAll("h2, h3");
+    var paragraphs = document.querySelectorAll("h2, h3, hr.br");
     paragraphs.forEach(function (paragraph) {
       paragraph.classList.toggle("speaker");
     });
@@ -154,7 +154,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data i/o</span></a>
+  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data I/O</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -204,6 +204,9 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="welcome" class="level1 unnumbered unlisted">
 <h1 class="unnumbered unlisted">Welcome</h1>
+<p>Welcome to the Part <em>Geocomputation</em> in the Course <em>GIScience and Geodatabases</em>. This course is taught in the Bachelor Degree <a href="https://www.zhaw.ch/en/lsfm/studies/bachelor/applied-digital-life-sciences/">Applied Digital Life Sciences</a> at the Zurich University of Applied Sciences (ZHAW).</p>
+<!-- image source (CC0) https://pixabay.com/illustrations/computer-table-cabinet-room-7498415/ -->
+<p><img src="images/computer-7498415_1280.jpg" class="img-fluid"></p>
 
 
 </section>
