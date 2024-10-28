@@ -8,8 +8,13 @@
     font-size: smaller !important;
 }
 
-.speaker {
+h1.speaker, h2.speaker {
     margin-top: 100vh;
+}
+
+/* either this, or hide hr.speaker alltogether */
+hr.speaker{
+    margin-bottom: 100vh;
 }
 
 .presenter-btn{
