@@ -248,6 +248,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#extracting-raster-values-at-vector-points" id="toc-extracting-raster-values-at-vector-points" class="nav-link" data-scroll-target="#extracting-raster-values-at-vector-points">Extracting raster values at vector points</a></li>
   <li><a href="#vector-to-raster-conversion" id="toc-vector-to-raster-conversion" class="nav-link" data-scroll-target="#vector-to-raster-conversion">Vector to raster conversion</a></li>
   <li><a href="#raster-to-vector-conversion" id="toc-raster-to-vector-conversion" class="nav-link" data-scroll-target="#raster-to-vector-conversion">Raster to vector conversion</a></li>
+  <li><a href="#tasks" id="toc-tasks" class="nav-link" data-scroll-target="#tasks">🪕 Tasks</a></li>
   </ul>
 </nav>
     </div>
@@ -378,6 +379,15 @@ Figure&nbsp;7.3: The resulting zones (mean elevation per zone), also as vector d
 <li><code>field</code>: The name of the column in the vector data that should be used to fill the raster cells</li>
 </ol></li>
 </ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># we can create a template using the input vector. All we have to specify </span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># is the resolution of the output raster, which is evalutated in the units of</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># the CRS of the input vector data (meters in our case).</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>template <span class="ot">&lt;-</span> <span class="fu">rast</span>(zones, <span class="at">resolution =</span> <span class="dv">1000</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>zones_raster <span class="ot">&lt;-</span> <span class="fu">rasterize</span>(zones, template, <span class="st">"zone"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <div class="cell page-columns page-full" data-layout-nrow="1">
 <div id="fig-vector-to-raster" class="quarto-layout-panel page-columns page-full">
 <figure class="quarto-float quarto-float-fig figure page-columns page-full">
@@ -436,8 +446,8 @@ Note
 <li>The resulting object will be of class <code>SpatVector</code>. This can be converted to the <code>sf</code> class using <code>st_as_sf()</code></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>zones_poly <span class="ot">&lt;-</span> <span class="fu">as.polygons</span>(zones_raster) <span class="sc">|&gt;</span> </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>zones_poly <span class="ot">&lt;-</span> <span class="fu">as.polygons</span>(zones_raster) <span class="sc">|&gt;</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell page-columns page-full" data-layout-nrow="1">
 <div id="fig-raster-to-vector" class="quarto-layout-panel page-columns page-full">
@@ -474,6 +484,46 @@ Note
 Figure&nbsp;7.5: Note how the conversion back to polygons preserves the cell boundaries
 </figcaption>
 </figure>
+</div>
+</div>
+</section>
+<section id="tasks" class="level2">
+<h2 class="anchored" data-anchor-id="tasks">🪕 Tasks</h2>
+<ol type="1">
+<li>Import <code>Arealstatistik.gpkg</code> from <em>Spatial_Analysis_II</em> using <code>{sf}</code></li>
+<li>To rasterize the data, we need a template raster object. Create a template raster object with a resolution of 100m using the <code>rast()</code> function</li>
+<li>Rasterize the arealstatistik data using the function <code>rasterize</code>, the tempalte from the previous step, and the column <code>AS_4</code> as the field to fill the raster cells</li>
+</ol>
+<ol start="4" type="1">
+<li>The resulting raster contains the integer values 1 to 4. These values correspond to the following land use categories (see <a href="https://www.bfs.admin.ch/asset/en/1420906">metadata</a>):
+<ol type="1">
+<li>Settlement and urban areas</li>
+<li>Agricultural areas</li>
+<li>Wooded areas</li>
+<li>Unproductive areas</li>
+</ol></li>
+</ol>
+<p>To make the raster more interpretable, assign the corresponding names to the levels of the raster using the <code>levels()</code> function. The levels should be a data.frame with two columns: <code>ID</code> and <code>name</code> (see below)</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>levs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">ID =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="fu">c</span>(</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Settlement and urban areas"</span>, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Agricultural areas"</span>, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Wooded areas"</span>, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Unproductive areas"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(areal_rast) <span class="ot">&lt;-</span> levs</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(areal_rast)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="raster-vector-operations_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 
