@@ -479,8 +479,6 @@ focal_gauss1000 |> rast() |> plot()
 - Similarly, calculating the aspect (azimuth) of a location is a very typical task when dealing with elevation data
 - These algorithms are used so often, that they are implemented in a dedicated function (`terrain()`)
 
-
-
 ```{r}
 #| echo: true
 #| layout-nrow: 1
@@ -496,7 +494,7 @@ terrain(r, "aspect") |> plot()
 ```
 
 
-## Tasks / Exercises
+## 🪕 Tasks
 
 
 1. Import the elevation of Luxembourg using the following code:

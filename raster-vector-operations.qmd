@@ -121,8 +121,14 @@ lux_elev
   3. `field`: The name of the column in the vector data that should be used to fill the raster cells
 
 ```{r}
-# we will use the elevation raster as a template
-zones_raster <- rasterize(zones, r, "zone")
+#| echo: true
+# we can create a template using the input vector. All we have to specify 
+# is the resolution of the output raster, which is evalutated in the units of
+# the CRS of the input vector data (meters in our case).
+
+template <- rast(zones, resolution = 1000)
+
+zones_raster <- rasterize(zones, template, "zone")
 ```
 
 
@@ -177,6 +183,56 @@ p + tm_shape(zones_raster) +
 
 p + tm_shape(zones_poly) + 
   tm_polygons(col = "zone")
+```
+
+
+
+
+## 🪕 Tasks
+
+
+1. Import `Arealstatistik.gpkg` from *Spatial_Analysis_II* using `{sf}`
+2. To rasterize the data, we need a template raster object. Create a template raster object with a resolution of 100m using the `rast()` function
+3. Rasterize the arealstatistik data using the function `rasterize`, the tempalte from the previous step, and the column `AS_4` as the field to fill the raster cells
+
+
+```{r}
+areal <- read_sf("data/Spatial_Analysis_II/Arealstatistik.gpkg")
+
+template <- rast(areal, resolution = 100)
+
+areal_rast <- rasterize(areal, template, "AS_4")
+
+
+```
+
+
+4. The resulting raster contains the integer values 1 to 4. These values correspond to the following land use categories (see [metadata](https://www.bfs.admin.ch/asset/en/1420906)):
+   1. Settlement and urban areas
+   2. Agricultural areas
+   3. Wooded areas
+   4. Unproductive areas
+
+To make the raster more interpretable, assign the corresponding names to the levels of the raster using the `levels()` function. The levels should be a data.frame with two columns: `ID` and `name` (see below)
+
+
+```{r}
+#| echo: true
+
+levs <- data.frame(
+  ID = 1:4, 
+  name = c(
+    "Settlement and urban areas", 
+    "Agricultural areas", 
+    "Wooded areas", 
+    "Unproductive areas"
+    ) 
+  )
+
+levels(areal_rast) <- levs
+
+plot(areal_rast)
+
 ```
 
 

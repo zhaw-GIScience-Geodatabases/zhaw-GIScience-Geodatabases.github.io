@@ -55,3 +55,12 @@ dhm25
 writeRaster(dhm25, "data-out/dhm25_lu.tif", overwrite = TRUE)
 ```
 
+
+## 🪕 Tasks
+
+
+1. Import the raster `dhm25_lu.tif` from the lesson *Spatial Analysis II*
+2. Visualize the raster using the `plot()` function as well as the library `{tmap}`.
+
+
+
