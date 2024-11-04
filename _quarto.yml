@@ -13,10 +13,16 @@ book:
       - simple-features.qmd
       - vector-io.qmd
       - spatial-operations.qmd
+    - part: Raster Data
+      chapters:
+      - raster-data.qmd
+      - raster-io.qmd
+      - raster-operations.qmd
+      - raster-vector-operations.qmd
     - part: references.qmd
 
 
-bibliography: references.bib
+bibliography: aux/references.bib
 
 execute: 
   warning: false

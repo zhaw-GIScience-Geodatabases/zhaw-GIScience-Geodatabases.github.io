@@ -147,7 +147,7 @@ sum(st_area(wald_luzern2))/st_area(luzern)
 ## 🪕 Tasks
 
 
-From the exercise in Spatial Analysis I, solve the following tasks using R:
+From the exercise in **Spatial Analysis I**, solve the following tasks using R:
    
 - Task 2: Thematic Selections (Select by Attributes)
 - Task 3: Exporting Selected Features to a New ~~Layer~~ `sf` object
