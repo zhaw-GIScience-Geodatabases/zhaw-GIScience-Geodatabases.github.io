@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Vector data I/O – ADSL GIScience and Geodatabases</title>
+<title>Raster Data I/O – ADSL GIScience and Geodatabases</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./spatial-operations.html" rel="next">
-<link href="./simple-features.html" rel="prev">
+<link href="./raster-operations.html" rel="next">
+<link href="./raster-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -141,7 +141,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./simple-features.html">Vector Data</a></li><li class="breadcrumb-item"><a href="./vector-io.html"><span class="chapter-title">Vector data I/O</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-io.html"><span class="chapter-title">Raster Data I/O</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -188,7 +188,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vector-io.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Vector data I/O</span></a>
+  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data I/O</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -214,7 +214,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./raster-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Raster Data I/O</span></a>
+  <a href="./raster-io.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Raster Data I/O</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -243,21 +243,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sec-gdal-ogr2ogr" id="toc-sec-gdal-ogr2ogr" class="nav-link active" data-scroll-target="#sec-gdal-ogr2ogr">GDAL / ogr2ogr</a></li>
-  <li><a href="#gdal-vector-drivers-read" id="toc-gdal-vector-drivers-read" class="nav-link" data-scroll-target="#gdal-vector-drivers-read">GDAL Vector drivers (read)</a></li>
-  <li><a href="#multiple-layers-in-one-file" id="toc-multiple-layers-in-one-file" class="nav-link" data-scroll-target="#multiple-layers-in-one-file">Multiple layers in one file</a></li>
-  <li><a href="#sql-queries-during-import" id="toc-sql-queries-during-import" class="nav-link" data-scroll-target="#sql-queries-during-import">SQL queries during import</a></li>
-  <li><a href="#gdal-vector-drivers-write" id="toc-gdal-vector-drivers-write" class="nav-link" data-scroll-target="#gdal-vector-drivers-write">GDAL Vector drivers (write)</a></li>
-  <li><a href="#tasks" id="toc-tasks" class="nav-link" data-scroll-target="#tasks">🪕 Tasks</a></li>
+  <li><a href="#import-a-raster-file" id="toc-import-a-raster-file" class="nav-link active" data-scroll-target="#import-a-raster-file">Import a raster file</a></li>
+  <li><a href="#geotiff" id="toc-geotiff" class="nav-link" data-scroll-target="#geotiff">GeoTIFF</a></li>
+  <li><a href="#writing-a-raster-file" id="toc-writing-a-raster-file" class="nav-link" data-scroll-target="#writing-a-raster-file">Writing a raster file</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./simple-features.html">Vector Data</a></li><li class="breadcrumb-item"><a href="./vector-io.html"><span class="chapter-title">Vector data I/O</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-io.html"><span class="chapter-title">Raster Data I/O</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Vector data I/O</span></h1>
+<h1 class="title"><span class="chapter-title">Raster Data I/O</span></h1>
 </div>
 
 
@@ -275,115 +272,72 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <ul>
-<li>The library <code>{sf}</code> can import data from various sources:
-<ol type="1">
-<li>A multitude of file formats from disk (powered <code>gdal</code> / <code>ogr2ogr</code>)</li>
-<li>Various geospatial databases such as <code>PostGIS</code></li>
-<li>From other sources (such as <code>WKT</code>, <code>WKB</code> other geospatial R-libraires)</li>
-</ol></li>
-<li>We will only introduce the first method, since this is the most common use case</li>
-</ul>
-<section id="sec-gdal-ogr2ogr" class="level2">
-<h2 class="anchored" data-anchor-id="sec-gdal-ogr2ogr">GDAL / ogr2ogr</h2>
-<p>GDAL:</p>
+<li>In R, several libraries are available to work with raster data
 <ul>
-<li>is an open source translator library for raster and vector geospatial data formats.</li>
-<li>stands for Geospatial Data Abstraction Library</li>
-<li>is used <a href="https://gdal.org/en/latest/software_using_gdal.html#software-using-gdal">in most geospatial software</a>, be it FOSS or proprietary. The list includes: ArcGIS, QGIS, R (<code>sf</code>) and Python (<code>geopandas</code>)</li>
+<li><code>{raster}</code> by Robert Hijmans. This library is not maintained anymore</li>
+<li><code>{terra}</code> by the same author. This library is the successor of <code>{raster}</code> and is actively maintained</li>
+<li><code>{stars}</code> by Edzer Pebesma. This library extremly well developed, but it tends to be slower than <code>{terra}</code> (which is why we will not cover it in this course)</li>
+</ul></li>
+<li>Like <code>{sf}</code> The library <code>{terra}</code> is based on the GDAL library (see <a href="vector-io.html#sec-gdal-ogr2ogr" class="quarto-xref"><span>GDAL / ogr2ogr</span></a>)</li>
+<li>GDAL Supports a <em>wide</em> range of raster formats (see <a href="https://gdal.org/en/latest/drivers/raster/index.html">Raster drivers</a>)</li>
 </ul>
-</section>
-<section id="gdal-vector-drivers-read" class="level2">
-<h2 class="anchored" data-anchor-id="gdal-vector-drivers-read">GDAL Vector drivers (read)</h2>
+<section id="import-a-raster-file" class="level2">
+<h2 class="anchored" data-anchor-id="import-a-raster-file">Import a raster file</h2>
 <ul>
-<li>Since GDAL supports <a href="https://gdal.org/en/latest/drivers/vector/index.html">a long list</a> of different geospatial file formats, most (all?) are in turn supported by <code>{sf}</code></li>
-<li>Run the function <code>st_drivers</code> for a full list</li>
-<li><code>{sf}</code> tries to guess the correct driver based on the file extension (see below)</li>
+<li><code>terra</code> uses the function <code>rast()</code> to import raster data</li>
+<li>Printing the object will give you some basic information about the raster
+<ul>
+<li>The number of rows and columns, as well as the number of layers</li>
+<li>The resolution of the raster, meter per pixel (25 in our case)</li>
+<li>The extent of the raster, in the coordinate reference system of the raster</li>
+<li>The coordinate reference system (CRS) of the raster</li>
+<li>The source (in memory, or a file path)</li>
+<li>The name(s) of the band(s) (we only have one band in our case)</li>
+<li>The min and max values of the raster</li>
+</ul></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sf uses the geojson driver, based on the file extension</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (data from moodle →  Spatial Databases II → Database Files)</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>stationen_schweiz <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/uebung1/stationen_schweiz.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sf uses the shapefile driver, based on the file extension</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># (data from moodle →  Spatial Analysis I → Exercise Data) </span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>hoheitsgebiet <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR.shp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<ul>
-<li>Note: The <code>read_sf()</code> function is a wrapper around the <code>st_read()</code> function, which is the actual function that reads the data. I use <code>read_sf</code> since this wrapper’s default value for the <code>quiet</code> argument is <code>TRUE</code> (less verbose)</li>
-</ul>
-</section>
-<section id="multiple-layers-in-one-file" class="level2">
-<h2 class="anchored" data-anchor-id="multiple-layers-in-one-file">Multiple layers in one file</h2>
-<ul>
-<li>Some file formats, e.g.&nbsp;Geopackages (*.gpkg) or Geodatabases (*.gdb) support multiple datasets in a single file.</li>
-<li>If no specific layer is requested <code>read_sf()</code> will import the first available layer</li>
-<li>If more than 1 layers are available, <code>read_sf()</code> will return a warning</li>
-<li>The function <code>st_layers()</code> will list all available layers</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tlm3d_path <span class="ot">&lt;-</span> <span class="st">"data/Spatial_Analysis_II/swiss_TLM3D.gpkg"</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Note the warning:</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>tlm3d <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(tlm3d_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :
-automatically selected the first layer in a data source containing more than
-one.</code></pre>
-</div>
-</div>
-<hr class="br">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This will list all layers, including some metadata</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">st_layers</span>(tlm3d_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>dhm25 <span class="ot">&lt;-</span> <span class="fu">rast</span>(<span class="st">"data/Spatial_Analysis_II/dhm25_lu.tif"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>dhm25</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Driver: GPKG 
-Available layers:
-    layer_name        geometry_type features fields       crs_name
-1       tlm_bb     3D Multi Polygon    49321     13 CH1903+ / LV95
-2 tlm_strassen 3D Multi Line String   191644     27 CH1903+ / LV95</code></pre>
+<pre><code>class       : SpatRaster 
+dimensions  : 2321, 2161, 1  (nrow, ncol, nlyr)
+resolution  : 25, 25  (x, y)
+extent      : 2628987, 2683012, 1179988, 1238013  (xmin, xmax, ymin, ymax)
+coord. ref. : CH1903+ / LV95 (EPSG:2056) 
+source      : dhm25_lu.tif 
+name        : dhm25_lu 
+min value   :    381.1 
+max value   :   3228.3 </code></pre>
 </div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tlm_bb <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(tlm3d_path, <span class="st">"tlm_bb"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="sql-queries-during-import" class="level2">
-<h2 class="anchored" data-anchor-id="sql-queries-during-import">SQL queries during import</h2>
+<section id="geotiff" class="level2">
+<h2 class="anchored" data-anchor-id="geotiff">GeoTIFF</h2>
 <ul>
-<li><code>read_sf()</code> understands an Spatialite SQL query provided in the <code>query =</code> argument</li>
-<li>In case <code>query =</code> is used, the <code>layers =</code> argument should be skipped (since the layers is specified in the query)</li>
+<li>GeoTIFF is the most common raster format</li>
+<li>GeoTIFF is an extension to the TIFF format, which includes additional metadata to establish the spatial reference of the file</li>
+<li>This includes the CRS, the extent, the resolution, and the origin of the raster</li>
+<li>The metadata is either stored in the header of the file, or in an accompanying file with the same name, but different extension (<code>.tfw</code> or <code>.aux.xml</code>)</li>
+<li>Other important raster file formats include:
+<ul>
+<li>Cloud optimized GeoTIFF (COG): A GeoTIFF file that is optimized for cloud storage which allows for efficient, partial reading of the file over HTTP</li>
+<li>JPG2000 (<code>.jp2</code>) is a compressed raster format that is often used for satellite imagery</li>
+<li>NetCDF (<code>.nc</code>) is a format that is often used for climate data</li>
+<li>HDF5 (<code>.h5</code>) is a format that is often used for remote sensing data</li>
+</ul></li>
+</ul>
+</section>
+<section id="writing-a-raster-file" class="level2">
+<h2 class="anchored" data-anchor-id="writing-a-raster-file">Writing a raster file</h2>
+<ul>
+<li>You can write a raster object to a file using the <code>writeRaster()</code> function</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tlm_seen <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  tlm3d_path, </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">query =</span> <span class="st">"SELECT objektart, geom FROM tlm_bb WHERE objektart = 'Stehende Gewaesser'"</span></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">writeRaster</span>(dhm25, <span class="st">"data-out/dhm25_lu.tif"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="gdal-vector-drivers-write" class="level2">
-<h2 class="anchored" data-anchor-id="gdal-vector-drivers-write">GDAL Vector drivers (write)</h2>
-<ul>
-<li>The function <code>st_write()</code> is used to export an <code>sf</code> object to file</li>
-<li>Most vector drivers support reading <em>and writing</em> (see <code>st_drivers</code> / column <code>write</code>)</li>
-<li>Many file formats support appending to the dataset (see <code>append =</code>)</li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(tlm_seen, <span class="st">"data-out/seen.geojson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Writing layer `seen' to data source `data-out/seen.geojson' using driver `GeoJSON'
-Writing 1189 features with 1 fields and geometry type 3D Multi Polygon.</code></pre>
-</div>
-</div>
-</section>
-<section id="tasks" class="level2">
-<h2 class="anchored" data-anchor-id="tasks">🪕 Tasks</h2>
-<ol type="1">
-<li>Import the datasets from Spatial Analysis I and II using R</li>
-<li>Explore these datasets by printing the <code>sf</code> objects to the console</li>
-<li>Try different visualization methods (see <a href="simple-features.html#sec-plotting" class="quarto-xref"><span>Plotting simple features</span></a>)</li>
-</ol>
-<!-- todo: reading / writing spatial databases -->
 
 
 </section>
@@ -811,13 +765,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./simple-features.html" class="pagination-link" aria-label="Simple Features">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Simple Features</span></span>
+      <a href="./raster-data.html" class="pagination-link" aria-label="Raster Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Raster Data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./spatial-operations.html" class="pagination-link" aria-label="Spatial Vector Operation">
-        <span class="nav-page-text"><span class="chapter-title">Spatial Vector Operation</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./raster-operations.html" class="pagination-link" aria-label="Raster Operations">
+        <span class="nav-page-text"><span class="chapter-title">Raster Operations</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
