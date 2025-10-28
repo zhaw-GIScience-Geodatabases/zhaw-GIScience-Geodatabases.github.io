@@ -19,10 +19,16 @@ The standard says:
 
 > A simple feature is defined [...] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices. 
 
+---
+
 - A feature is thought of as a thing / an object in the real world, such as a building or a tree. 
 - Features have: 
   1. a geometry describing where on Earth the feature is located
   2. attributes, which describe other properties. 
+  
+  
+---
+  
 - For example:
   1. The geometry of a tree can be the delineation of its crown, of its stem, or the point indicating its center
   2. attributes (properties) may include its height, color, diameter at breast height at a particular date, and so on
@@ -33,6 +39,9 @@ The standard says:
 
 - Simple features is a hierarchical data model that represents a wide range of geometry types. 
 - All geometries are composed of points in a 2-, 3- or 4-dimensional space
+
+---
+
 - Of 18 geometry types supported by the specification, only the following seven (see @fig-sf and @tbl-sf) are used in the vast majority of geographic research: 
   - Three basic types: points, linestrings, polygons
   - Three composite types: mutlipoints, multilinestrings, multipolygons

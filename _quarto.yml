@@ -1,8 +1,10 @@
 project:
   title: "ADSL GIScience and Geodatabases"
+  output-dir: _slides
   
 
 bibliography: aux/references.bib
+
 
 execute: 
   warning: false
