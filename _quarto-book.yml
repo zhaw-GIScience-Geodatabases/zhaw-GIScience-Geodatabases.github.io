@@ -2,11 +2,13 @@ project:
   type: book
   output-dir: _book
   
-
-
 book:
   title: "ADSL GIScience and Geodatabases"
   author: "Nils Ratnaweera"
+  navbar:
+    tools:
+      - icon: twitter
+        href: https://twitter.com
   chapters:
     - index.qmd
     - part: Vector Data
@@ -20,7 +22,6 @@ book:
       - raster-io.qmd
       - raster-operations.qmd
       - raster-vector-operations.qmd
-    - part: references.qmd
 
 
 format: 
@@ -28,3 +29,4 @@ format:
     number-depth: -1
     number-sections: false
     css: misc/style-book.css
+    include-after-body: misc/script.html

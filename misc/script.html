@@ -1,0 +1,8 @@
+<script>
+  const currentFile = window.location.pathname.split('/').pop();
+  console.log(currentFile);
+  const span = document.querySelector('.lts');
+  span.outerHTML = `<p class="lts">↪ <a href="slides/${currentFile}" target="_blank">slides</a></p>`;
+
+
+</script>

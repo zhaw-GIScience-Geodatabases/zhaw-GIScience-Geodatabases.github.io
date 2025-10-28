@@ -1,6 +1,6 @@
 project:
   title: "ADSL GIScience and Geodatabases"
-  output-dir: _slides
+  output-dir: _book/slides
   
 
 bibliography: misc/references.bib
@@ -16,4 +16,4 @@ format:
     css: misc/style-slides.css
     code-line-numbers: false
     theme: beige
-    footer: "[home](index.html)"
+    footer: "[home](../index.html)"
