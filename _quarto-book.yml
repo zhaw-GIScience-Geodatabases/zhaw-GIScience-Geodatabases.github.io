@@ -1,0 +1,38 @@
+project:
+  type: book
+  
+
+
+book:
+  title: "ADSL GIScience and Geodatabases"
+  author: "Nils Ratnaweera"
+  chapters:
+    - index.qmd
+    - part: Vector Data
+      chapters:
+      - simple-features.qmd
+      - vector-io.qmd
+      - spatial-operations.qmd
+    - part: Raster Data
+      chapters:
+      - raster-data.qmd
+      - raster-io.qmd
+      - raster-operations.qmd
+      - raster-vector-operations.qmd
+    - part: references.qmd
+
+
+bibliography: aux/references.bib
+
+execute: 
+  warning: false
+  freeze: true
+
+
+format: 
+  html:
+    number-depth: -1
+    number-sections: false
+    css: aux/style.css
+    include-in-header:
+      - aux/script.html
