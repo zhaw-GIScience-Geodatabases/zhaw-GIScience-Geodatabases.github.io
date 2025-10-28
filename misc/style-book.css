@@ -1,0 +1,28 @@
+.note{
+    visibility: hidden;
+}
+
+.smaller-font{
+    font-size: smaller !important;
+}
+
+h1.speaker, h2.speaker {
+    margin-top: 100vh;
+}
+
+/* either this, or hide hr.speaker alltogether */
+hr.speaker{
+    margin-bottom: 100vh;
+}
+
+.presenter-btn{
+    background-color: gray;
+}
+
+figcaption{
+  text-align: center;
+}
+
+hr{
+  display: none;
+}
