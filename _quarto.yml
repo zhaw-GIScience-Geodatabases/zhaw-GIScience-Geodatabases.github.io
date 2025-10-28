@@ -11,4 +11,9 @@ execute:
   freeze: true
 
 
-format: revealjs
+format: 
+  clean-revealjs:
+    css: misc/style-slides.css
+    code-line-numbers: false
+    theme: beige
+    footer: "[home](index.html)"

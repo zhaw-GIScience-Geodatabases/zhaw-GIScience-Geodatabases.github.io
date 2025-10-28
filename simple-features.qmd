@@ -1,11 +1,12 @@
 ---
+title: Simple Features
+execute: 
+  echo: true
 knitr:
   opts_chunk: 
     tidy: false
 ---
 
-
-# Simple Features
 
 ## Simple feature standard
 
@@ -48,6 +49,7 @@ The standard says:
   - One special case: geometrycollection (which can be a conglomarate of all the afore mentioned)
 - These seven core geometry types are fully supported by the R package sf [@pebesma2018]
 
+---
 
 :::{#fig-sf}
 
@@ -56,6 +58,7 @@ The standard says:
 Image source: @dorman2023
 :::
 
+---
 
 ```{r}
 #| echo: false
@@ -115,15 +118,18 @@ Simple Features in R is modelled in three levels:
   1. a single POINT is a numeric vector
   2. a set of points, e.g. in a LINESTRING or ring of a POLYGON is a matrix, each row containing a point
   3. any other set is a `list`
-  
-(however, creator functions are rarely used in practice, since we typically bulk read and write spatial data. They are useful for illustration)
 
+---
 
 ### Points 
 
 ```{r}
 #| echo: true
 #| warning: false
+
+
+# creator functions are rarely used in practice, since we typically bulk  
+# read and write spatial data. They are useful for illustration)
 
 library(sf)
 fracht <- st_point(c(2685374, 1256519))
@@ -135,6 +141,8 @@ fracht
 ```{r}
 plot(fracht)
 ```
+
+---
 
 ### Linestrings
 
@@ -148,6 +156,7 @@ coords <- c(
 coords
 ```
 
+---
 
 ```{r}
 piste <- st_linestring(coords)
@@ -160,6 +169,7 @@ piste
 plot(piste)
 ```
 
+---
 
 ### Polygons
 
@@ -176,6 +186,7 @@ coords_2 <- c(
 coords_2
 ```
 
+---
 
 ```{r}
 flughafen <- st_polygon(coords_2)
@@ -196,24 +207,31 @@ plot(flughafen)
 - This is not mandatory, and for convenience we will just use a single `sfg` to showcase `sfc`
 - As you might have noticed, we didn't specify a CRS when creating the `sfg` objects. This is because we weren't able to. With `sfc`, we can ([and should](https://fosstodon.org/@jjimenezshaw@mapstodon.space/113310384205885118)) specify a crs. 
 
+---
+
 ```{r}
+#| echo: true
 fracht_sfc <- st_sfc(fracht, crs = 2056)
 
 fracht_sfc
 ```
 
-<hr class="br">
+---
 
 ```{r}
+#| echo: true
+
 piste_sfc <- st_sfc(piste, crs = 2056)
 
 piste_sfc
 ```
 
-<hr class="br">
+---
 
 
 ```{r}
+#| echo: true
+
 flughafen_sfc <- st_sfc(flughafen, crs = 2056)
 
 flughafen_sfc
@@ -224,32 +242,40 @@ flughafen_sfc
 
 - Simple features have attributes
 - In order to add attributes to a simple feature column (`sfc`), we need to convert it to a simple feature (`sf`)
-- A `sf` object is a subset of a data.frame. Many (all?) things which can be done with a data.frame, can be done with an `sf` object
-- Many `tidyverse` functions are implemented to nicely work with `sf`
-- **Note**: Geometries are *sticky*. This means they aren't dropped implicitly
-
 
 ```{r}
+#| echo: true
 fracht_sf <- st_as_sf(fracht_sfc)
 
 fracht_sf$name <- "Ost"
 ```
 
+---
+
+- A `sf` object is a subset of a data.frame. Many (all?) things which can be done with a data.frame, can be done with an `sf` object
+- Many `tidyverse` functions are implemented to nicely work with `sf`
+
 
 ```{r}
+#| echo: true
+
 # sf objects are also dataframes
 is.data.frame(fracht_sf)
 ```
 
-<hr class="br">
+---
+
+- Geometries are *sticky*. This means they aren't dropped implicitly
+
 
 ```{r}
+#| echo: true
 # Geometries are sticky
 fracht_sf[, "name"] 
 ```
 
 
-<hr class="br">
+---
 
 ```{r}
 piste_sf <- st_as_sf(piste_sfc)
@@ -259,8 +285,6 @@ piste_sf$nr <- 34
 flughafen_sf <- st_as_sf(flughafen_sfc)
 
 flughafen_sf$name <- "Flughafen Zürich"
-
-flughafen_sf
 ```
 
 
@@ -270,44 +294,56 @@ flughafen_sf
   - base R (sf provides a `plot`-method)
   - General purpose libraries such as `ggplot2`
   - Dedicated geospatial plotting libraries such as `tmap`
+
+---
+  
 - Use:
   - base R: If you want to take a quick look at your data. Base R has the most compact syntax and is extremely fast in plotting
   - `ggplot2`: If you only have (small-ish) vector data (no raster) and/or want to leverage the power of `ggplot2`
   - `tmap`: If you want to use all features a dedicated library for geospatial data has to offer: North arrow, scale bar, interactive (web) maps
 
+---
+
+
 ```{r}
 #| layout-nrow: 1
+#| label: fig-plotlibs
+#| fig-height: 10
 #| fig-cap: 
 #|   - base R
 #|   - library `ggplot2`
 #|   - library `tmap`
-#
+#| classes: center-text
+#| output-location: slide
+#| echo: true
+
 # Using base R
 plot(st_geometry(flughafen_sf))
 plot(piste_sf, add = TRUE)
 plot(fracht_sf, add = TRUE)
-#
+##########################################################
 # Using ggplot2
 library(ggplot2)
 ggplot() +
   geom_sf(data = flughafen_sf) +
   geom_sf(data = piste_sf) +
   geom_sf(data = fracht_sf)
-#
+##########################################################
 # Using tmap
 library(tmap)
 tm_shape(flughafen_sf) + tm_polygons() +
   tm_shape(piste_sf) + tm_lines() +
   tm_shape(fracht_sf) + tm_dots()
   
+
 ```
 
-<hr class="br">
+---
 
-- The `tmap` library can render the map either in a static plot as above (the default) or as an interactive web map (see below)
+- The `tmap` library can render the map either in a static plot shown before or as an interactive web map (see below)
 
 ```{r}
-
+#| echo: false
 # set tmap_mode to "view" for an interactive web map
 tmap_mode("view")
 
@@ -321,13 +357,11 @@ tm_shape(flughafen_sf) + tm_polygons() +
 
 ## 🪕 Tasks
 
-1. Create some simple feature geometries (`sfg`) of objects you know "by hand"
-  - Create at least one `POINT`, one `LINESTRING` and one `POLYGON` geometry
-  - You can capture the coordinates of the nodes from [map.geo.admin](https://map.geo.admin.ch/) if these are is Switzerland and [openstreetmap](https://www.openstreetmap.org) (or similar) if they aren't
+1. Create some simple feature geometries (`sfg`) of objects you know "by hand". Create at least one `POINT`, one `LINESTRING` and one `POLYGON` geometry. You can capture the coordinates of the nodes from [map.geo.admin.ch](https://map.geo.admin.ch/) if these are is Switzerland and [openstreetmap.org](https://www.openstreetmap.org) (or similar) if they aren't
 2. Create simple feature columns from you `sfg`s. Make sure that you assign the correct CRS
 3. Create simple features (`sf`) from your `sfc`s and add some attributes
 
 
-
+## References {#refs}
 
 

@@ -6,7 +6,8 @@
   - `{raster}` by Robert Hijmans. This library is not maintained anymore
   - `{terra}` by the same author. This library is the successor of `{raster}` and is actively maintained
   - `{stars}` by Edzer Pebesma. This library extremly well developed, but it tends to be slower than `{terra}` (which is why we will not cover it in this course)
-- Like `{sf}` The library `{terra}` is based on the GDAL library (see @sec-gdal-ogr2ogr)
+- Like `{sf}` The library `{terra}` is based on the GDAL library [(see @sec-gdal-ogr2ogr)]{.content-hidden unless-profile="book"}
+
 - GDAL Supports a *wide* range of raster formats (see [Raster drivers](https://gdal.org/en/latest/drivers/raster/index.html))
 
 

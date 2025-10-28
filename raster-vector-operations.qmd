@@ -22,7 +22,7 @@ p <- tm_shape(r) +
 
 - Till now, we have treated vector and raster data separately
 - However, in many cases, you will need to combine both types of data
-- For example, take the Zonal operation we discussed in the chapter @sec-zonal-1: Typically, your "zones" will be vector polygons
+- For example, take the Zonal operation we discussed previously [(see @sec-zonal-1)]{.content-hidden unless-profile="book"}: Typically, your "zones" will be vector polygons
 
 
 

@@ -1,0 +1,11 @@
+table{
+  font-size: large;
+}
+
+.center-text figcaption{
+  text-align: center;
+}
+
+#title-slide .title{
+  font-size: 3em;
+}

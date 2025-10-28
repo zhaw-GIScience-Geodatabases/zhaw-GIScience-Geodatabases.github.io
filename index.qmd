@@ -1,7 +1,22 @@
-# Welcome {.unnumbered .unlisted}
+# Welcome {.unnumbered .unlisted .smaller}
 
-Welcome to the Part *Geocomputation* in the Course *GIScience and Geodatabases*. This course is taught in the Bachelor Degree [Applied Digital Life Sciences](https://www.zhaw.ch/en/lsfm/studies/bachelor/applied-digital-life-sciences/) at the Zurich University of Applied Sciences (ZHAW). 
+Welcome to the Part *Geocomputation* in the Course *GIScience and Geodatabases*. This course is taught in the Bachelor Degree [Applied Digital Life Sciences](https://www.zhaw.ch/de/lsfm/studium/bachelor/applied-digital-life-sciences) at the Zurich University of Applied Sciences (ZHAW). 
 
-
+:::{.content-hidden unless-profile="book"}
 <!-- image source (CC0) https://pixabay.com/illustrations/computer-table-cabinet-room-7498415/ -->
 ![](images/computer-7498415_1280.jpg)
+:::
+
+
+- Part 1: Vector Data
+  - [Simple Features](simple-features.html)
+  - [Vector I/O](vector-io.html)
+  - [Spatial Operations](spatial-operations.html)
+
+
+- Part 2: Raster Data
+  - [Raster Data](raster-data.html)
+  - [Raster I/O](raster-io.html)
+  - [Raster Operations](raster-operations.html)
+  - [Raster-Vector Operations](raster-vector-operations.html)
+  

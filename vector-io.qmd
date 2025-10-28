@@ -1,5 +1,9 @@
+---
+title: Vector data I/O
+execute: 
+  echo: true
+---
 
-# Vector data I/O
 
 - The library `{sf}` can import data from various sources:
   1. A multitude of file formats from disk (powered `gdal` / `ogr2ogr`)
@@ -35,13 +39,14 @@ library(sf)
 stationen_schweiz <- read_sf("data/uebung1/stationen_schweiz.geojson")
 ```
 
+[]{}
+
 ```{r}
 # sf uses the shapefile driver, based on the file extension
 # (data from moodle →  Spatial Analysis I → Exercise Data) 
 hoheitsgebiet <- read_sf("data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR.shp")
 ```
 
-- Note: The `read_sf()` function is a wrapper around the `st_read()` function, which is the actual function that reads the data. I use `read_sf` since this wrapper's default value for the `quiet` argument is `TRUE` (less verbose)
 
 ## Multiple layers in one file
 
@@ -50,6 +55,7 @@ hoheitsgebiet <- read_sf("data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR
 - If more than 1 layers are available, `read_sf()` will return a warning
 - The function `st_layers()` will list all available layers
 
+---
 
 ```{r}
 #| warning: true
@@ -60,14 +66,17 @@ tlm3d_path <- "data/Spatial_Analysis_II/swiss_TLM3D.gpkg"
 tlm3d <- read_sf(tlm3d_path)
 ```
 
-<hr class="br">
+---
 
 ```{r}
 # This will list all layers, including some metadata
 st_layers(tlm3d_path)
 ```
 
+---
+
 ```{r}
+# To import a single layer
 tlm_bb <- read_sf(tlm3d_path, "tlm_bb")
 ```
 
@@ -75,7 +84,7 @@ tlm_bb <- read_sf(tlm3d_path, "tlm_bb")
 ## SQL queries during import
 
 
-- `read_sf()` understands an Spatialite SQL query provided in the `query = ` argument
+- `read_sf()` can parse a (spatialite) SQL query provided in the `query = ` argument
 - In case `query = ` is used, the `layers = ` argument should be skipped (since the layers is specified in the query)
 
 ```{r}
@@ -103,6 +112,7 @@ if(file.exists(target_file))file.remove(target_file)
 ```
 
 ```{r}
+#| output: false
 st_write(tlm_seen, "data-out/seen.geojson")
 ```
 
@@ -110,7 +120,7 @@ st_write(tlm_seen, "data-out/seen.geojson")
 
 1. Import the datasets from Spatial Analysis I and II using R
 2. Explore these datasets by printing the `sf` objects to the console
-3. Try different visualization methods (see @sec-plotting)
+3. Try different visualization methods [(see @sec-plotting)]{.content-hidden unless-profile="book"}
 
 
 
