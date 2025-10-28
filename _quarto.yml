@@ -3,7 +3,7 @@ project:
   output-dir: _slides
   
 
-bibliography: aux/references.bib
+bibliography: misc/references.bib
 
 
 execute: 

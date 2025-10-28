@@ -24,3 +24,7 @@ hr.speaker{
 figcaption{
   text-align: center;
 }
+
+hr{
+  display: none;
+}

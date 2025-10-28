@@ -23,17 +23,8 @@ book:
     - part: references.qmd
 
 
-bibliography: aux/references.bib
-
-execute: 
-  warning: false
-  freeze: true
-
-
 format: 
   html:
     number-depth: -1
     number-sections: false
-    css: aux/style.css
-    include-in-header:
-      - aux/script.html
+    css: misc/style-book.css
