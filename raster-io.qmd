@@ -2,6 +2,9 @@
 
 # Raster Data I/O
 
+[]{.lts .content-hidden unless-profile="book"}
+
+
 - In R, several libraries are available to work with raster data
   - `{raster}` by Robert Hijmans. This library is not maintained anymore
   - `{terra}` by the same author. This library is the successor of `{raster}` and is actively maintained

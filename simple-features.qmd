@@ -10,6 +10,9 @@ knitr:
 
 ## Simple feature standard
 
+[]{.lts .content-hidden unless-profile="book"}
+
+
 - Simple features is an open standard (ISO 19125-1:2004) developed and endorsed by the [Open Geospatial Consortium (OGC)](https://www.ogc.org/)
 - The standard is widely implemented in spatial databases (such as PostGIS), desktop GIS (such as ArcGIS, QGIS), scripting languages (such as R, Python) and forms the vector data basis for libraries such as GDAL. 
 

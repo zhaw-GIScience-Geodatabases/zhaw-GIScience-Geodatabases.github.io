@@ -3,6 +3,9 @@ echo: false
 ---
 # Raster Operations
 
+[]{.lts .content-hidden unless-profile="book"}
+
+
 ## Introduction
 
 - Map algebra can be defined as operations that modify or summarize raster cell values, with reference to surrounding cells, zones, or statistical functions that apply to every cell.

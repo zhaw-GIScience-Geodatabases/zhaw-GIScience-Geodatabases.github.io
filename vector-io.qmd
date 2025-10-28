@@ -4,6 +4,8 @@ execute:
   echo: true
 ---
 
+[]{.lts .content-hidden unless-profile="book"}
+
 
 - The library `{sf}` can import data from various sources:
   1. A multitude of file formats from disk (powered `gdal` / `ogr2ogr`)

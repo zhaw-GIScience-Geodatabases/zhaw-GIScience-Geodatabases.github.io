@@ -4,6 +4,10 @@ echo: false
 
 
 # Raster-Vector Operations
+
+[]{.lts .content-hidden unless-profile="book"}
+
+
 ```{r}
 library(sf)
 library(terra)
@@ -81,7 +85,7 @@ p + tm_shape(zones) +
 ## Extracting raster values at vector points
 
 - A another common operation is to extract raster values at specific points
-- Let's take the example of the city of Luxembourg (see @sec-global-2)
+- Let's take the example of the city of Luxembourg [(see @sec-global-2)]{.content-hidden unless-profile="book"}
 - The function `extract()` can be used to extract raster values at specific points
 - `extract` returns a data.frame with 
   - one column per raster band (1 in our case)
