@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "ADSL GIScience and Geodatabases",
     "section": "",
-    "text": "Welcome\nWelcome to the Part Geocomputation in the Course GIScience and Geodatabases. This course is taught in the Bachelor Degree Applied Digital Life Sciences at the Zurich University of Applied Sciences (ZHAW).\n\n\n\nPart 1: Vector Data\n\nSimple Features\nVector I/O\nSpatial Operations\n\nPart 2: Raster Data\n\nRaster Data\nRaster I/O\nRaster Operations\nRaster-Vector Operations",
+    "text": "Welcome\nWelcome to the Part Geocomputation in the Course GIScience and Geodatabases. This course is taught in the Bachelor Degree Applied Digital Life Sciences at the Zurich University of Applied Sciences (ZHAW).",
     "crumbs": [
       "Welcome"
     ]
@@ -47,7 +47,7 @@
     "href": "simple-features.html#simple-feature-model",
     "title": "Simple Features",
     "section": "Simple Feature Model",
-    "text": "Simple Feature Model\n\nSimple features is a hierarchical data model that represents a wide range of geometry types.\nAll geometries are composed of points in a 2-, 3- or 4-dimensional space\n\n\n\nOf 18 geometry types supported by the specification, only the following seven (see Figure fig-sf and Table tbl-sf) are used in the vast majority of geographic research:\n\nThree basic types: points, linestrings, polygons\nThree composite types: mutlipoints, multilinestrings, multipolygons\nOne special case: geometrycollection (which can be a conglomarate of all the afore mentioned)\n\nThese seven core geometry types are fully supported by the R package sf (Pebesma 2018)\n\n\n\n\n\n\n\n\nFigure 1.1: Image source: Dorman (2023)\n\n\n\n\n\n\n\n\nTable 1.1: Source: Pebesma (2018)\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n# of Dimension\n\n\n\n\nPOINT\nzero-dimensional geometry containing a single point\n0\n\n\nLINESTRING\nsequence of points connected by straight1 line pieces\n1\n\n\nPOLYGON\nsequence of points form a closed2 ring3\n2\n\n\nMULTIPOINT\nset of points\n0\n\n\nMULTILINESTRING\nset of linestrings\n1\n\n\nMULTIPOLYGON\nset of polygons\n2\n\n\nGEOMETRYCOLLECTION\nset of geometries of any of the above types\nNA",
+    "text": "Simple Feature Model\n\nSimple features is a hierarchical data model that represents a wide range of geometry types.\nAll geometries are composed of points in a 2-, 3- or 4-dimensional space\n\n\n\nOf 18 geometry types supported by the specification, only the following seven (see Figure 1.1 and Table 1.1) are used in the vast majority of geographic research:\n\nThree basic types: points, linestrings, polygons\nThree composite types: mutlipoints, multilinestrings, multipolygons\nOne special case: geometrycollection (which can be a conglomarate of all the afore mentioned)\n\nThese seven core geometry types are fully supported by the R package sf (Pebesma 2018)\n\n\n\n\n\n\n\n\nFigure 1.1: Image source: Dorman (2023)\n\n\n\n\n\n\n\n\nTable 1.1: Source: Pebesma (2018)\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n# of Dimension\n\n\n\n\nPOINT\nzero-dimensional geometry containing a single point\n0\n\n\nLINESTRING\nsequence of points connected by straight1 line pieces\n1\n\n\nPOLYGON\nsequence of points form a closed2 ring3\n2\n\n\nMULTIPOINT\nset of points\n0\n\n\nMULTILINESTRING\nset of linestrings\n1\n\n\nMULTIPOLYGON\nset of polygons\n2\n\n\nGEOMETRYCOLLECTION\nset of geometries of any of the above types\nNA",
     "crumbs": [
       "Vector Data",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
@@ -212,7 +212,7 @@
     "href": "vector-io.html#tasks",
     "title": "Vector data I/O",
     "section": "🪕 Tasks",
-    "text": "🪕 Tasks\n\nImport the datasets from Spatial Analysis I and II using R\nExplore these datasets by printing the sf objects to the console\nTry different visualization methods (see ?sec-plotting)",
+    "text": "🪕 Tasks\n\nImport the datasets from Spatial Analysis I and II using R\nExplore these datasets by printing the sf objects to the console\nTry different visualization methods (see Plotting simple features)",
     "crumbs": [
       "Vector Data",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
@@ -377,7 +377,7 @@
     "href": "raster-io.html",
     "title": "Raster Data I/O",
     "section": "",
-    "text": "Import a raster file\nclass       : SpatRaster \nsize        : 2321, 2161, 1  (nrow, ncol, nlyr)\nresolution  : 25, 25  (x, y)\nextent      : 2628987, 2683012, 1179988, 1238013  (xmin, xmax, ymin, ymax)\ncoord. ref. : CH1903+ / LV95 (EPSG:2056) \nsource      : dhm25_lu.tif \nname        : dhm25_lu \nmin value   :    381.1 \nmax value   :   3228.3",
+    "text": "Import a raster file\nlibrary(terra)\n\ndhm25 &lt;- rast(\"data/Spatial_Analysis_II/dhm25_lu.tif\")\ndhm25\n\nclass       : SpatRaster \nsize        : 2321, 2161, 1  (nrow, ncol, nlyr)\nresolution  : 25, 25  (x, y)\nextent      : 2628987, 2683012, 1179988, 1238013  (xmin, xmax, ymin, ymax)\ncoord. ref. : CH1903+ / LV95 (EPSG:2056) \nsource      : dhm25_lu.tif \nname        : dhm25_lu \nmin value   :    381.1 \nmax value   :   3228.3",
     "crumbs": [
       "Raster Data",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
@@ -410,7 +410,7 @@
     "href": "raster-io.html#writing-a-raster-file",
     "title": "Raster Data I/O",
     "section": "Writing a raster file",
-    "text": "Writing a raster file\n\nYou can write a raster object to a file using the writeRaster() function",
+    "text": "Writing a raster file\n\nYou can write a raster object to a file using the writeRaster() function\n\n\nwriteRaster(dhm25, \"data-out/dhm25_lu.tif\", overwrite = TRUE)",
     "crumbs": [
       "Raster Data",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
@@ -608,7 +608,7 @@
     "href": "raster-vector-operations.html#two-worlds-of-spatial-data",
     "title": "Raster-Vector Operations",
     "section": "",
-    "text": "Till now, we have treated vector and raster data separately\nHowever, in many cases, you will need to combine both types of data\nFor example, take the Zonal operation we discussed previously (see sec-zonal-1): Typically, your “zones” will be vector polygons",
+    "text": "Till now, we have treated vector and raster data separately\nHowever, in many cases, you will need to combine both types of data\nFor example, take the Zonal operation we discussed previously (see Zonal): Typically, your “zones” will be vector polygons",
     "crumbs": [
       "Raster Data",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
@@ -630,7 +630,7 @@
     "href": "raster-vector-operations.html#extracting-raster-values-at-vector-points",
     "title": "Raster-Vector Operations",
     "section": "Extracting raster values at vector points",
-    "text": "Extracting raster values at vector points\n\nA another common operation is to extract raster values at specific points\nLet’s take the example of the city of Luxembourg (see sec-global-2)\nThe function extract() can be used to extract raster values at specific points\nextract returns a data.frame with\n\none column per raster band (1 in our case)\none row per point (also 1 in our case):\n\n\n\n\n\n\n\n\n\n\n\n\nlux_elev &lt;- extract(r, luxembourg_city)\nlux_elev\n\n  ID elevation\n1  1  293.9805",
+    "text": "Extracting raster values at vector points\n\nA another common operation is to extract raster values at specific points\nLet’s take the example of the city of Luxembourg (see Global Operation (2))\nThe function extract() can be used to extract raster values at specific points\nextract returns a data.frame with\n\none column per raster band (1 in our case)\none row per point (also 1 in our case):\n\n\n\n\n\n\n\n\n\n\n\n\nlux_elev &lt;- extract(r, luxembourg_city)\nlux_elev\n\n  ID elevation\n1  1  293.9805",
     "crumbs": [
       "Raster Data",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
@@ -667,16 +667,6 @@
     "crumbs": [
       "Raster Data",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
-    ]
-  },
-  {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Dorman, Michael. 2023. “Spatial Data\nProgramming with Python — Geobgu.xyz.”\nhttps://geobgu.xyz/py/.\n\n\nHorn, Berthold KP. 1981. “Hill Shading and the Reflectance\nMap.” Proceedings of the IEEE 69 (1): 14–47.\n\n\nLovelace, Robin, Jakub Nowosad, and Jannes Muenchow. 2019.\nGeocomputation with r. Chapman; Hall/CRC.\n\n\nPebesma, Edzer. 2018. “Simple Features for R:\nStandardized Support for Spatial Vector Data.”\nThe R Journal 10 (1): 439–46. https://doi.org/10.32614/RJ-2018-009.\n\n\nPebesma, Edzer, and Roger Bivand. 2023. Spatial Data Science: With\nApplications in R. Boca Raton: Chapman; Hall/CRC. https://doi.org/10.1201/9780429459016.",
-    "crumbs": [
-      "References"
     ]
   }
 ]

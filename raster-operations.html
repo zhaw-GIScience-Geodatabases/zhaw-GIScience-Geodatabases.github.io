@@ -99,11 +99,11 @@ div.csl-indent {
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-bee2e4bd7d1f3bec86f216a696c13e04.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -159,10 +159,24 @@ window.Quarto = {
 <link rel="stylesheet" href="misc/style-book.css">
 </head>
 
-<body class="nav-sidebar floating quarto-light">
+<body class="nav-sidebar floating nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">ADSL GIScience and Geodatabases</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -171,28 +185,17 @@ window.Quarto = {
         <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-operations.html"><span class="chapter-title">Raster Operations</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
-      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
-        <i class="bi bi-search"></i>
-      </button>
     </div>
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
       <a href="./index.html" class="sidebar-logo-link">
       </a>
-    <div class="sidebar-title mb-0 py-0">
-      <a href="./">ADSL GIScience and Geodatabases</a> 
-    </div>
       </div>
-        <div class="mt-2 flex-shrink-0 align-items-center">
-        <div class="sidebar-search">
-        <div id="quarto-search" class="" title="Search"></div>
-        </div>
-        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -258,10 +261,6 @@ window.Quarto = {
 </li>
       </ul>
   </li>
-        <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">References</span></span>
-  </li>
     </ul>
     </div>
 </nav>
@@ -311,6 +310,7 @@ window.Quarto = {
 </header>
 
 
+<p><span class="lts"></span></p>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <ul>
@@ -366,7 +366,7 @@ elevation 347.6488</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -379,7 +379,7 @@ elevation 347.6488</code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -464,7 +464,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -490,7 +490,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -513,7 +513,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -525,7 +525,7 @@ Note
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -561,7 +561,7 @@ Y &amp;= 0.2126 \times R^\gamma+0.7152 \times G^\gamma+0.0722 \times B^\gamma \\
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -580,7 +580,7 @@ Y &amp;= 0.2126 \times R^\gamma+0.7152 \times G^\gamma+0.0722 \times B^\gamma \\
 <img src="images/focal.png" class="img-fluid figure-img">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-focal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6.4: Note how, depending on the size of your moving window, NA’s are produced. Source: <span class="citation" data-cites="lovelace2019">Lovelace, Nowosad, and Muenchow (<a href="references.html#ref-lovelace2019" role="doc-biblioref">2019</a>)</span>
+Figure&nbsp;6.4: Note how, depending on the size of your moving window, NA’s are produced. Source: <span class="citation" data-cites="lovelace2019">Lovelace, Nowosad, and Muenchow (<a href="#ref-lovelace2019" role="doc-biblioref">2019</a>)</span>
 </figcaption>
 </figure>
 </div>
@@ -788,7 +788,7 @@ Figure&nbsp;6.10: SObel (y-direction)
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>A visual representation of the matrix / filter above</figcaption>
 </figure>
 </div>
@@ -813,7 +813,7 @@ Figure&nbsp;6.10: SObel (y-direction)
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>A visual representation of the matrix / filter above</figcaption>
 </figure>
 </div>
@@ -823,7 +823,7 @@ Figure&nbsp;6.10: SObel (y-direction)
 <section id="focal-functions-in-terrain-processing" class="level2 page-columns page-full">
 <h2 class="anchored" data-anchor-id="focal-functions-in-terrain-processing">Focal functions in terrain processing</h2>
 <ul>
-<li>Focal functions are used to calculate the slope of a specific location, e.g.&nbsp;using the algorithm by <span class="citation" data-cites="horn1981">Horn (<a href="references.html#ref-horn1981" role="doc-biblioref">1981</a>)</span></li>
+<li>Focal functions are used to calculate the slope of a specific location, e.g.&nbsp;using the algorithm by <span class="citation" data-cites="horn1981">Horn (<a href="#ref-horn1981" role="doc-biblioref">1981</a>)</span></li>
 <li>Similarly, calculating the aspect (azimuth) of a location is a very typical task when dealing with elevation data</li>
 <li>These algorithms are used so often, that they are implemented in a dedicated function (<code>terrain()</code>)</li>
 </ul>
@@ -886,7 +886,7 @@ Figure&nbsp;6.12: Calculating aspect
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="raster-operations_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="raster-operations_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
 <figcaption>The resulting NDVI values</figcaption>
 </figure>
 </div>
@@ -894,7 +894,7 @@ Figure&nbsp;6.12: Calculating aspect
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-horn1981" class="csl-entry" role="listitem">
 Horn, Berthold KP. 1981. <span>“Hill Shading and the Reflectance Map.”</span> <em>Proceedings of the IEEE</em> 69 (1): 14–47.
 </div>
@@ -905,6 +905,14 @@ Lovelace, Robin, Jakub Nowosad, and Jannes Muenchow. 2019. <em>Geocomputation wi
 </section>
 
 </main> <!-- /main -->
+<script>
+  const currentFile = window.location.pathname.split('/').pop();
+  console.log(currentFile);
+  const span = document.querySelector('.lts');
+  span.outerHTML = `<a href="slides/${currentFile}" class="lts">↪ go to slides</a>`;
+
+
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

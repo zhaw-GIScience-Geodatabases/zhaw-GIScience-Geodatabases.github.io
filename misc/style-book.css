@@ -26,3 +26,7 @@ figcaption{
 hr{
   display: none;
 }
+
+.lts{
+  text-align: right;
+}
