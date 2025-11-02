@@ -128,6 +128,11 @@
     <div class="slides">
 
 
+<section id="publish" class="slide level2">
+<h2>Publish</h2>
+<p>Since we have two profiles with nested <code>output-dir</code>s, we cannot publish with <code>quarto publish</code>. Use <code>ghp-import</code>instead:</p>
+<pre><code>ghp-import -p _book</code></pre>
+</section>
 <section id="profile" class="title-slide slide level1 center">
 <h1>Profile</h1>
 <pre><code>[(see @sec-plotting)]{.content-hidden unless-profile="book"}</code></pre>

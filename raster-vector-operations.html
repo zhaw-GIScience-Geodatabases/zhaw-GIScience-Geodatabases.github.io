@@ -511,7 +511,7 @@ Figure&nbsp;7.5: Note how the conversion back to polygons preserves the cell bou
   const currentFile = window.location.pathname.split('/').pop();
   console.log(currentFile);
   const span = document.querySelector('.lts');
-  span.outerHTML = `<a href="slides/${currentFile}" class="lts">↪ go to slides</a>`;
+  span.outerHTML = `<p class="lts">↪ <a href="slides/${currentFile}" target="_blank">slides</a></p>`;
 
 
 </script>
