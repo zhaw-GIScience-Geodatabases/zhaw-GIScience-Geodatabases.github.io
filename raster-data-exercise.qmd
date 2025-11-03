@@ -1,0 +1,881 @@
+---
+title: "Raster Data Exercise"
+execute: 
+  eval: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(sf)
+library(terra)
+library(dplyr)
+library(ggplot2)
+```
+
+## Introduction
+
+The goal is to investigate which areas in the Canton of Lucerne are
+suitable habitats for chamois. A habitat model will be created based on
+various criteria. The criteria to be considered are based on the most
+important requirements that chamois have for their living environment. The following requirements will be taken
+into account:
+
+-   The home range of chamois is approximately 1 km².
+-   Chamois require sufficient forest cover within their home range for refuge.
+-   Chamois need enough steep areas (\> 30°) within their home range where they are physiologically advantaged against their predators.
+-   Chamois avoid human settlements and heavily trafficked roads.
+
+@fig-process-model represents the process model with the input data and
+the geoprocessing steps to be performed. The process model is also
+available as a PDF on Moodle.
+
+![](images/ProcessModel_MCA_Chamois.PNG){#fig-process-model}
+
+## Task 1: Data Download and Set Up the Project Environment
+
+1. *Create a new folder named "Spatial_Analysis_II" in the ".../GIScience_GDB" directory.*
+
+2. *Download the today's exercise data from the Moodle course in the section "CW 39 -- Spatial Analysis II". Save the data file in the ".../GIScience_GDB/Spatial_Analysis_II" folder and extract the zip file in this folder.*
+
+3. *Create a new R script or Quarto document for this exercise in the same folder.*
+
+4. *The folder contains several files:*
+
+    -   *dhm25_lu.tif (raster dataset)*
+    -   *arealstatistik (point layer) within Arealstatistik.gpkg*
+    -   *tlm_bb (polygon layer) and tlm_strassen (line layer) within swiss_TLM3.gpkg*
+    -   *kantonsgebiet_lu (polygon layer) within swissBOUNDARIES3D.gpkg*
+
+**Metadata:**
+
+-   *Metadata DHM25: [Data source & data description](https://www.swisstopo.admin.ch/de/hoehenmodell-dhm25)*
+-   *Metadata swissBOUNDARIES3D: Data source & data description*
+-   *Metadata swissTLM3D: [Data source & data description](https://www.swisstopo.admin.ch/de/landschaftsmodell-swisstlm3d) and [Objektkatalog](https://backend.swisstopo.admin.ch/fileservice/sdweb-docs-prod-swisstopoch-files/files/2024/03/06/b2e890ee-a5a4-4ea6-8b87-13f74eb41a1a.pdf) (2024)*
+-   *Metadata Arealstatistik BFS: [Data source & data description](https://www.bfs.admin.ch/bfs/de/home/dienstleistungen/geostat/geodaten-bundesstatistik/boden-nutzung-bedeckung-eignung/arealstatistik-schweiz.html) and [Nomenklatur 72 Grundkategorien](https://www.bfs.admin.ch/bfs/de/home/statistiken/raum-umwelt/nomenklaturen/arealstatistik/noas2004/72-grundkategorien.html)*
+
+5. *Load the required R packages and set your working directory:*
+
+```{r}
+# Load packages
+library(sf)
+library(terra)
+library(dplyr)
+
+# Set working directory
+setwd("path/to/GIScience_GDB/Spatial_Analysis_II")
+```
+
+6. *Read the elevation model and vector layers:*
+
+```{r}
+# Read raster data
+dhm25 <- rast("dhm25_lu.tif")
+
+# Read vector data from geopackages
+tlm_bb <- st_read("swiss_TLM3.gpkg", layer = "tlm_bb")
+tlm_strassen <- st_read("swiss_TLM3.gpkg", layer = "tlm_strassen")
+arealstatistik <- st_read("Arealstatistik.gpkg", layer = "arealstatistik")
+kantonsgebiet_lu <- st_read("swissBOUNDARIES3D.gpkg", layer = "kantonsgebiet_lu")
+```
+
+7. *Examine the data:*
+
+```{r}
+# Check the CRS (should be EPSG:2056)
+st_crs(tlm_bb)
+crs(dhm25)
+
+# Check extent and resolution
+dhm25
+ext(dhm25)
+res(dhm25)
+
+# View the first few rows of vector data
+head(tlm_bb)
+```
+
+8. *Create a simple visualization:*
+
+```{r}
+# Plot elevation model
+plot(dhm25, main = "DHM25 - Canton of Lucerne")
+
+# Add canton boundary
+plot(st_geometry(kantonsgebiet_lu), add = TRUE, border = "red", lwd = 2)
+```
+
+## Task 2: Convert Land Cover Dataset into a Raster File
+
+In this exercise, the layer "tlm_bb" will be converted into a raster
+dataset. Before starting, check the metadata of swissTLM3D
+([Objektkatalog](https://backend.swisstopo.admin.ch/fileservice/sdweb-docs-prod-swisstopoch-files/files/2024/03/06/b2e890ee-a5a4-4ea6-8b87-13f74eb41a1a.pdf)).
+The land use type is stored in the field "OBJEKTART" (see TOPIC TLM_BB).
+
+1. *First, select all "Gebüschwald", "Wald", and "Wald offen" features:*
+
+```{r}
+# Filter forest types using dplyr
+forest <- tlm_bb %>%
+  filter(objektart %in% c('Gebueschwald', 'Wald', 'Wald offen'))
+
+# Check the result
+nrow(forest)
+```
+
+2. *You can save this layer to the geopackage (optional):*
+
+```{r}
+# Save to geopackage
+st_write(forest, "swissTLM3D.gpkg", layer = "forest", append = FALSE)
+```
+
+3. *Next, dissolve all forest features into one multipart feature:*
+
+```{r}
+# Dissolve using st_union
+forest_dissolve <- forest %>%
+  st_union() %>%
+  st_as_sf() %>%
+  mutate(OBJECTID = 1)
+
+# Check the result - should be 1 feature
+nrow(forest_dissolve)
+```
+
+4. *Now, rasterize the dissolved forest vector layer. We'll use the DHM25 as a template to match the extent and resolution:*
+
+```{r}
+# Create a template raster based on dhm25
+template <- dhm25
+
+# Rasterize the forest layer
+# Use rasterize() function with the polygon and value 1 for forest
+forest_raster <- rasterize(vect(forest_dissolve), template, field = 1)
+
+# Write the raster to file
+writeRaster(forest_raster, "forest_raster.tif", overwrite = TRUE, datatype = "INT1U")
+```
+
+5. *Visualize the forest raster:*
+
+```{r}
+# Plot the forest raster
+plot(forest_raster, main = "Forest Raster", col = c("white", "darkgreen"),
+     legend = FALSE)
+```
+
+6. *Examine the raster properties:*
+
+```{r}
+# Check data type
+datatype(forest_raster)
+
+# Get unique values
+unique(forest_raster)
+
+# Get frequency table
+freq(forest_raster)
+```
+
+**Question:** Is the output "forest_raster" an integer or a floating point raster?
+
+**Answer:** The forest_raster is an integer raster (datatype INT1U - unsigned 1-byte integer), containing only the values 1 (forest) and NA (non-forest).
+
+## Task 3: Calculate Slope
+
+Based on the existing elevation model "dhm25_lu.tif", the slope should
+now be calculated using the `terrain()` function from terra.
+
+1. *Calculate slope from the DHM25:*
+
+```{r}
+# Calculate slope in degrees
+slope <- terrain(dhm25, v = "slope", unit = "degrees")
+
+# Write to file
+writeRaster(slope, "slope.tif", overwrite = TRUE)
+```
+
+2. *Visualize the slope:*
+
+```{r}
+# Plot slope
+plot(slope, main = "Slope (degrees)", col = terrain.colors(100))
+```
+
+3. *Examine the slope properties:*
+
+```{r}
+# Check data type
+datatype(slope)
+
+# Get summary statistics
+summary(slope)
+
+# Get the maximum slope value
+global(slope, "max", na.rm = TRUE)
+```
+
+**Questions:**
+- Is it an integer or floating point raster?
+- What is the steepest slope in the study area?
+
+**Answer:** The slope raster is a floating point raster (FLT4S - 4-byte float). You can find the maximum slope value using the summary or global function.
+
+
+## Task 4: Reclassification of Slope
+
+Now, the intermediate result "slope" will be reclassified. The slope raster will be reclassified
+into steep and non-steep areas. The reclassification is based on value
+ranges. The range of slopes from 0-30° will receive the output pixel
+value 0 (non-steep areas), and slopes >30° will receive the output
+pixel value 1 (steep areas).
+
+1. *Reclassify the slope raster using a reclassification matrix:*
+
+```{r}
+# Create reclassification matrix
+# Format: from, to, new_value
+rcl_matrix <- matrix(c(0, 30, 0,
+                       30, 100, 1),
+                     ncol = 3, byrow = TRUE)
+
+# Reclassify
+steep_nosteep <- classify(slope, rcl_matrix, include.lowest = TRUE)
+
+# Write to file
+writeRaster(steep_nosteep, "steep_nosteep.tif", overwrite = TRUE, datatype = "INT1U")
+```
+
+2. *Visualize the result:*
+
+```{r}
+# Plot the reclassified raster
+plot(steep_nosteep, main = "Steep (>30°) vs Non-steep Areas",
+     col = c("lightblue", "red"), legend = FALSE)
+legend("topright", legend = c("Non-steep (<30°)", "Steep (>30°)"),
+       fill = c("lightblue", "red"))
+```
+
+3. *Check the frequency of steep vs. non-steep areas:*
+
+```{r}
+# Get frequency table
+freq(steep_nosteep)
+```
+
+## Task 5: Extracting Heavily Used Roads
+
+In this exercise, heavily used roads will be extracted. We do not have
+specific data on traffic volume for individual road sections, but we
+assume that highways, major roads, and main roads are heavily used.
+These roads must be selected based on the "tlm_strassen" layer. This
+selection is again based on the "OBJEKTART" field. The following road
+classes will be assumed to be heavily used (refer to the swissTLM3D
+Objektkatalog):
+
+**OBJEKTART Description:**
+
+- Ausfahrt
+- Einfahrt
+- Autobahn
+- Zufahrt
+- 10m Strasse
+- 6m Strasse
+- 4m Strasse
+- 8m Strasse
+- Autostrasse
+
+Road sections that run through tunnels should not be selected (Field "KUNSTBAUTE" = "Tunnel").
+
+1. *Filter the heavily used roads using sf and dplyr:*
+
+```{r}
+# Define the road types to extract
+road_types <- c('Ausfahrt', 'Einfahrt', 'Autobahn', 'Zufahrt',
+                '10m Strasse', '6m Strasse', '4m Strasse',
+                '8m Strasse', 'Autostrasse')
+
+# Filter roads, excluding tunnels
+heavy_used_roads <- tlm_strassen %>%
+  filter(objektart %in% road_types & kunstbaute != 'Tunnel')
+
+# Check the result
+nrow(heavy_used_roads)
+```
+
+2. *Save to geopackage (optional):*
+
+```{r}
+# Save to geopackage
+st_write(heavy_used_roads, "swissTLM3D.gpkg", layer = "heavy_used_roads",
+         append = FALSE)
+```
+
+3. *Visualize the result:*
+
+```{r}
+# Simple plot
+plot(st_geometry(kantonsgebiet_lu), main = "Heavily Used Roads")
+plot(st_geometry(heavy_used_roads), col = "red", add = TRUE)
+```
+
+## Task 6: Creating Settlement Area Layer
+
+In this task, you will create a settlement area layer based on the Swiss
+Land Use Statistic dataset (Arealstatistik). The Swiss Land Use
+Statistic provides detailed and accurate information on the state and
+evolution of land use and land cover in Switzerland. [On this page you
+will find the geodata of the Land Use Statistics at the hectare level
+since 1979, as well as documentation on the data and the methodology
+used to produce these
+data](https://www.bfs.admin.ch/bfs/de/home/dienstleistungen/geostat/geodaten-bundesstatistik/boden-nutzung-bedeckung-eignung/arealstatistik-schweiz.html).
+
+This link from the Federal Statistical Office provides an overview of
+the 72 basic categories:
+
+<https://www.bfs.admin.ch/bfs/de/home/statistiken/raum-umwelt/nomenklaturen/arealstatistik/noas2004/72-grundkategorien.html>
+
+And here you can download the variable list with the respective basic
+categories (xlsx-file):
+
+<https://dam-api.bfs.admin.ch/hub/api/dam/assets/32376296/master>
+
+Check the variable list, limiting yourself to the sheet "Codes AS_72".
+Which categories would you describe as settlement areas?
+
+In this exercise we assume that the following categories can be
+considered as settlement areas:
+
+-   1 Industrie- und Gewerbegebäude
+-   2 Umschwung von Industrie- und Gewerbegebäuden
+-   3 Ein- und Zweifamilienhäuser
+-   4 Umschwung von Ein- und Zweifamilienhäusern
+-   5 Reihen- und Terrassenhäuser
+-   6 Umschwung von Reihen- und Terrassenhäusern
+-   7 Mehrfamilienhäuser
+-   8 Umschwung von Mehrfamilienhäusern
+-   9 Öffentliche Gebäude
+-   10 Umschwung von öffentlichen Gebäuden
+-   11 Landwirtschaftliche Gebäude
+-   13 Nicht spezifizierte Gebäude
+
+To designate the settlement area, all hectare points that correspond to
+the classes listed above should be selected first. Subsequently, a
+buffer of 150 meters should be created around the selected objects,
+with dissolving to merge overlapping buffers.
+
+1. *Extract settlement points (the field containing the AS72 codes needs to be identified in your data - commonly named "AS72" or similar):*
+
+```{r}
+# Define settlement codes
+settlement_codes <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13)
+
+# Filter settlement points
+# Note: Adjust the field name if your data uses a different name
+settlement_as72 <- arealstatistik %>%
+  filter(AS72 %in% settlement_codes)
+
+# Check result
+nrow(settlement_as72)
+```
+
+2. *Create a 150m buffer and dissolve:*
+
+```{r}
+# Create buffer and dissolve
+settlement_area <- settlement_as72 %>%
+  st_buffer(dist = 150) %>%
+  st_union() %>%
+  st_as_sf()
+
+# Check result - should be one or few features
+nrow(settlement_area)
+```
+
+3. *Save to geopackage (optional):*
+
+```{r}
+# Save intermediate and final result
+st_write(settlement_as72, "Arealstatistik.gpkg", layer = "settlement_as72",
+         append = FALSE)
+st_write(settlement_area, "Arealstatistik.gpkg", layer = "settlement_area",
+         append = FALSE)
+```
+
+4. *Visualize:*
+
+```{r}
+# Plot
+plot(st_geometry(kantonsgebiet_lu), main = "Settlement Areas")
+plot(st_geometry(settlement_area), col = "orange", add = TRUE)
+```
+
+## Task 7: Neighborhood Analysis of Forest and Steep Areas
+
+According to the process model, the potential chamois habitats across
+the study area will now be evaluated in terms of how forested they are
+and how many steep areas they contain. This is done through raster-based
+neighborhood analyses. Every location in the study area is considered
+the center of a potential chamois home range. The criterion of home
+range size (area = 1 km²) is now factored in by ensuring the
+neighborhood window area corresponds to the area of the home range.
+
+Moving-window analyses (focal statistics) will be used to examine both the forest and the steep areas.
+
+1. *Before performing the neighborhood analysis, replace NA values in the forest raster with 0:*
+
+```{r}
+# Replace NA with 0 in forest raster
+forest_raster_final <- classify(forest_raster, cbind(NA, 0))
+
+# Write to file
+writeRaster(forest_raster_final, "forest_raster_final.tif",
+            overwrite = TRUE, datatype = "INT1U")
+```
+
+2. *Calculate the neighborhood size. For a 1 km² area with 25m resolution:*
+
+```{r}
+# Calculate window size
+# 1 km² = 1,000,000 m²
+# Cell size = 25m × 25m = 625 m²
+# Number of cells = 1,000,000 / 625 = 1600 cells
+# For a square window: sqrt(1600) = 40 cells
+# So we use a 39×39 or 40×40 window (approximately 1 km²)
+window_size <- 39
+```
+
+3. *Perform focal analysis for forest:*
+
+```{r}
+# Create a weight matrix (all values = 1 for sum)
+w <- matrix(1, nrow = window_size, ncol = window_size)
+
+# Calculate focal sum for forest
+focal_forest <- focal(forest_raster_final, w = w, fun = "sum", na.rm = TRUE)
+
+# Write to file
+writeRaster(focal_forest, "focal_forest.tif", overwrite = TRUE)
+```
+
+4. *Perform focal analysis for steep areas:*
+
+```{r}
+# First, ensure steep_nosteep has 0 for NA values
+steep_nosteep_filled <- classify(steep_nosteep, cbind(NA, 0))
+
+# Calculate focal sum for steep areas
+focal_steepness <- focal(steep_nosteep_filled, w = w, fun = "sum", na.rm = TRUE)
+
+# Write to file
+writeRaster(focal_steepness, "focal_steepness.tif", overwrite = TRUE)
+```
+
+5. *Visualize the results:*
+
+```{r}
+# Plot focal forest
+plot(focal_forest, main = "Focal Forest Count (1 km² window)",
+     col = viridis::viridis(100))
+
+# Plot focal steepness
+plot(focal_steepness, main = "Focal Steepness Count (1 km² window)",
+     col = viridis::viridis(100))
+```
+
+6. *Examine the results:*
+
+```{r}
+# Get summary statistics
+summary(focal_forest)
+summary(focal_steepness)
+
+# Get min and max values
+global(focal_forest, c("min", "max"), na.rm = TRUE)
+global(focal_steepness, c("min", "max"), na.rm = TRUE)
+```
+
+**Question:** What do the values, which range from 0 to ~1521 (focal_forest) and from 0 to ~1505 (focal_steepness), represent?
+
+**Answer:** The values represent the count of cells with value 1 (forest or steep) within a 1 km² moving window centered on each cell. Higher values indicate areas with more forest cover or more steep terrain within the potential chamois home range.
+
+## Task 8: Distance to Settlements and Heavily Used Roads
+
+In this exercise, we will calculate the distance to heavily used roads
+and settlements. In terra, we can use the `distance()` function which works directly with vector data, or we can first rasterize and then calculate distances.
+
+1. *Rasterize the roads and settlement layers:*
+
+```{r}
+# Rasterize heavy_used_roads
+roads_raster <- rasterize(vect(heavy_used_roads), template, field = 1)
+writeRaster(roads_raster, "roads_raster.tif", overwrite = TRUE, datatype = "INT1U")
+
+# Rasterize settlement_area
+settlement_raster <- rasterize(vect(settlement_area), template, field = 1)
+writeRaster(settlement_raster, "settlement_raster.tif", overwrite = TRUE,
+            datatype = "INT1U")
+```
+
+2. *Calculate distance to roads:*
+
+```{r}
+# Calculate Euclidean distance from roads
+# The distance() function calculates distance to nearest non-NA cell
+distance_roads <- distance(roads_raster)
+
+# Write to file
+writeRaster(distance_roads, "distance_roads.tif", overwrite = TRUE)
+```
+
+3. *Calculate distance to settlements:*
+
+```{r}
+# Calculate Euclidean distance from settlements
+distance_settlement <- distance(settlement_raster)
+
+# Write to file
+writeRaster(distance_settlement, "distance_settlement.tif", overwrite = TRUE)
+```
+
+4. *Visualize the distance rasters:*
+
+```{r}
+# Plot distance to roads
+plot(distance_roads, main = "Distance to Heavily Used Roads (m)",
+     col = heat.colors(100))
+
+# Plot distance to settlements
+plot(distance_settlement, main = "Distance to Settlements (m)",
+     col = heat.colors(100))
+```
+
+5. *Examine the distance statistics:*
+
+```{r}
+# Get summary statistics
+summary(distance_roads)
+summary(distance_settlement)
+
+# Get min and max distances
+global(distance_roads, c("min", "max"), na.rm = TRUE)
+global(distance_settlement, c("min", "max"), na.rm = TRUE)
+```
+
+## Task 9: Standardization of the Four Criteria
+
+All four criteria have now been prepared. However, before these criteria
+can be overlaid, they need to be standardized and transferred to a
+comparable measurement scale. This is done by classifying them into
+suitability classes (Grading). Each criterion should be reclassified into the following
+five suitability classes:
+
+**Suitability Classes (Grading):**
+
+- 1 = unsuitable
+- 2 = conditionally suitable
+- 3 = moderately suitable
+- 4 = well suitable
+- 5 = very well suitable
+
+The four criteria should be assigned to the five suitability classes
+based on the following value ranges:
+
+**focal_forest (unit: quantity):**
+
+- 0 - 300 = 1
+- 300 - 600 = 2
+- 600 - 900 = 3
+- 900 - 1200 = 4
+- 1200 - 2000 = 5
+
+**focal_steepness (unit: quantity):**
+
+- 0 - 200 = 1
+- 200 - 400 = 2
+- 400 - 600 = 3
+- 600 - 800 = 4
+- 800 - 2000 = 5
+
+**distance_roads (unit: m):**
+
+- 0 - 150 = 1
+- 150 - 300 = 2
+- 300 - 450 = 3
+- 450 - 600 = 4
+- 600 - 20000 = 5
+
+**distance_settlement (unit: m):**
+
+- 0 - 250 = 1
+- 250 - 500 = 2
+- 500 - 750 = 3
+- 750 - 1000 = 4
+- 1000 - 20000 = 5
+
+1. *Reclassify focal_forest:*
+
+```{r}
+# Create reclassification matrix for forest
+rcl_forest <- matrix(c(0, 300, 1,
+                       300, 600, 2,
+                       600, 900, 3,
+                       900, 1200, 4,
+                       1200, 2000, 5),
+                     ncol = 3, byrow = TRUE)
+
+# Reclassify
+grading_forest <- classify(focal_forest, rcl_forest, include.lowest = TRUE)
+
+# Write to file
+writeRaster(grading_forest, "grading_forest.tif", overwrite = TRUE,
+            datatype = "INT1U")
+```
+
+2. *Reclassify focal_steepness:*
+
+```{r}
+# Create reclassification matrix for steepness
+rcl_steepness <- matrix(c(0, 200, 1,
+                          200, 400, 2,
+                          400, 600, 3,
+                          600, 800, 4,
+                          800, 2000, 5),
+                        ncol = 3, byrow = TRUE)
+
+# Reclassify
+grading_steepness <- classify(focal_steepness, rcl_steepness,
+                              include.lowest = TRUE)
+
+# Write to file
+writeRaster(grading_steepness, "grading_steepness.tif", overwrite = TRUE,
+            datatype = "INT1U")
+```
+
+3. *Reclassify distance_roads:*
+
+```{r}
+# Create reclassification matrix for roads
+rcl_roads <- matrix(c(0, 150, 1,
+                      150, 300, 2,
+                      300, 450, 3,
+                      450, 600, 4,
+                      600, 20000, 5),
+                    ncol = 3, byrow = TRUE)
+
+# Reclassify
+grading_roads <- classify(distance_roads, rcl_roads, include.lowest = TRUE)
+
+# Write to file
+writeRaster(grading_roads, "grading_roads.tif", overwrite = TRUE,
+            datatype = "INT1U")
+```
+
+4. *Reclassify distance_settlement:*
+
+```{r}
+# Create reclassification matrix for settlement
+rcl_settlement <- matrix(c(0, 250, 1,
+                           250, 500, 2,
+                           500, 750, 3,
+                           750, 1000, 4,
+                           1000, 20000, 5),
+                         ncol = 3, byrow = TRUE)
+
+# Reclassify
+grading_settlement <- classify(distance_settlement, rcl_settlement,
+                               include.lowest = TRUE)
+
+# Write to file
+writeRaster(grading_settlement, "grading_settlement.tif", overwrite = TRUE,
+            datatype = "INT1U")
+```
+
+5. *Visualize the grading results:*
+
+```{r}
+# Define a color palette for grading (1-5)
+grading_colors <- c("#d7191c", "#fdae61", "#ffffbf", "#a6d96a", "#1a9641")
+
+# Plot all four grading layers
+par(mfrow = c(2, 2))
+plot(grading_forest, main = "Forest Grading", col = grading_colors,
+     breaks = 0:5 + 0.5)
+plot(grading_steepness, main = "Steepness Grading", col = grading_colors,
+     breaks = 0:5 + 0.5)
+plot(grading_roads, main = "Roads Distance Grading", col = grading_colors,
+     breaks = 0:5 + 0.5)
+plot(grading_settlement, main = "Settlement Distance Grading",
+     col = grading_colors, breaks = 0:5 + 0.5)
+par(mfrow = c(1, 1))
+```
+
+6. *Check the frequency distribution of each grading:*
+
+```{r}
+# Get frequency tables
+freq(grading_forest)
+freq(grading_steepness)
+freq(grading_roads)
+freq(grading_settlement)
+```
+
+## Task 10: Criteria Overlay
+
+Now, the four suitability class layers "grading_forest",
+"grading_steepness", "grading_roads", and "grading_settlement"
+should be overlaid with each other, summing all the grading values. In terra, raster calculations can be performed using standard arithmetic operators.
+
+1. *Sum all four grading layers using raster algebra:*
+
+```{r}
+# Calculate the sum of all four grading layers
+grading_sum <- grading_forest + grading_steepness +
+               grading_roads + grading_settlement
+
+# Write to file
+writeRaster(grading_sum, "grading_sum.tif", overwrite = TRUE,
+            datatype = "INT1U")
+```
+
+2. *Examine the result:*
+
+```{r}
+# Get summary statistics
+summary(grading_sum)
+
+# Get min and max values
+global(grading_sum, c("min", "max"), na.rm = TRUE)
+
+# Get frequency distribution
+freq(grading_sum)
+```
+
+3. *Visualize the final suitability map:*
+
+```{r}
+# Create a diverging color palette for the sum (values from 4 to 20)
+library(viridis)
+
+# Plot the final suitability map
+plot(grading_sum, main = "Chamois Habitat Suitability",
+     col = viridis(17),
+     breaks = seq(3.5, 20.5, by = 1))
+
+# Add canton boundary
+plot(st_geometry(kantonsgebiet_lu), add = TRUE, border = "black", lwd = 2)
+```
+
+4. *Create a classified version for better interpretation:*
+
+```{r}
+# Reclassify into broader suitability categories
+# Low suitability: 4-8, Medium: 9-14, High: 15-20
+suit_classes <- matrix(c(4, 8, 1,
+                         9, 14, 2,
+                         15, 20, 3),
+                       ncol = 3, byrow = TRUE)
+
+habitat_classes <- classify(grading_sum, suit_classes, include.lowest = TRUE)
+
+# Plot classified version
+plot(habitat_classes, main = "Chamois Habitat Suitability Classes",
+     col = c("#d7191c", "#ffffbf", "#1a9641"),
+     breaks = c(0.5, 1.5, 2.5, 3.5),
+     legend = FALSE)
+legend("topright",
+       legend = c("Low (4-8)", "Medium (9-14)", "High (15-20)"),
+       fill = c("#d7191c", "#ffffbf", "#1a9641"))
+plot(st_geometry(kantonsgebiet_lu), add = TRUE, border = "black", lwd = 2)
+```
+
+**Questions:**
+
+- What do the values represent?
+- What do high respectively low values mean?
+
+**Answer:** The values represent the sum of all four suitability criteria (forest, steepness, road distance, settlement distance). Values range from 4 (minimum, all criteria unsuitable) to 20 (maximum, all criteria very well suitable). High values indicate areas that are highly suitable for chamois habitat (sufficient forest cover, steep terrain, far from roads and settlements), while low values indicate unsuitable areas.
+
+## Task 11: Reviewing the Final Result
+
+Evaluate your result visually and compare it with the actual distribution of chamois in Switzerland.
+
+1. *Export your final result for comparison:*
+
+```{r}
+# Optionally, crop to canton boundary
+grading_sum_crop <- mask(grading_sum, vect(kantonsgebiet_lu))
+
+# Write the final result
+writeRaster(grading_sum_crop, "chamois_habitat_suitability_final.tif",
+            overwrite = TRUE)
+```
+
+2. *Compare your result with the actual distribution:*
+
+Open the online map from info fauna and compare your result with the
+actual distribution map of chamois in Switzerland:
+<https://lepus.infofauna.ch/carto/70791>
+
+3. *Calculate statistics for different suitability zones:*
+
+```{r}
+# Calculate area statistics
+# Convert pixel count to km²
+cell_area_km2 <- (res(grading_sum)[1] * res(grading_sum)[2]) / 1000000
+
+# Get area by suitability class
+suitability_stats <- freq(habitat_classes)
+suitability_stats$area_km2 <- suitability_stats$count * cell_area_km2
+print(suitability_stats)
+```
+
+## Discussion Questions
+
+Answer the following questions based on your analysis:
+
+### 1. How could you improve your model?
+
+Consider the following aspects:
+
+- **Weight the criteria differently**: Not all criteria might be equally important. You could use weighted overlay instead of simple sum (e.g., `0.3*forest + 0.3*steepness + 0.2*roads + 0.2*settlement`)
+- **Refine classification thresholds**: The current thresholds are somewhat arbitrary. You could adjust them based on literature or expert knowledge
+- **Add interaction effects**: Certain combinations of criteria might be particularly important
+- **Validate with actual observation data**: Compare your model with known chamois locations
+
+### 2. What additional criteria would enhance the model?
+
+Potential additional criteria:
+
+- **Elevation and aspect**: Chamois prefer certain elevation ranges and south-facing slopes
+- **Vegetation type**: More detailed vegetation data beyond forest/non-forest
+- **Snow cover duration**: Winter habitat suitability
+- **Distance to water sources**: Although chamois can survive with little water
+- **Human recreation areas**: Hiking trails, ski resorts
+- **Predator presence**: Areas with wolves or lynx
+- **Competition with other species**: Presence of red deer or ibex
+
+### 3. How could you remove the water areas from the result?
+
+You can mask out water areas using the Arealstatistik data:
+
+```{r}
+# Example code to mask water areas
+# Assuming AS72 codes 18-19 represent water bodies
+# water <- arealstatistik %>% filter(AS72 %in% c(18, 19))
+# water_raster <- rasterize(vect(water), template, field = 1)
+# grading_sum_no_water <- mask(grading_sum, water_raster, inverse = TRUE)
+```
+
+## Final Remarks
+
+Always remember that the validity of the result depends on:
+
+- **Data quality**: Are the input datasets accurate and up-to-date?
+- **Model assumptions**: Are the criteria and thresholds ecologically justified?
+- **Spatial scale**: Is the analysis resolution appropriate?
+- **Temporal aspects**: Do the data represent the same time period?
+
+You are responsible for critically evaluating the usability of data and the validity of your analytical approach before drawing conclusions.
