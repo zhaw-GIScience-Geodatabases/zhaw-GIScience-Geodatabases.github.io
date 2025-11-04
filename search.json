@@ -291,7 +291,7 @@
     "section": "",
     "text": "Introduction\nIn this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.\nChoose at least 2 Tasks (“Szenarios”) and solve these!\nAll data is available on moodle, under the section Spatial Analysis I:\nAll data use CRS EPSG:2056 (CH1903+ / LV95).",
     "crumbs": [
-      "Vector Data Exercise"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Vector Data Exercise</span>"
     ]
   },
   {
@@ -301,7 +301,7 @@
     "section": "",
     "text": "swiss_TLM3D.gpkg contains:\n\ntlm_bb: Land cover polygons with attribute objektart (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)\ntlm_strassen: Road network with attribute objektart (Autobahn, Autostrasse, various street widths, paths, etc.)\n\nswissBOUNDARIES3D.gpkg contains:\n\nkantonsgebiet_lu: Canton of Luzern boundary",
     "crumbs": [
-      "Vector Data Exercise"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Vector Data Exercise</span>"
     ]
   },
   {
@@ -311,7 +311,7 @@
     "section": "Scenario 1: Protected Area Planning",
     "text": "Scenario 1: Protected Area Planning\nThe canton is considering establishing a nature protection zone for wetland ecosystems. To inform this decision, you need to analyze the current state of wetlands.\n\nQuestion 1.1: How much wetland area (“Feuchtgebiet”) currently exists in the canton of Luzern (in km²)?\nQuestion 1.2: Wetlands are ecologically most valuable when they are connected to water bodies. Identify all wetlands that are either directly adjacent to or within 50 meters of standing water bodies (“Stehende Gewaesser”). What percentage of the total wetland area does this represent?\nQuestion 1.3: Create a map showing:\n\nAll wetlands in the canton\nWetlands connected to water (highlighted differently)\nStanding water bodies\n\n\nThink about: Which spatial operations do you need? How do you define “connected”?",
     "crumbs": [
-      "Vector Data Exercise"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Vector Data Exercise</span>"
     ]
   },
   {
@@ -321,7 +321,7 @@
     "section": "Scenario 2: Accessibility Analysis",
     "text": "Scenario 2: Accessibility Analysis\nA hiking organization wants to understand forest accessibility in Luzern.\n\nQuestion 2.1: Calculate the total forest area in Luzern that is accessible by small paths (1m or 2m wide paths: “1m Weg”, “2m Weg”). Define “accessible” as being within 200 meters of such a path.\nQuestion 2.2: What percentage of Luzern’s total forest area is accessible by these small paths?\nQuestion 2.3: Compare this with accessibility by major roads (Autobahn, Autostrasse, and streets ≥6m). How much forest area is within 200m of major roads?\nQuestion 2.4: Create a visualization that effectively communicates your findings.\n\nThink about: How do you combine multiple road types? How do you avoid double-counting areas accessible by multiple paths?",
     "crumbs": [
-      "Vector Data Exercise"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Vector Data Exercise</span>"
     ]
   },
   {
@@ -331,7 +331,7 @@
     "section": "Scenario 3: Alpine Environment Analysis",
     "text": "Scenario 3: Alpine Environment Analysis\nClimate researchers are interested in high-altitude features in Luzern.\n\nQuestion 3.1: Identify all rocky areas in Luzern by combining the following land cover types: “Fels”, “Fels locker”, “Felsbloecke”, “Felsbloecke locker”, and “Lockergestein”. What is their total area?\nQuestion 3.2: Some of these rocky areas may contain glaciers or permanent snow. Find all rocky areas that are within 100 meters of glaciers (“Gletscher”) or snow fields (“Schneefeld Toteis”). How much area does this represent?\nQuestion 3.3: Create a map showing the spatial distribution of:\n\nAll rocky areas\nRocky areas near ice/snow\nGlaciers and snow fields\n\n\nThink about: Are glaciers and snow fields already part of rocky areas, or separate? How does this affect your analysis?",
     "crumbs": [
-      "Vector Data Exercise"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Vector Data Exercise</span>"
     ]
   },
   {
@@ -341,7 +341,7 @@
     "section": "Scenario 4: Integrated Analysis",
     "text": "Scenario 4: Integrated Analysis\nResearch Question: The canton wants to identify potential locations for small reservoirs for agricultural water supply. Suitable locations should meet ALL of the following criteria:\n\nLocated in or near wetlands (within 20m)\nWithin 300m of an existing road (any type, for construction access)\nNOT in protected forest areas\nNOT on steep rocky terrain (Fels, Felsbloecke)\n\nTask: Identify and map all suitable areas. Report the total area available and discuss the spatial distribution of suitable locations.\nThink about: This requires combining multiple spatial operations. What is the logical sequence? Do you need union, intersection, or difference operations?",
     "crumbs": [
-      "Vector Data Exercise"
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Vector Data Exercise</span>"
     ]
   },
   {
@@ -352,7 +352,7 @@
     "text": "Types of raster data",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -363,7 +363,7 @@
     "text": "Raster datasets usually represent continuous phenomena such as elevation, temperature, population density or spectral data.\nDiscrete features such as soil or land-cover classes can also be represented in the raster data model",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -374,7 +374,7 @@
     "text": "A simple example: Elevation\n\n\n\n\n\n\n\n\n\n\n\n      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]\n [1,]  275  282  373  342  357  326  372  318  400   243   303\n [2,]  230  318  316  351  345  346  359  331  395   225   288\n [3,]  164  337  258  342  363  350  349  320  395   280   321\n [4,]  168  337  261  354  358  364  339  377  368   309   284\n [5,]  202  322  250  380  362  373  327  393  360   379   326\n [6,]   NA  310  270  361  370  363  368  368  385   383   297\n [7,]   NA  277  310  291  375  365  375  355  343   407   220\n [8,]   NA  181  325  264  381  373  389  341  305   395   252\n [9,]   NA   NA  313  264  370  384  392  328  357   376   289\n[10,]   NA   NA  298  285  370  380  386  354  349   385   311\n[11,]  402   NA  333  293  356  382  376  391  329   352   361",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -382,10 +382,10 @@
     "href": "raster-data.html#a-more-complex-example-rbg-image",
     "title": "Raster Data",
     "section": "A more complex example: RBG Image",
-    "text": "A more complex example: RBG Image\n\nA lot of raster data is obtained using remote sensing (RS)\nTypically, RS imagery consists of more than 1 band\nIn this case, the data is stored in a 3 dimensional array (where band is the 3rd-dimension)\nA RS image can contain any number of bands.\nThe most well known type of RS imagery consists of 3 Bands in the red, blue and green spectrum\n\n\n\n\n\n\n\n\n\n\nFigure 4.4: The bands stored internally\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.5: The RGB Composite",
+    "text": "A more complex example: RBG Image\n\nA lot of raster data is obtained using remote sensing (RS)\nTypically, RS imagery consists of more than 1 band\nIn this case, the data is stored in a 3 dimensional array (where band is the 3rd-dimension)\nA RS image can contain any number of bands.\nThe most well known type of RS imagery consists of 3 Bands in the red, blue and green spectrum\n\n\n\n\n\n\n\n\n\n\nFigure 5.4: The bands stored internally\n\n\n\n\n\n\n\n\n\n\n\nFigure 5.5: The RGB Composite",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -393,10 +393,10 @@
     "href": "raster-data.html#each-band-is-a-2d-matrix",
     "title": "Raster Data",
     "section": "Each band is a 2D matrix",
-    "text": "Each band is a 2D matrix\n\n\n\n\n\n\n\n\n\nFigure 4.6: Band values\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.7: RGB True Color Image",
+    "text": "Each band is a 2D matrix\n\n\n\n\n\n\n\n\n\nFigure 5.6: Band values\n\n\n\n\n\n\n\n\n\n\n\nFigure 5.7: RGB True Color Image",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -407,7 +407,7 @@
     "text": "Multispectral Datasets\n\nMultiband datasets usually capture different parts of the EM spectrum\nE.g. the Landsat image from the previous example has 6 bands capturing the following wavelengths:\n\nBand 1: Blue (0.45 - 0.52 µm)\nBand 2: Green (0.52 - 0.60 µm)\nBand 3: Red (0.63 - 0.69 µm)\nBand 4: Near-Infrared (0.77 - 0.90 µm)\nBand 5: Short-wave Infrared (1.55 - 1.75 µm)\nBand 7: Mid-Infrared (2.08 - 2.35 µm)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -415,10 +415,10 @@
     "href": "raster-data.html#nirgb-image",
     "title": "Raster Data",
     "section": "NirGB Image",
-    "text": "NirGB Image\n\n\n\n\n\n\n\n\n\nFigure 4.8: Band values\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.9: NIR-GB False Color Image",
+    "text": "NirGB Image\n\n\n\n\n\n\n\n\n\nFigure 5.8: Band values\n\n\n\n\n\n\n\n\n\n\n\nFigure 5.9: NIR-GB False Color Image",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -426,10 +426,10 @@
     "href": "raster-data.html#representations-of-multispectral-data",
     "title": "Raster Data",
     "section": "Representations of multispectral data",
-    "text": "Representations of multispectral data\n\nA true color image is created by using the Red (3), Green (2) and Blue (1) Band and mapping these to RGB\nA false color image is created by mapping other bands to RGB\n\n\n\n\n\n\n\n\n\n\nFigure 4.10: The R, G and B bands mapped to RGB\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.11: NIR, G and B bands mapped to RGB\n\n\n\n\n\n\n\n\n\n\nPebesma, Edzer, and Roger Bivand. 2023. Spatial Data Science: With Applications in R. Boca Raton: Chapman; Hall/CRC. https://doi.org/10.1201/9780429459016.",
+    "text": "Representations of multispectral data\n\nA true color image is created by using the Red (3), Green (2) and Blue (1) Band and mapping these to RGB\nA false color image is created by mapping other bands to RGB\n\n\n\n\n\n\n\n\n\n\nFigure 5.10: The R, G and B bands mapped to RGB\n\n\n\n\n\n\n\n\n\n\n\nFigure 5.11: NIR, G and B bands mapped to RGB\n\n\n\n\n\n\n\n\n\n\nPebesma, Edzer, and Roger Bivand. 2023. Spatial Data Science: With Applications in R. Boca Raton: Chapman; Hall/CRC. https://doi.org/10.1201/9780429459016.",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
   {
@@ -440,7 +440,7 @@
     "text": "Import a raster file\nlibrary(terra)\n\ndhm25 &lt;- rast(\"data/Spatial_Analysis_II/dhm25_lu.tif\")\ndhm25\n\nclass       : SpatRaster \nsize        : 2321, 2161, 1  (nrow, ncol, nlyr)\nresolution  : 25, 25  (x, y)\nextent      : 2628987, 2683012, 1179988, 1238013  (xmin, xmax, ymin, ymax)\ncoord. ref. : CH1903+ / LV95 (EPSG:2056) \nsource      : dhm25_lu.tif \nname        : dhm25_lu \nmin value   :    381.1 \nmax value   :   3228.3",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
   {
@@ -451,7 +451,7 @@
     "text": "terra uses the function rast() to import raster data\nPrinting the object will give you some basic information about the raster\n\nThe number of rows and columns, as well as the number of layers\nThe resolution of the raster, meter per pixel (25 in our case)\nThe extent of the raster, in the coordinate reference system of the raster\nThe coordinate reference system (CRS) of the raster\nThe source (in memory, or a file path)\nThe name(s) of the band(s) (we only have one band in our case)\nThe min and max values of the raster",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
   {
@@ -462,7 +462,7 @@
     "text": "GeoTIFF\n\nGeoTIFF is the most common raster format\nGeoTIFF is an extension to the TIFF format, which includes additional metadata to establish the spatial reference of the file\nThis includes the CRS, the extent, the resolution, and the origin of the raster\nThe metadata is either stored in the header of the file, or in an accompanying file with the same name, but different extension (.tfw or .aux.xml)\nOther important raster file formats include:\n\nCloud optimized GeoTIFF (COG): A GeoTIFF file that is optimized for cloud storage which allows for efficient, partial reading of the file over HTTP\nJPG2000 (.jp2) is a compressed raster format that is often used for satellite imagery\nNetCDF (.nc) is a format that is often used for climate data\nHDF5 (.h5) is a format that is often used for remote sensing data",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
   {
@@ -473,7 +473,7 @@
     "text": "Writing a raster file\n\nYou can write a raster object to a file using the writeRaster() function\n\n\nwriteRaster(dhm25, \"data-out/dhm25_lu.tif\", overwrite = TRUE)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
   {
@@ -484,7 +484,7 @@
     "text": "🪕 Tasks\n\nImport the raster dhm25_lu.tif from the lesson Spatial Analysis II\nVisualize the raster using the plot() function as well as the library {tmap}.",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
   {
@@ -495,7 +495,7 @@
     "text": "Introduction",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -506,7 +506,7 @@
     "text": "Map algebra can be defined as operations that modify or summarize raster cell values, with reference to surrounding cells, zones, or statistical functions that apply to every cell.\nMap algebra divides raster operations into four subclasses:\n\nLocal or per-cell operations\nFocal or neighborhood operations. Most often the output cell value is the result of a 3 x 3 input cell block\nZonal operations are similar to focal operations, but the surrounding pixel grid on which new values are computed can have irregular sizes and shapes\nGlobal or per-raster operations. That means the output cell derives its value potentially from one or several entire rasters",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -514,10 +514,10 @@
     "href": "raster-operations.html#global-operation-1",
     "title": "Raster Operations",
     "section": "Global Operation (1)",
-    "text": "Global Operation (1)\n\nThe most common global operations are descriptive statistics for the entire raster dataset such as the minimum, maximum or mean value.\nFor example: What is the mean elevation value for Luxembourg?\n\n\n\n\n\n\n\n\n\nFigure 6.1: Elevation of Luxembourg\n\n\n\n\n\n\n# note: mean(r) does not work, since \"mean\" is used as a local operator\nmean_elev &lt;- global(r, mean, na.rm = TRUE)\n\nmean_elev\n\n              mean\nelevation 347.6488",
+    "text": "Global Operation (1)\n\nThe most common global operations are descriptive statistics for the entire raster dataset such as the minimum, maximum or mean value.\nFor example: What is the mean elevation value for Luxembourg?\n\n\n\n\n\n\n\n\n\nFigure 7.1: Elevation of Luxembourg\n\n\n\n\n\n\n# note: mean(r) does not work, since \"mean\" is used as a local operator\nmean_elev &lt;- global(r, mean, na.rm = TRUE)\n\nmean_elev\n\n              mean\nelevation 347.6488",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -528,7 +528,7 @@
     "text": "Global Operation (2)\n\nAnother type of “global” operation is distance\nThis function calculates the distance from each cell to a specific target cell\nFor example, what is the distance from each cell to Luxembourg City, the capital of Luxembourg?\n\n\n\n\n\n\n\n\n\n\n\nr_dist &lt;- distance(r, luxembourg_city)\nr_dist &lt;- mask(r_dist, r)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -536,10 +536,10 @@
     "href": "raster-operations.html#sec-zonal-1",
     "title": "Raster Operations",
     "section": "Zonal",
-    "text": "Zonal\n\nZonal operations apply an aggregation function to multiple raster cells\nA second raster with categorical values define the “zones”\n\nWhat is the mean altitude per municipality?\n\nmean_vals &lt;- zonal(r, zones, fun = mean, na.rm = TRUE)\n\n\n\n\n\n\n\n\n\n\nFigure 6.2: The original Zones (E.g. municipalities of Luxembourg)\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.3: Mean elevation per zone / per municipality\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\n\n\nThe global operation can be seen as a special case of a zonal operation, where the only “Zone” is the entire dataset",
+    "text": "Zonal\n\nZonal operations apply an aggregation function to multiple raster cells\nA second raster with categorical values define the “zones”\n\nWhat is the mean altitude per municipality?\n\nmean_vals &lt;- zonal(r, zones, fun = mean, na.rm = TRUE)\n\n\n\n\n\n\n\n\n\n\nFigure 7.2: The original Zones (E.g. municipalities of Luxembourg)\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.3: Mean elevation per zone / per municipality\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\n\n\nThe global operation can be seen as a special case of a zonal operation, where the only “Zone” is the entire dataset",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -550,7 +550,7 @@
     "text": "Local (1)\n\nLocal operations comprise all cell-by-cell operations in one or several layers.\nFor example, we can classify the elevation into values above and below a certain threshold\n\n\n# first, create a boolean copy of the raster\nr_bool &lt;- as.logical(r)\n\nmean_elev &lt;- as.numeric(mean_elev)\nmean_elev\n\n[1] 347.6488\n\nr_bool[r &gt; mean_elev] &lt;- FALSE\nr_bool[r &lt;= mean_elev] &lt;- TRUE",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -561,7 +561,7 @@
     "text": "Local (2)\n\nThis type of (re-) classification is a very common operation\nFor more than 2 categories, we can use classify\n\n\ncuts &lt;- global(r, quantile, probs = c(0, .33, .66, 1), na.rm = TRUE)\n\nr_classify &lt;- classify(r, as.numeric(cuts))\n\n# this next line just replaces the default labels with some custom ones\nlevels(r_classify) &lt;- data.frame(ID = 0:2, category = c(\"low\",\"mid\",\"high\"))\n\np + tm_shape(r_classify) +\n    tm_raster(style = \"cat\",legend.show = TRUE, palette = \"viridis\", title = \"Elevation\") +\n    tm_layout(legend.show = TRUE)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -572,7 +572,7 @@
     "text": "Local (3)\n\nLocal operations are often used with multiple bands\nFor example, we could calculate the mean intensity values of red, green and blue:\n\n\nl7 &lt;- rast(system.file(\"tif/L7_ETMs.tif\",package = \"stars\"))\n\nnames(l7) &lt;- c(\"B\", \"G\", \"R\", \"NIR\", \"SWIR\", \"MIR\")\n\nl7_rgb &lt;- l7[[c(\"R\",\"G\", \"B\")]]\n\nplot(l7_rgb, nr = 1)\n\n\n\n\n\n\n\n\n\nl7_rgb_mean &lt;- mean(l7_rgb)\n\nplot(l7_rgb_mean)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -583,7 +583,7 @@
     "text": "Local (4)\n\nIn a more complex usecase, we could use the R, G and B band to calculate a grayscale value (\\(L^*\\)) using the following formula (from here):\n\n\\[\\begin{aligned}\n\nL^* &= 116 \\times Y ^ {\\frac{1}{3}} - 16\\\\\n\nY &= 0.2126 \\times R^\\gamma+0.7152 \\times G^\\gamma+0.0722 \\times B^\\gamma \\\\\n\n\n\\gamma &= 2.2\n\n\\end{aligned}\\]\n\ng &lt;- 2.2\n\nl7 &lt;- l7/255 # scale values to 0-1 (probabbly not necessary)\n\nY &lt;- 0.2126 * l7[[\"R\"]]^g + 0.7152 * l7[[\"G\"]]^g + 0.0722 * l7[[\"B\"]]^g\n\nL &lt;- 116* Y^(1/3)-16\n\n# Plot the result",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -591,10 +591,10 @@
     "href": "raster-operations.html#sec-focal-1",
     "title": "Raster Operations",
     "section": "Focal",
-    "text": "Focal\n\nWhile local functions operate on one cell focal operations take into account a central (focal) cell and its neighbors.\nThe neighborhood (also named kernel, filter or moving window) under consideration is typically of size 3-by-3 cells (that is the central cell and its eight surrounding neighbors), but can take on any other size or shape as defined by the user.\nA focal operation applies an aggregation function to all cells within the specified neighborhood, uses the corresponding output as the new value for the central cell, and moves on to the next central cell\n\n\n\n\n\n\n\nFigure 6.4: Note how, depending on the size of your moving window, NA’s are produced. Source: Lovelace, Nowosad, and Muenchow (2019)\n\n\n\n\nfocal3by3 &lt;- matrix(rep(1,9), ncol = 3)\n\n\nfocal11by11 &lt;- matrix(rep(1,121), ncol = 11)\n\n\nr_foc3 &lt;- focal(r, focal3by3, fun = mean, fillNA = TRUE)\n\nr_foc11 &lt;- focal(r, focal11by11, fun = mean, fillNA = TRUE)\n\n\n\n\n\n\n\n\n\n\nFigure 6.5: Original values\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.6: Result of a 3x3 Focal Window\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.7: Result of a 11x11 Focal Window\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\n\n\nNote how the output raster is smaller as the focal window is larger (edge effect)",
+    "text": "Focal\n\nWhile local functions operate on one cell focal operations take into account a central (focal) cell and its neighbors.\nThe neighborhood (also named kernel, filter or moving window) under consideration is typically of size 3-by-3 cells (that is the central cell and its eight surrounding neighbors), but can take on any other size or shape as defined by the user.\nA focal operation applies an aggregation function to all cells within the specified neighborhood, uses the corresponding output as the new value for the central cell, and moves on to the next central cell\n\n\n\n\n\n\n\nFigure 7.4: Note how, depending on the size of your moving window, NA’s are produced. Source: Lovelace, Nowosad, and Muenchow (2019)\n\n\n\n\nfocal3by3 &lt;- matrix(rep(1,9), ncol = 3)\n\n\nfocal11by11 &lt;- matrix(rep(1,121), ncol = 11)\n\n\nr_foc3 &lt;- focal(r, focal3by3, fun = mean, fillNA = TRUE)\n\nr_foc11 &lt;- focal(r, focal11by11, fun = mean, fillNA = TRUE)\n\n\n\n\n\n\n\n\n\n\nFigure 7.5: Original values\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.6: Result of a 3x3 Focal Window\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.7: Result of a 11x11 Focal Window\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\n\n\nNote how the output raster is smaller as the focal window is larger (edge effect)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -605,7 +605,7 @@
     "text": "Focal weights (1)\n\nThe focal weights we used above were square and evenly weighted\n\n\nfocal3by3\n\n     [,1] [,2] [,3]\n[1,]    1    1    1\n[2,]    1    1    1\n[3,]    1    1    1\n\n\n\nfocal11by11\n\n      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]\n [1,]    1    1    1    1    1    1    1    1    1     1     1\n [2,]    1    1    1    1    1    1    1    1    1     1     1\n [3,]    1    1    1    1    1    1    1    1    1     1     1\n [4,]    1    1    1    1    1    1    1    1    1     1     1\n [5,]    1    1    1    1    1    1    1    1    1     1     1\n [6,]    1    1    1    1    1    1    1    1    1     1     1\n [7,]    1    1    1    1    1    1    1    1    1     1     1\n [8,]    1    1    1    1    1    1    1    1    1     1     1\n [9,]    1    1    1    1    1    1    1    1    1     1     1\n[10,]    1    1    1    1    1    1    1    1    1     1     1\n[11,]    1    1    1    1    1    1    1    1    1     1     1",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -613,10 +613,10 @@
     "href": "raster-operations.html#focal-weights-2",
     "title": "Raster Operations",
     "section": "Focal weights (2)",
-    "text": "Focal weights (2)\n\nHowever, we can also create uneven weights:\n\nFor example, a laplacian filter is commonly used for edge detection.\n\nlaplacian &lt;- matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3) \n\nlaplacian\n\n     [,1] [,2] [,3]\n[1,]    0    1    0\n[2,]    1   -4    1\n[3,]    0    1    0\n\n\nSo are the sobel filters\n\n\n     [,1] [,2] [,3]\n[1,]   -1    0    1\n[2,]   -2    0    2\n[3,]   -1    0    1\n\n\n     [,1] [,2] [,3]\n[1,]    1    2    1\n[2,]    0    0    0\n[3,]   -1   -2   -1\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.8: Laplacian Filter\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.9: Sobel (x-direction)\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.10: SObel (y-direction)",
+    "text": "Focal weights (2)\n\nHowever, we can also create uneven weights:\n\nFor example, a laplacian filter is commonly used for edge detection.\n\nlaplacian &lt;- matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3) \n\nlaplacian\n\n     [,1] [,2] [,3]\n[1,]    0    1    0\n[2,]    1   -4    1\n[3,]    0    1    0\n\n\nSo are the sobel filters\n\n\n     [,1] [,2] [,3]\n[1,]   -1    0    1\n[2,]   -2    0    2\n[3,]   -1    0    1\n\n\n     [,1] [,2] [,3]\n[1,]    1    2    1\n[2,]    0    0    0\n[3,]   -1   -2   -1\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.8: Laplacian Filter\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.9: Sobel (x-direction)\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.10: SObel (y-direction)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -627,7 +627,7 @@
     "text": "Focal weights (3)\n\nWe can also create specific shapes using weights\nWe don’t need to create these matrices by hand. Rather, we can use the function focalMat to create different shapes automatically\n\n\n# Note \n# - \"d\" is evaluated in the units of \"x\" (in our case: meters)\n# - The sum of all weights equals to 1\n# - Note how the edges receive a value of 0\nfocal_circle3000 &lt;- focalMat(x = r, d = 3000, \"circle\")\n\nfocal_circle3000\n\n           [,1]       [,2]       [,3]       [,4]       [,5]\n[1,] 0.00000000 0.00000000 0.03703704 0.00000000 0.00000000\n[2,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[3,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[4,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[5,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[6,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[7,] 0.00000000 0.00000000 0.03703704 0.00000000 0.00000000\n\n\n\n\n\n\n\nA visual representation of the matrix / filter above\n\n\n\n\n\nfocal_gauss1000 &lt;- focalMat(x = r, d = 1000, \"Gauss\")\n\nfocal_gauss1000\n\n            [,1]        [,2]        [,3]        [,4]        [,5]\n[1,] 0.000241551 0.001082556 0.001784834 0.001082556 0.000241551\n[2,] 0.002942693 0.013188236 0.021743725 0.013188236 0.002942693\n[3,] 0.013188236 0.059105572 0.097448614 0.059105572 0.013188236\n[4,] 0.021743725 0.097448614 0.160665602 0.097448614 0.021743725\n[5,] 0.013188236 0.059105572 0.097448614 0.059105572 0.013188236\n[6,] 0.002942693 0.013188236 0.021743725 0.013188236 0.002942693\n[7,] 0.000241551 0.001082556 0.001784834 0.001082556 0.000241551\n\n\n\n\n\n\n\nA visual representation of the matrix / filter above",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -635,10 +635,10 @@
     "href": "raster-operations.html#focal-functions-in-terrain-processing",
     "title": "Raster Operations",
     "section": "Focal functions in terrain processing",
-    "text": "Focal functions in terrain processing\n\nFocal functions are used to calculate the slope of a specific location, e.g. using the algorithm by Horn (1981)\nSimilarly, calculating the aspect (azimuth) of a location is a very typical task when dealing with elevation data\nThese algorithms are used so often, that they are implemented in a dedicated function (terrain())\n\nterrain(r, \"slope\") |&gt; plot()\nterrain(r, \"aspect\") |&gt; plot()\n\n\n\n\n\n\n\n\n\nFigure 6.11: Calculating slope using a predefined algorithm\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.12: Calculating aspect",
+    "text": "Focal functions in terrain processing\n\nFocal functions are used to calculate the slope of a specific location, e.g. using the algorithm by Horn (1981)\nSimilarly, calculating the aspect (azimuth) of a location is a very typical task when dealing with elevation data\nThese algorithms are used so often, that they are implemented in a dedicated function (terrain())\n\nterrain(r, \"slope\") |&gt; plot()\nterrain(r, \"aspect\") |&gt; plot()\n\n\n\n\n\n\n\n\n\nFigure 7.11: Calculating slope using a predefined algorithm\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.12: Calculating aspect",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -649,7 +649,7 @@
     "text": "🪕 Tasks\n\nImport the elevation of Luxembourg using the following code:\n\nr &lt;- rast(system.file(\"ex/elev.tif\", package=\"terra\"))\n\nCalculate the mean, maximum and minimum elevation values\nCalculate slope and aspect (see terrain functions)\nDetermine suitable locations of solar panels using the following conditions:\n\nElevation: above 300 MASL\nSlope: Between 1 and 3°\nAspect: Southfacing (between 135 and 235°)\n\nDownload the Municipalities of Luxembourg from Moodle and calculate the minimum, maximum and mean elevation values per municipality.\nSmooth the elevation values using different focal windows\nImport the multispectral Landsat 7 as a raster using the following path\n\nsystem.file(\"tif/L7_ETMs.tif\",package = \"stars\")\n\nCalculate the NDVI using the following formula:\n\n\\[\\text{NDVI} = \\frac{\\text{NIR}-\\text{red}}{\\text{NIR}+\\text{red}}\\]\n\n\n\n\n\nThe resulting NDVI values\n\n\n\n\n\n\n\n\nHorn, Berthold KP. 1981. “Hill Shading and the Reflectance Map.” Proceedings of the IEEE 69 (1): 14–47.\n\n\nLovelace, Robin, Jakub Nowosad, and Jannes Muenchow. 2019. Geocomputation with r. Chapman; Hall/CRC.",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
   {
@@ -660,7 +660,7 @@
     "text": "Two worlds of spatial data",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
   {
@@ -671,7 +671,7 @@
     "text": "Till now, we have treated vector and raster data separately\nHowever, in many cases, you will need to combine both types of data\nFor example, take the Zonal operation we discussed previously (see Zonal): Typically, your “zones” will be vector polygons",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
   {
@@ -679,10 +679,10 @@
     "href": "raster-vector-operations.html#zonal-operations-with-vector-data",
     "title": "Raster-Vector Operations",
     "section": "Zonal operations with vector data",
-    "text": "Zonal operations with vector data\n\nThe zonal function in {terra} can handle vector data: however, it requires sf objects to be converted to terra’s own vector format, called SpatVector. - The function vect() can be used to convert sf objects to SpatVector objects:\n\n\nmean_vals &lt;- zonal(r, vect(zones), fun = mean, na.rm = TRUE)\n\n\nzones$mean &lt;- mean_vals$elevation\n\n\n\n\n\n\n\n\n\n\nFigure 7.1: The original raster data\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.2: The original zones as vector polygons\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.3: The resulting zones (mean elevation per zone), also as vector data",
+    "text": "Zonal operations with vector data\n\nThe zonal function in {terra} can handle vector data: however, it requires sf objects to be converted to terra’s own vector format, called SpatVector. - The function vect() can be used to convert sf objects to SpatVector objects:\n\n\nmean_vals &lt;- zonal(r, vect(zones), fun = mean, na.rm = TRUE)\n\n\nzones$mean &lt;- mean_vals$elevation\n\n\n\n\n\n\n\n\n\n\nFigure 8.1: The original raster data\n\n\n\n\n\n\n\n\n\n\n\nFigure 8.2: The original zones as vector polygons\n\n\n\n\n\n\n\n\n\n\n\nFigure 8.3: The resulting zones (mean elevation per zone), also as vector data",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
   {
@@ -693,7 +693,7 @@
     "text": "Extracting raster values at vector points\n\nA another common operation is to extract raster values at specific points\nLet’s take the example of the city of Luxembourg (see Global Operation (2))\nThe function extract() can be used to extract raster values at specific points\nextract returns a data.frame with\n\none column per raster band (1 in our case)\none row per point (also 1 in our case):\n\n\n\n\n\n\n\n\n\n\n\n\nlux_elev &lt;- extract(r, luxembourg_city)\nlux_elev\n\n  ID elevation\n1  1  293.9805",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
   {
@@ -701,10 +701,10 @@
     "href": "raster-vector-operations.html#vector-to-raster-conversion",
     "title": "Raster-Vector Operations",
     "section": "Vector to raster conversion",
-    "text": "Vector to raster conversion\n\nFunctions that combine raster and vector data usually convert vector to raster internally\nSometimes, we might want to do this conversion explicitly. This can be done using the rasterize() function\nThis function takes three arguments:\n\nx: The vector data (either of class sf or SpatVector)\ny: A raster object that defines the extent, resolution, and CRS of the resulting raster (i.e. a “template”)\nfield: The name of the column in the vector data that should be used to fill the raster cells\n\n\n\n# we can create a template using the input vector. All we have to specify \n# is the resolution of the output raster, which is evalutated in the units of\n# the CRS of the input vector data (meters in our case).\n\ntemplate &lt;- rast(zones, resolution = 1000)\n\nzones_raster &lt;- rasterize(zones, template, \"zone\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) The original zones as polygon data\n\n\n\n\n\n\n\n\n\n\n\n(b) The zones as raster data\n\n\n\n\n\n\n\nFigure 7.4: Note how the conversion to polygons results in a loss of detail\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nNote that rasters don’t store character information. The above zones are coded as integers with a corresponding look-up table (see ?terra::levels).",
+    "text": "Vector to raster conversion\n\nFunctions that combine raster and vector data usually convert vector to raster internally\nSometimes, we might want to do this conversion explicitly. This can be done using the rasterize() function\nThis function takes three arguments:\n\nx: The vector data (either of class sf or SpatVector)\ny: A raster object that defines the extent, resolution, and CRS of the resulting raster (i.e. a “template”)\nfield: The name of the column in the vector data that should be used to fill the raster cells\n\n\n\n# we can create a template using the input vector. All we have to specify \n# is the resolution of the output raster, which is evalutated in the units of\n# the CRS of the input vector data (meters in our case).\n\ntemplate &lt;- rast(zones, resolution = 1000)\n\nzones_raster &lt;- rasterize(zones, template, \"zone\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) The original zones as polygon data\n\n\n\n\n\n\n\n\n\n\n\n(b) The zones as raster data\n\n\n\n\n\n\n\nFigure 8.4: Note how the conversion to polygons results in a loss of detail\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nNote that rasters don’t store character information. The above zones are coded as integers with a corresponding look-up table (see ?terra::levels).",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
   {
@@ -712,10 +712,10 @@
     "href": "raster-vector-operations.html#raster-to-vector-conversion",
     "title": "Raster-Vector Operations",
     "section": "Raster to vector conversion",
-    "text": "Raster to vector conversion\n\nThe opposite operation, converting raster data to vector data, can be done using the {terra} functions as.points, as.lines and as.polygons:\nThe resulting object will be of class SpatVector. This can be converted to the sf class using st_as_sf()\n\n\nzones_poly &lt;- as.polygons(zones_raster) |&gt; \n  st_as_sf()\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) The zones as raster data\n\n\n\n\n\n\n\n\n\n\n\n(b) The zones as polygon data\n\n\n\n\n\n\n\nFigure 7.5: Note how the conversion back to polygons preserves the cell boundaries",
+    "text": "Raster to vector conversion\n\nThe opposite operation, converting raster data to vector data, can be done using the {terra} functions as.points, as.lines and as.polygons:\nThe resulting object will be of class SpatVector. This can be converted to the sf class using st_as_sf()\n\n\nzones_poly &lt;- as.polygons(zones_raster) |&gt; \n  st_as_sf()\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) The zones as raster data\n\n\n\n\n\n\n\n\n\n\n\n(b) The zones as polygon data\n\n\n\n\n\n\n\nFigure 8.5: Note how the conversion back to polygons preserves the cell boundaries",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
   {
@@ -726,7 +726,7 @@
     "text": "🪕 Tasks\n\nImport Arealstatistik.gpkg from Spatial_Analysis_II using {sf}\nTo rasterize the data, we need a template raster object. Create a template raster object with a resolution of 100m using the rast() function\nRasterize the arealstatistik data using the function rasterize, the tempalte from the previous step, and the column AS_4 as the field to fill the raster cells\n\n\nThe resulting raster contains the integer values 1 to 4. These values correspond to the following land use categories (see metadata):\n\nSettlement and urban areas\nAgricultural areas\nWooded areas\nUnproductive areas\n\n\nTo make the raster more interpretable, assign the corresponding names to the levels of the raster using the levels() function. The levels should be a data.frame with two columns: ID and name (see below)\n\nlevs &lt;- data.frame(\n  ID = 1:4, \n  name = c(\n    \"Settlement and urban areas\", \n    \"Agricultural areas\", \n    \"Wooded areas\", \n    \"Unproductive areas\"\n    ) \n  )\n\nlevels(areal_rast) &lt;- levs\n\nplot(areal_rast)",
     "crumbs": [
       "Raster Data Lecture",
-      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   }
 ]
