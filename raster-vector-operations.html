@@ -132,7 +132,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-vector-operations.html"><span class="chapter-title">Raster-Vector Operations</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data Lecture</a></li><li class="breadcrumb-item"><a href="./raster-vector-operations.html"><span class="chapter-title">Raster-Vector Operations</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -157,7 +157,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Vector Data</span></a>
+ <span class="menu-text">Vector Data Lecture</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -181,14 +181,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Vector Data Exercise</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Raster Data</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Raster Data Lecture</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./raster-data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Raster Data</span></a>
@@ -233,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content page-columns page-full" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-vector-operations.html"><span class="chapter-title">Raster-Vector Operations</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data Lecture</a></li><li class="breadcrumb-item"><a href="./raster-vector-operations.html"><span class="chapter-title">Raster-Vector Operations</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-title">Raster-Vector Operations</span></h1>
 </div>
@@ -258,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li>Till now, we have treated vector and raster data separately</li>
 <li>However, in many cases, you will need to combine both types of data</li>
-<li>For example, take the Zonal operation we discussed previously <span>(see <a href="#sec-zonal-1" class="quarto-xref"><span class="quarto-unresolved-ref">sec-zonal-1</span></a>)</span>: Typically, your “zones” will be vector polygons</li>
+<li>For example, take the Zonal operation we discussed previously <span>(see <a href="raster-operations.html#sec-zonal-1" class="quarto-xref"><span>Zonal</span></a>)</span>: Typically, your “zones” will be vector polygons</li>
 </ul>
 </section>
 <section id="zonal-operations-with-vector-data" class="level2 page-columns page-full">
@@ -317,7 +321,7 @@ Figure&nbsp;7.3: The resulting zones (mean elevation per zone), also as vector d
 <h2 class="anchored" data-anchor-id="extracting-raster-values-at-vector-points">Extracting raster values at vector points</h2>
 <ul>
 <li>A another common operation is to extract raster values at specific points</li>
-<li>Let’s take the example of the city of Luxembourg <span>(see <a href="#sec-global-2" class="quarto-xref"><span class="quarto-unresolved-ref">sec-global-2</span></a>)</span></li>
+<li>Let’s take the example of the city of Luxembourg <span>(see <a href="raster-operations.html#sec-global-2" class="quarto-xref"><span>Global Operation (2)</span></a>)</span></li>
 <li>The function <code>extract()</code> can be used to extract raster values at specific points</li>
 <li><code>extract</code> returns a data.frame with
 <ul>

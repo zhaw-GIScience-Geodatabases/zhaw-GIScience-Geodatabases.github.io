@@ -133,7 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-io.html"><span class="chapter-title">Raster Data I/O</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data Lecture</a></li><li class="breadcrumb-item"><a href="./raster-io.html"><span class="chapter-title">Raster Data I/O</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -158,7 +158,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Vector Data</span></a>
+ <span class="menu-text">Vector Data Lecture</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -182,14 +182,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Vector Data Exercise</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Raster Data</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Raster Data Lecture</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./raster-data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Raster Data</span></a>
@@ -232,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-io.html"><span class="chapter-title">Raster Data I/O</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data Lecture</a></li><li class="breadcrumb-item"><a href="./raster-io.html"><span class="chapter-title">Raster Data I/O</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-title">Raster Data I/O</span></h1>
 </div>
@@ -259,7 +263,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>{terra}</code> by the same author. This library is the successor of <code>{raster}</code> and is actively maintained</li>
 <li><code>{stars}</code> by Edzer Pebesma. This library extremly well developed, but it tends to be slower than <code>{terra}</code> (which is why we will not cover it in this course)</li>
 </ul></li>
-<li><p>Like <code>{sf}</code> The library <code>{terra}</code> is based on the GDAL library <span>(see <a href="#sec-gdal-ogr2ogr" class="quarto-xref"><span class="quarto-unresolved-ref">sec-gdal-ogr2ogr</span></a>)</span></p></li>
+<li><p>Like <code>{sf}</code> The library <code>{terra}</code> is based on the GDAL library <span>(see <a href="vector-io.html#sec-gdal-ogr2ogr" class="quarto-xref"><span>GDAL / ogr2ogr</span></a>)</span></p></li>
 <li><p>GDAL Supports a <em>wide</em> range of raster formats (see <a href="https://gdal.org/en/latest/drivers/raster/index.html">Raster drivers</a>)</p></li>
 </ul>
 <section id="import-a-raster-file" class="level2">

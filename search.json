@@ -16,7 +16,7 @@
     "section": "",
     "text": "Simple feature standard",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -27,7 +27,7 @@
     "section": "",
     "text": "Simple features is an open standard (ISO 19125-1:2004) developed and endorsed by the Open Geospatial Consortium (OGC)\nThe standard is widely implemented in spatial databases (such as PostGIS), desktop GIS (such as ArcGIS, QGIS), scripting languages (such as R, Python) and forms the vector data basis for libraries such as GDAL.",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -38,7 +38,7 @@
     "section": "What is a feature?",
     "text": "What is a feature?\nThe standard says:\n\nA simple feature is defined […] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices.\n\n\n\nA feature is thought of as a thing / an object in the real world, such as a building or a tree.\nFeatures have:\n\na geometry describing where on Earth the feature is located\nattributes, which describe other properties.\n\n\n\n\nFor example:\n\nThe geometry of a tree can be the delineation of its crown, of its stem, or the point indicating its center\nattributes (properties) may include its height, color, diameter at breast height at a particular date, and so on",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -49,7 +49,7 @@
     "section": "Simple Feature Model",
     "text": "Simple Feature Model\n\nSimple features is a hierarchical data model that represents a wide range of geometry types.\nAll geometries are composed of points in a 2-, 3- or 4-dimensional space\n\n\n\nOf 18 geometry types supported by the specification, only the following seven (see Figure 1.1 and Table 1.1) are used in the vast majority of geographic research:\n\nThree basic types: points, linestrings, polygons\nThree composite types: mutlipoints, multilinestrings, multipolygons\nOne special case: geometrycollection (which can be a conglomarate of all the afore mentioned)\n\nThese seven core geometry types are fully supported by the R package sf (Pebesma 2018)\n\n\n\n\n\n\n\n\nFigure 1.1: Image source: Dorman (2023)\n\n\n\n\n\n\n\n\nTable 1.1: Source: Pebesma (2018)\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\n# of Dimension\n\n\n\n\nPOINT\nzero-dimensional geometry containing a single point\n0\n\n\nLINESTRING\nsequence of points connected by straight1 line pieces\n1\n\n\nPOLYGON\nsequence of points form a closed2 ring3\n2\n\n\nMULTIPOINT\nset of points\n0\n\n\nMULTILINESTRING\nset of linestrings\n1\n\n\nMULTIPOLYGON\nset of polygons\n2\n\n\nGEOMETRYCOLLECTION\nset of geometries of any of the above types\nNA",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -60,7 +60,7 @@
     "section": "Simple features in R",
     "text": "Simple features in R\nSimple Features in R is modelled in three levels:\n\nSimple feature geometries (sfg): Individual Simple Feature objects\nSimple Feature geometry columns (sfc): A list column of sfgs\nSimple Features (with attributes): A sfc with attributes, i.e. additional columns",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -71,7 +71,7 @@
     "section": "sfg: simple feature geometry",
     "text": "sfg: simple feature geometry\n\nSimple feature geometries are implemented as R native data, using the following rules:\n\na single POINT is a numeric vector\na set of points, e.g. in a LINESTRING or ring of a POLYGON is a matrix, each row containing a point\nany other set is a list\n\n\n\n\nPoints\n\n# creator functions are rarely used in practice, since we typically bulk  \n# read and write spatial data. They are useful for illustration)\n\nlibrary(sf)\nfracht &lt;- st_point(c(2685374, 1256519))\n\nfracht\n\n\nplot(fracht)\n\n\n\n\n\n\n\n\n\n\n\nLinestrings\n\ncoords &lt;- c(\n  2684336, 1255553, \n  2682705, 1258929\n  ) |&gt; \n  matrix(ncol = 2, byrow = TRUE)\n\ncoords\n\n        [,1]    [,2]\n[1,] 2684336 1255553\n[2,] 2682705 1258929\n\n\n\n\npiste &lt;- st_linestring(coords)\n\npiste\n\n\nplot(piste)\n\n\n\n\n\n\n\n\n\n\n\nPolygons\n\ncoords_2 &lt;- c(\n  2684142, 1255702, # ↰ \n  2685600, 1256958, # start and end must\n  2682534, 1259699, # be identical (closed)\n  2684142, 1255702  # ↲ \n) |&gt; \n  matrix(ncol = 2, byrow = TRUE) |&gt; \n  list()\n\ncoords_2\n\n[[1]]\n        [,1]    [,2]\n[1,] 2684142 1255702\n[2,] 2685600 1256958\n[3,] 2682534 1259699\n[4,] 2684142 1255702\n\n\n\n\nflughafen &lt;- st_polygon(coords_2)\n\nflughafen\n\n\nplot(flughafen)",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -82,7 +82,7 @@
     "section": "sfc: Simple feature geometry columns",
     "text": "sfc: Simple feature geometry columns\n\nUsually, a sfc contains more than one sfg.\nThis is not mandatory, and for convenience we will just use a single sfg to showcase sfc\nAs you might have noticed, we didn’t specify a CRS when creating the sfg objects. This is because we weren’t able to. With sfc, we can (and should) specify a crs.\n\n\n\nfracht_sfc &lt;- st_sfc(fracht, crs = 2056)\n\nfracht_sfc\n\nGeometry set for 1 feature \nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: 2685374 ymin: 1256519 xmax: 2685374 ymax: 1256519\nProjected CRS: CH1903+ / LV95\n\n\n\n\npiste_sfc &lt;- st_sfc(piste, crs = 2056)\n\npiste_sfc\n\nGeometry set for 1 feature \nGeometry type: LINESTRING\nDimension:     XY\nBounding box:  xmin: 2682705 ymin: 1255553 xmax: 2684336 ymax: 1258929\nProjected CRS: CH1903+ / LV95\n\n\n\n\nflughafen_sfc &lt;- st_sfc(flughafen, crs = 2056)\n\nflughafen_sfc\n\nGeometry set for 1 feature \nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 2682534 ymin: 1255702 xmax: 2685600 ymax: 1259699\nProjected CRS: CH1903+ / LV95",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -93,7 +93,7 @@
     "section": "sf: Simple features",
     "text": "sf: Simple features\n\nSimple features have attributes\nIn order to add attributes to a simple feature column (sfc), we need to convert it to a simple feature (sf)\n\n\nfracht_sf &lt;- st_as_sf(fracht_sfc)\n\nfracht_sf$name &lt;- \"Ost\"\n\n\n\nA sf object is a subset of a data.frame. Many (all?) things which can be done with a data.frame, can be done with an sf object\nMany tidyverse functions are implemented to nicely work with sf\n\n\n# sf objects are also dataframes\nis.data.frame(fracht_sf)\n\n[1] TRUE\n\n\n\n\nGeometries are sticky. This means they aren’t dropped implicitly\n\n\n# Geometries are sticky\nfracht_sf[, \"name\"] \n\nSimple feature collection with 1 feature and 1 field\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: 2685374 ymin: 1256519 xmax: 2685374 ymax: 1256519\nProjected CRS: CH1903+ / LV95\n  name                       x\n1  Ost POINT (2685374 1256519)\n\n\n\n\npiste_sf &lt;- st_as_sf(piste_sfc)\n\npiste_sf$nr &lt;- 34\n\nflughafen_sf &lt;- st_as_sf(flughafen_sfc)\n\nflughafen_sf$name &lt;- \"Flughafen Zürich\"",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -104,7 +104,7 @@
     "section": "Plotting simple features",
     "text": "Plotting simple features\n\nVarious libraries support plotting sf objects:\n\nbase R (sf provides a plot-method)\nGeneral purpose libraries such as ggplot2\nDedicated geospatial plotting libraries such as tmap\n\n\n\n\nUse:\n\nbase R: If you want to take a quick look at your data. Base R has the most compact syntax and is extremely fast in plotting\nggplot2: If you only have (small-ish) vector data (no raster) and/or want to leverage the power of ggplot2\ntmap: If you want to use all features a dedicated library for geospatial data has to offer: North arrow, scale bar, interactive (web) maps\n\n\n\n# Using base R\nplot(st_geometry(flughafen_sf))\nplot(piste_sf, add = TRUE)\nplot(fracht_sf, add = TRUE)\n##########################################################\n# Using ggplot2\nlibrary(ggplot2)\nggplot() +\n  geom_sf(data = flughafen_sf) +\n  geom_sf(data = piste_sf) +\n  geom_sf(data = fracht_sf)\n##########################################################\n# Using tmap\nlibrary(tmap)\ntm_shape(flughafen_sf) + tm_polygons() +\n  tm_shape(piste_sf) + tm_lines() +\n  tm_shape(fracht_sf) + tm_dots()\n\n\n\n\n\n\n\n\n\nFigure 1.2: base R\n\n\n\n\n\n\n\n\n\n\n\nFigure 1.3: library ggplot2\n\n\n\n\n\n\n\n\n\n\n\nFigure 1.4: library tmap\n\n\n\n\n\n\n\n\nThe tmap library can render the map either in a static plot shown before or as an interactive web map (see below)\n\n\n# set tmap_mode to \"view\" for an interactive web map\ntmap_mode(\"view\")\n\ntm_shape(flughafen_sf) + tm_polygons() +\n  tm_shape(piste_sf) + tm_lines() +\n  tm_shape(fracht_sf) + tm_dots()",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -115,7 +115,7 @@
     "section": "🪕 Tasks",
     "text": "🪕 Tasks\n\nCreate some simple feature geometries (sfg) of objects you know “by hand”. Create at least one POINT, one LINESTRING and one POLYGON geometry. You can capture the coordinates of the nodes from map.geo.admin.ch if these are is Switzerland and openstreetmap.org (or similar) if they aren’t\nCreate simple feature columns from you sfgs. Make sure that you assign the correct CRS\nCreate simple features (sf) from your sfcs and add some attributes",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -126,7 +126,7 @@
     "section": "References",
     "text": "References\n\n\n\n\nDorman, Michael. 2023. “Spatial Data Programming with Python — Geobgu.xyz.” https://geobgu.xyz/py/.\n\n\nPebesma, Edzer. 2018. “Simple Features for R: Standardized Support for Spatial Vector Data.” The R Journal 10 (1): 439–46. https://doi.org/10.32614/RJ-2018-009.",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -137,7 +137,7 @@
     "section": "",
     "text": "non-selfintersecting↩︎\nnon-selfintersecting↩︎\nthe first ring denotes the exterior ring, zero or more subsequent rings denote holes in this exterior ring↩︎",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Simple Features</span>"
     ]
   },
@@ -148,7 +148,7 @@
     "section": "",
     "text": "GDAL / ogr2ogr\nGDAL:",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
     ]
   },
@@ -159,7 +159,7 @@
     "section": "",
     "text": "is an open source translator library for raster and vector geospatial data formats.\nstands for Geospatial Data Abstraction Library\nis used in most geospatial software, be it FOSS or proprietary. The list includes: ArcGIS, QGIS, R (sf) and Python (geopandas)",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
     ]
   },
@@ -170,7 +170,7 @@
     "section": "GDAL Vector drivers (read)",
     "text": "GDAL Vector drivers (read)\n\nSince GDAL supports a long list of different geospatial file formats, most (all?) are in turn supported by {sf}\nRun the function st_drivers for a full list\n{sf} tries to guess the correct driver based on the file extension (see below)\n\n\n# sf uses the geojson driver, based on the file extension\n# (data from moodle →  Spatial Databases II → Database Files)\nstationen_schweiz &lt;- read_sf(\"data/uebung1/stationen_schweiz.geojson\")\n\n\n\n# sf uses the shapefile driver, based on the file extension\n# (data from moodle →  Spatial Analysis I → Exercise Data) \nhoheitsgebiet &lt;- read_sf(\"data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR.shp\")",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
     ]
   },
@@ -181,7 +181,7 @@
     "section": "Multiple layers in one file",
     "text": "Multiple layers in one file\n\nSome file formats, e.g. Geopackages (*.gpkg) or Geodatabases (*.gdb) support multiple datasets in a single file.\nIf no specific layer is requested read_sf() will import the first available layer\nIf more than 1 layers are available, read_sf() will return a warning\nThe function st_layers() will list all available layers\n\n\n\ntlm3d_path &lt;- \"data/Spatial_Analysis_II/swiss_TLM3D.gpkg\"\n\n# Note the warning:\ntlm3d &lt;- read_sf(tlm3d_path)\n\nWarning in CPL_read_ogr(dsn, layer, query, as.character(options), quiet, :\nautomatically selected the first layer in a data source containing more than\none.\n\n\n\n\n# This will list all layers, including some metadata\nst_layers(tlm3d_path)\n\nDriver: GPKG \nAvailable layers:\n    layer_name        geometry_type features fields       crs_name\n1       tlm_bb     3D Multi Polygon    49321     13 CH1903+ / LV95\n2 tlm_strassen 3D Multi Line String   191644     27 CH1903+ / LV95\n\n\n\n\n# To import a single layer\ntlm_bb &lt;- read_sf(tlm3d_path, \"tlm_bb\")",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
     ]
   },
@@ -192,7 +192,7 @@
     "section": "SQL queries during import",
     "text": "SQL queries during import\n\nread_sf() can parse a (spatialite) SQL query provided in the query = argument\nIn case query = is used, the layers = argument should be skipped (since the layers is specified in the query)\n\n\ntlm_seen &lt;- read_sf(\n  tlm3d_path, \n  query = \"SELECT objektart, geom FROM tlm_bb WHERE objektart = 'Stehende Gewaesser'\"\n  )",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
     ]
   },
@@ -203,7 +203,7 @@
     "section": "GDAL Vector drivers (write)",
     "text": "GDAL Vector drivers (write)\n\nThe function st_write() is used to export an sf object to file\nMost vector drivers support reading and writing (see st_drivers / column write)\nMany file formats support appending to the dataset (see append =)\n\n\nst_write(tlm_seen, \"data-out/seen.geojson\")",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
     ]
   },
@@ -212,9 +212,9 @@
     "href": "vector-io.html#tasks",
     "title": "Vector data I/O",
     "section": "🪕 Tasks",
-    "text": "🪕 Tasks\n\nImport the datasets from Spatial Analysis I and II using R\nExplore these datasets by printing the sf objects to the console\nTry different visualization methods (see sec-plotting)",
+    "text": "🪕 Tasks\n\nImport the datasets from Spatial Analysis I and II using R\nExplore these datasets by printing the sf objects to the console\nTry different visualization methods (see Plotting simple features)",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>2</span>  <span class='chapter-title'>Vector data I/O</span>"
     ]
   },
@@ -225,7 +225,7 @@
     "section": "",
     "text": "Thematic queries\ntlm3d_path &lt;- \"data/Spatial_Analysis_II/swiss_TLM3D.gpkg\"\n\ntlm_seen &lt;- read_sf(\n  tlm3d_path, \n  query = \"SELECT objektart, geom FROM tlm_bb WHERE objektart = 'Stehende Gewaesser'\"\n  )\ntlm_bb &lt;- read_sf(tlm3d_path, \"tlm_bb\")\n\n# Subsetting with base-R\ntlm_seen &lt;- tlm_bb[tlm_bb$objektart == \"Stehende Gewaesser\", ]\n\n# Subsetting using dplyr::filter\ntlm_seen &lt;- filter(tlm_bb, objektart == \"Stehende Gewaesser\")",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Spatial Vector Operation</span>"
     ]
   },
@@ -236,7 +236,7 @@
     "section": "",
     "text": "SQL queries can be performed with file import\n\n\n\n\nHowever, datasets can also be queried after import using data.frame methods (such as [ or dplyr::filter)",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Spatial Vector Operation</span>"
     ]
   },
@@ -247,7 +247,7 @@
     "section": "Spatial queries using binary predicate functions",
     "text": "Spatial queries using binary predicate functions\nTake the following example:\n\nSelect all forests in the canton of Luzern\n\n\nSpatial query functions include: st_intersects(), st_touches(), st_contains(), st_overlaps(), and many more\nThese spatial queries are called geometric binary predicates\n\n\n\nThis family of functions return so called sparse matrices: a list the same length as x, which, for each element in x, contains the indices of y where the condition is met. For example:\nThey could return cross matrices, but these usually have a larger memory, since they have are \\(x \\times y\\) in size\n\n\n\nluzern &lt;- read_sf(\"data/Spatial_Analysis_II/swissBOUNDARIES3D.gpkg\")\n\ntlm_wald &lt;- filter(tlm_bb, objektart == \"Wald\")\n\n# The dataset already has this crs (2056), but apparently \n# does not realize this\ntlm_wald &lt;- st_set_crs(tlm_wald, 2056)\n\n\nquery_res &lt;- st_intersects(tlm_wald, luzern)\n\n\n\n# Note the length of the output equals nrow(tlm_wald)\nquery_res\n\nSparse geometry binary predicate list of length 8096, where the\npredicate was `intersects'\nfirst 10 elements:\n 1: (empty)\n 2: (empty)\n 3: (empty)\n 4: (empty)\n 5: (empty)\n 6: (empty)\n 7: (empty)\n 8: (empty)\n 9: (empty)\n 10: (empty)\n\n\n\n(The first 10 elements are empty, because these are not within Luzern)\nThis list can be used to subset x (TRUE where the list is not empty):\n\n\n\n# Note the use of lenghts (with an s) to get the length of each element in the \n# list\nwald_luzern &lt;- tlm_wald[lengths(query_res) &gt; 0,]\n\n\n\n\n\n\n\n\n\n\nFigure 3.1: Note how some forests are outside the canton’s border. This is the nature of st_intersects. If even a small part of a forest feature is within Luzern, this feature intersects Luzern and is therefore retained. To query only forests that are completly within Luzern, use st_within().",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Spatial Vector Operation</span>"
     ]
   },
@@ -258,7 +258,7 @@
     "section": "Spatial queries using [ or st_filter",
     "text": "Spatial queries using [ or st_filter\n\nThe code above was for illustration purposes. The code can be written more concise:\n\n\n# using sf-methods in base-R\ntlm_wald[luzern,, op = st_intersects]\n\n# using st_filter\nst_filter(tlm_wald, luzern, .predicate = st_intersects)\n\n\nThe default value for op and .predicate is st_intersects, so these arguments could also have been omitted",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Spatial Vector Operation</span>"
     ]
   },
@@ -269,7 +269,7 @@
     "section": "Overlay Analysis",
     "text": "Overlay Analysis\n\nIn the example illustrated in Figure 3.1, we have the choice of subsetting forests that either intersect Luzern ever so slightly (st_intersects), or that lie completely within Luzern (st_within).\nDepending on the question, both options can be unsatisfactory (e.g. if the question was Which percentage of Luzern is covered by forest?)\nFor some cases, it might be necessary to “cut” the forest area at the cantons border\n\n\n\nThis can be achieved with st_intersection (which is different from intersects)\nThere are several other functions that work on pairs of geometries. See Geometric operations on pairs of simple feature geometry sets\nThere are even more functions that work on single geometries, e.g. st_buffer. See Geometric unary operations on simple feature geometry sets\n\n\n\nwald_luzern2 &lt;- st_intersection(luzern, wald_luzern)\n\n\n\n\n\n\n\n\n\n\n\n\nNow, it’s possible to compute the area of Luzern and the forest that intersects Luzern using the function st_area.\nThere are several functions to compute geometric measurements of sf-objects.\n\n\nsum(st_area(wald_luzern2))/st_area(luzern)\n\n0.2721733 [1]",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Spatial Vector Operation</span>"
     ]
   },
@@ -280,8 +280,68 @@
     "section": "🪕 Tasks",
     "text": "🪕 Tasks\nFrom the exercise in Spatial Analysis I, solve the following tasks using R:\n\nTask 2: Thematic Selections (Select by Attributes)\nTask 3: Exporting Selected Features to a New Layer sf object\nTask 6: Intersect (Intersection)\nTask 8: Buffer\nTask 9: Spatial Selection (Select by Location)",
     "crumbs": [
-      "Vector Data",
+      "Vector Data Lecture",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Spatial Vector Operation</span>"
+    ]
+  },
+  {
+    "objectID": "vector-data-exercise.html",
+    "href": "vector-data-exercise.html",
+    "title": "Vector Data Exercise",
+    "section": "",
+    "text": "Introduction\nIn this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.\nChoose at least 2 Tasks (“Szenarios”) and solve these!\nAll data is available on moodle, under the section Spatial Analysis I:\nAll data use CRS EPSG:2056 (CH1903+ / LV95).",
+    "crumbs": [
+      "Vector Data Exercise"
+    ]
+  },
+  {
+    "objectID": "vector-data-exercise.html#introduction",
+    "href": "vector-data-exercise.html#introduction",
+    "title": "Vector Data Exercise",
+    "section": "",
+    "text": "swiss_TLM3D.gpkg contains:\n\ntlm_bb: Land cover polygons with attribute objektart (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)\ntlm_strassen: Road network with attribute objektart (Autobahn, Autostrasse, various street widths, paths, etc.)\n\nswissBOUNDARIES3D.gpkg contains:\n\nkantonsgebiet_lu: Canton of Luzern boundary",
+    "crumbs": [
+      "Vector Data Exercise"
+    ]
+  },
+  {
+    "objectID": "vector-data-exercise.html#scenario-1-protected-area-planning",
+    "href": "vector-data-exercise.html#scenario-1-protected-area-planning",
+    "title": "Vector Data Exercise",
+    "section": "Scenario 1: Protected Area Planning",
+    "text": "Scenario 1: Protected Area Planning\nThe canton is considering establishing a nature protection zone for wetland ecosystems. To inform this decision, you need to analyze the current state of wetlands.\n\nQuestion 1.1: How much wetland area (“Feuchtgebiet”) currently exists in the canton of Luzern (in km²)?\nQuestion 1.2: Wetlands are ecologically most valuable when they are connected to water bodies. Identify all wetlands that are either directly adjacent to or within 50 meters of standing water bodies (“Stehende Gewaesser”). What percentage of the total wetland area does this represent?\nQuestion 1.3: Create a map showing:\n\nAll wetlands in the canton\nWetlands connected to water (highlighted differently)\nStanding water bodies\n\n\nThink about: Which spatial operations do you need? How do you define “connected”?",
+    "crumbs": [
+      "Vector Data Exercise"
+    ]
+  },
+  {
+    "objectID": "vector-data-exercise.html#scenario-2-accessibility-analysis",
+    "href": "vector-data-exercise.html#scenario-2-accessibility-analysis",
+    "title": "Vector Data Exercise",
+    "section": "Scenario 2: Accessibility Analysis",
+    "text": "Scenario 2: Accessibility Analysis\nA hiking organization wants to understand forest accessibility in Luzern.\n\nQuestion 2.1: Calculate the total forest area in Luzern that is accessible by small paths (1m or 2m wide paths: “1m Weg”, “2m Weg”). Define “accessible” as being within 200 meters of such a path.\nQuestion 2.2: What percentage of Luzern’s total forest area is accessible by these small paths?\nQuestion 2.3: Compare this with accessibility by major roads (Autobahn, Autostrasse, and streets ≥6m). How much forest area is within 200m of major roads?\nQuestion 2.4: Create a visualization that effectively communicates your findings.\n\nThink about: How do you combine multiple road types? How do you avoid double-counting areas accessible by multiple paths?",
+    "crumbs": [
+      "Vector Data Exercise"
+    ]
+  },
+  {
+    "objectID": "vector-data-exercise.html#scenario-3-alpine-environment-analysis",
+    "href": "vector-data-exercise.html#scenario-3-alpine-environment-analysis",
+    "title": "Vector Data Exercise",
+    "section": "Scenario 3: Alpine Environment Analysis",
+    "text": "Scenario 3: Alpine Environment Analysis\nClimate researchers are interested in high-altitude features in Luzern.\n\nQuestion 3.1: Identify all rocky areas in Luzern by combining the following land cover types: “Fels”, “Fels locker”, “Felsbloecke”, “Felsbloecke locker”, and “Lockergestein”. What is their total area?\nQuestion 3.2: Some of these rocky areas may contain glaciers or permanent snow. Find all rocky areas that are within 100 meters of glaciers (“Gletscher”) or snow fields (“Schneefeld Toteis”). How much area does this represent?\nQuestion 3.3: Create a map showing the spatial distribution of:\n\nAll rocky areas\nRocky areas near ice/snow\nGlaciers and snow fields\n\n\nThink about: Are glaciers and snow fields already part of rocky areas, or separate? How does this affect your analysis?",
+    "crumbs": [
+      "Vector Data Exercise"
+    ]
+  },
+  {
+    "objectID": "vector-data-exercise.html#scenario-4-integrated-analysis",
+    "href": "vector-data-exercise.html#scenario-4-integrated-analysis",
+    "title": "Vector Data Exercise",
+    "section": "Scenario 4: Integrated Analysis",
+    "text": "Scenario 4: Integrated Analysis\nResearch Question: The canton wants to identify potential locations for small reservoirs for agricultural water supply. Suitable locations should meet ALL of the following criteria:\n\nLocated in or near wetlands (within 20m)\nWithin 300m of an existing road (any type, for construction access)\nNOT in protected forest areas\nNOT on steep rocky terrain (Fels, Felsbloecke)\n\nTask: Identify and map all suitable areas. Report the total area available and discuss the spatial distribution of suitable locations.\nThink about: This requires combining multiple spatial operations. What is the logical sequence? Do you need union, intersection, or difference operations?",
+    "crumbs": [
+      "Vector Data Exercise"
     ]
   },
   {
@@ -291,7 +351,7 @@
     "section": "",
     "text": "Types of raster data",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -302,7 +362,7 @@
     "section": "",
     "text": "Raster datasets usually represent continuous phenomena such as elevation, temperature, population density or spectral data.\nDiscrete features such as soil or land-cover classes can also be represented in the raster data model",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -313,7 +373,7 @@
     "section": "A simple example: Elevation",
     "text": "A simple example: Elevation\n\n\n\n\n\n\n\n\n\n\n\n      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]\n [1,]  275  282  373  342  357  326  372  318  400   243   303\n [2,]  230  318  316  351  345  346  359  331  395   225   288\n [3,]  164  337  258  342  363  350  349  320  395   280   321\n [4,]  168  337  261  354  358  364  339  377  368   309   284\n [5,]  202  322  250  380  362  373  327  393  360   379   326\n [6,]   NA  310  270  361  370  363  368  368  385   383   297\n [7,]   NA  277  310  291  375  365  375  355  343   407   220\n [8,]   NA  181  325  264  381  373  389  341  305   395   252\n [9,]   NA   NA  313  264  370  384  392  328  357   376   289\n[10,]   NA   NA  298  285  370  380  386  354  349   385   311\n[11,]  402   NA  333  293  356  382  376  391  329   352   361",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -324,7 +384,7 @@
     "section": "A more complex example: RBG Image",
     "text": "A more complex example: RBG Image\n\nA lot of raster data is obtained using remote sensing (RS)\nTypically, RS imagery consists of more than 1 band\nIn this case, the data is stored in a 3 dimensional array (where band is the 3rd-dimension)\nA RS image can contain any number of bands.\nThe most well known type of RS imagery consists of 3 Bands in the red, blue and green spectrum\n\n\n\n\n\n\n\n\n\n\nFigure 4.4: The bands stored internally\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.5: The RGB Composite",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -335,7 +395,7 @@
     "section": "Each band is a 2D matrix",
     "text": "Each band is a 2D matrix\n\n\n\n\n\n\n\n\n\nFigure 4.6: Band values\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.7: RGB True Color Image",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -346,7 +406,7 @@
     "section": "Multispectral Datasets",
     "text": "Multispectral Datasets\n\nMultiband datasets usually capture different parts of the EM spectrum\nE.g. the Landsat image from the previous example has 6 bands capturing the following wavelengths:\n\nBand 1: Blue (0.45 - 0.52 µm)\nBand 2: Green (0.52 - 0.60 µm)\nBand 3: Red (0.63 - 0.69 µm)\nBand 4: Near-Infrared (0.77 - 0.90 µm)\nBand 5: Short-wave Infrared (1.55 - 1.75 µm)\nBand 7: Mid-Infrared (2.08 - 2.35 µm)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -357,7 +417,7 @@
     "section": "NirGB Image",
     "text": "NirGB Image\n\n\n\n\n\n\n\n\n\nFigure 4.8: Band values\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.9: NIR-GB False Color Image",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -368,7 +428,7 @@
     "section": "Representations of multispectral data",
     "text": "Representations of multispectral data\n\nA true color image is created by using the Red (3), Green (2) and Blue (1) Band and mapping these to RGB\nA false color image is created by mapping other bands to RGB\n\n\n\n\n\n\n\n\n\n\nFigure 4.10: The R, G and B bands mapped to RGB\n\n\n\n\n\n\n\n\n\n\n\nFigure 4.11: NIR, G and B bands mapped to RGB\n\n\n\n\n\n\n\n\n\n\nPebesma, Edzer, and Roger Bivand. 2023. Spatial Data Science: With Applications in R. Boca Raton: Chapman; Hall/CRC. https://doi.org/10.1201/9780429459016.",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Raster Data</span>"
     ]
   },
@@ -379,7 +439,7 @@
     "section": "",
     "text": "Import a raster file\nlibrary(terra)\n\ndhm25 &lt;- rast(\"data/Spatial_Analysis_II/dhm25_lu.tif\")\ndhm25\n\nclass       : SpatRaster \nsize        : 2321, 2161, 1  (nrow, ncol, nlyr)\nresolution  : 25, 25  (x, y)\nextent      : 2628987, 2683012, 1179988, 1238013  (xmin, xmax, ymin, ymax)\ncoord. ref. : CH1903+ / LV95 (EPSG:2056) \nsource      : dhm25_lu.tif \nname        : dhm25_lu \nmin value   :    381.1 \nmax value   :   3228.3",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
@@ -390,7 +450,7 @@
     "section": "",
     "text": "terra uses the function rast() to import raster data\nPrinting the object will give you some basic information about the raster\n\nThe number of rows and columns, as well as the number of layers\nThe resolution of the raster, meter per pixel (25 in our case)\nThe extent of the raster, in the coordinate reference system of the raster\nThe coordinate reference system (CRS) of the raster\nThe source (in memory, or a file path)\nThe name(s) of the band(s) (we only have one band in our case)\nThe min and max values of the raster",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
@@ -401,7 +461,7 @@
     "section": "GeoTIFF",
     "text": "GeoTIFF\n\nGeoTIFF is the most common raster format\nGeoTIFF is an extension to the TIFF format, which includes additional metadata to establish the spatial reference of the file\nThis includes the CRS, the extent, the resolution, and the origin of the raster\nThe metadata is either stored in the header of the file, or in an accompanying file with the same name, but different extension (.tfw or .aux.xml)\nOther important raster file formats include:\n\nCloud optimized GeoTIFF (COG): A GeoTIFF file that is optimized for cloud storage which allows for efficient, partial reading of the file over HTTP\nJPG2000 (.jp2) is a compressed raster format that is often used for satellite imagery\nNetCDF (.nc) is a format that is often used for climate data\nHDF5 (.h5) is a format that is often used for remote sensing data",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
@@ -412,7 +472,7 @@
     "section": "Writing a raster file",
     "text": "Writing a raster file\n\nYou can write a raster object to a file using the writeRaster() function\n\n\nwriteRaster(dhm25, \"data-out/dhm25_lu.tif\", overwrite = TRUE)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
@@ -423,7 +483,7 @@
     "section": "🪕 Tasks",
     "text": "🪕 Tasks\n\nImport the raster dhm25_lu.tif from the lesson Spatial Analysis II\nVisualize the raster using the plot() function as well as the library {tmap}.",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>5</span>  <span class='chapter-title'>Raster Data I/O</span>"
     ]
   },
@@ -434,7 +494,7 @@
     "section": "",
     "text": "Introduction",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -445,7 +505,7 @@
     "section": "",
     "text": "Map algebra can be defined as operations that modify or summarize raster cell values, with reference to surrounding cells, zones, or statistical functions that apply to every cell.\nMap algebra divides raster operations into four subclasses:\n\nLocal or per-cell operations\nFocal or neighborhood operations. Most often the output cell value is the result of a 3 x 3 input cell block\nZonal operations are similar to focal operations, but the surrounding pixel grid on which new values are computed can have irregular sizes and shapes\nGlobal or per-raster operations. That means the output cell derives its value potentially from one or several entire rasters",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -456,7 +516,7 @@
     "section": "Global Operation (1)",
     "text": "Global Operation (1)\n\nThe most common global operations are descriptive statistics for the entire raster dataset such as the minimum, maximum or mean value.\nFor example: What is the mean elevation value for Luxembourg?\n\n\n\n\n\n\n\n\n\nFigure 6.1: Elevation of Luxembourg\n\n\n\n\n\n\n# note: mean(r) does not work, since \"mean\" is used as a local operator\nmean_elev &lt;- global(r, mean, na.rm = TRUE)\n\nmean_elev\n\n              mean\nelevation 347.6488",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -467,7 +527,7 @@
     "section": "Global Operation (2)",
     "text": "Global Operation (2)\n\nAnother type of “global” operation is distance\nThis function calculates the distance from each cell to a specific target cell\nFor example, what is the distance from each cell to Luxembourg City, the capital of Luxembourg?\n\n\n\n\n\n\n\n\n\n\n\nr_dist &lt;- distance(r, luxembourg_city)\nr_dist &lt;- mask(r_dist, r)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -478,7 +538,7 @@
     "section": "Zonal",
     "text": "Zonal\n\nZonal operations apply an aggregation function to multiple raster cells\nA second raster with categorical values define the “zones”\n\nWhat is the mean altitude per municipality?\n\nmean_vals &lt;- zonal(r, zones, fun = mean, na.rm = TRUE)\n\n\n\n\n\n\n\n\n\n\nFigure 6.2: The original Zones (E.g. municipalities of Luxembourg)\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.3: Mean elevation per zone / per municipality\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\n\n\nThe global operation can be seen as a special case of a zonal operation, where the only “Zone” is the entire dataset",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -489,7 +549,7 @@
     "section": "Local (1)",
     "text": "Local (1)\n\nLocal operations comprise all cell-by-cell operations in one or several layers.\nFor example, we can classify the elevation into values above and below a certain threshold\n\n\n# first, create a boolean copy of the raster\nr_bool &lt;- as.logical(r)\n\nmean_elev &lt;- as.numeric(mean_elev)\nmean_elev\n\n[1] 347.6488\n\nr_bool[r &gt; mean_elev] &lt;- FALSE\nr_bool[r &lt;= mean_elev] &lt;- TRUE",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -500,7 +560,7 @@
     "section": "Local (2)",
     "text": "Local (2)\n\nThis type of (re-) classification is a very common operation\nFor more than 2 categories, we can use classify\n\n\ncuts &lt;- global(r, quantile, probs = c(0, .33, .66, 1), na.rm = TRUE)\n\nr_classify &lt;- classify(r, as.numeric(cuts))\n\n# this next line just replaces the default labels with some custom ones\nlevels(r_classify) &lt;- data.frame(ID = 0:2, category = c(\"low\",\"mid\",\"high\"))\n\np + tm_shape(r_classify) +\n    tm_raster(style = \"cat\",legend.show = TRUE, palette = \"viridis\", title = \"Elevation\") +\n    tm_layout(legend.show = TRUE)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -511,7 +571,7 @@
     "section": "Local (3)",
     "text": "Local (3)\n\nLocal operations are often used with multiple bands\nFor example, we could calculate the mean intensity values of red, green and blue:\n\n\nl7 &lt;- rast(system.file(\"tif/L7_ETMs.tif\",package = \"stars\"))\n\nnames(l7) &lt;- c(\"B\", \"G\", \"R\", \"NIR\", \"SWIR\", \"MIR\")\n\nl7_rgb &lt;- l7[[c(\"R\",\"G\", \"B\")]]\n\nplot(l7_rgb, nr = 1)\n\n\n\n\n\n\n\n\n\nl7_rgb_mean &lt;- mean(l7_rgb)\n\nplot(l7_rgb_mean)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -522,7 +582,7 @@
     "section": "Local (4)",
     "text": "Local (4)\n\nIn a more complex usecase, we could use the R, G and B band to calculate a grayscale value (\\(L^*\\)) using the following formula (from here):\n\n\\[\\begin{aligned}\n\nL^* &= 116 \\times Y ^ {\\frac{1}{3}} - 16\\\\\n\nY &= 0.2126 \\times R^\\gamma+0.7152 \\times G^\\gamma+0.0722 \\times B^\\gamma \\\\\n\n\n\\gamma &= 2.2\n\n\\end{aligned}\\]\n\ng &lt;- 2.2\n\nl7 &lt;- l7/255 # scale values to 0-1 (probabbly not necessary)\n\nY &lt;- 0.2126 * l7[[\"R\"]]^g + 0.7152 * l7[[\"G\"]]^g + 0.0722 * l7[[\"B\"]]^g\n\nL &lt;- 116* Y^(1/3)-16\n\n# Plot the result",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -533,7 +593,7 @@
     "section": "Focal",
     "text": "Focal\n\nWhile local functions operate on one cell focal operations take into account a central (focal) cell and its neighbors.\nThe neighborhood (also named kernel, filter or moving window) under consideration is typically of size 3-by-3 cells (that is the central cell and its eight surrounding neighbors), but can take on any other size or shape as defined by the user.\nA focal operation applies an aggregation function to all cells within the specified neighborhood, uses the corresponding output as the new value for the central cell, and moves on to the next central cell\n\n\n\n\n\n\n\nFigure 6.4: Note how, depending on the size of your moving window, NA’s are produced. Source: Lovelace, Nowosad, and Muenchow (2019)\n\n\n\n\nfocal3by3 &lt;- matrix(rep(1,9), ncol = 3)\n\n\nfocal11by11 &lt;- matrix(rep(1,121), ncol = 11)\n\n\nr_foc3 &lt;- focal(r, focal3by3, fun = mean, fillNA = TRUE)\n\nr_foc11 &lt;- focal(r, focal11by11, fun = mean, fillNA = TRUE)\n\n\n\n\n\n\n\n\n\n\nFigure 6.5: Original values\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.6: Result of a 3x3 Focal Window\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.7: Result of a 11x11 Focal Window\n\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\n\n\nNote how the output raster is smaller as the focal window is larger (edge effect)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -544,7 +604,7 @@
     "section": "Focal weights (1)",
     "text": "Focal weights (1)\n\nThe focal weights we used above were square and evenly weighted\n\n\nfocal3by3\n\n     [,1] [,2] [,3]\n[1,]    1    1    1\n[2,]    1    1    1\n[3,]    1    1    1\n\n\n\nfocal11by11\n\n      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11]\n [1,]    1    1    1    1    1    1    1    1    1     1     1\n [2,]    1    1    1    1    1    1    1    1    1     1     1\n [3,]    1    1    1    1    1    1    1    1    1     1     1\n [4,]    1    1    1    1    1    1    1    1    1     1     1\n [5,]    1    1    1    1    1    1    1    1    1     1     1\n [6,]    1    1    1    1    1    1    1    1    1     1     1\n [7,]    1    1    1    1    1    1    1    1    1     1     1\n [8,]    1    1    1    1    1    1    1    1    1     1     1\n [9,]    1    1    1    1    1    1    1    1    1     1     1\n[10,]    1    1    1    1    1    1    1    1    1     1     1\n[11,]    1    1    1    1    1    1    1    1    1     1     1",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -555,7 +615,7 @@
     "section": "Focal weights (2)",
     "text": "Focal weights (2)\n\nHowever, we can also create uneven weights:\n\nFor example, a laplacian filter is commonly used for edge detection.\n\nlaplacian &lt;- matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3) \n\nlaplacian\n\n     [,1] [,2] [,3]\n[1,]    0    1    0\n[2,]    1   -4    1\n[3,]    0    1    0\n\n\nSo are the sobel filters\n\n\n     [,1] [,2] [,3]\n[1,]   -1    0    1\n[2,]   -2    0    2\n[3,]   -1    0    1\n\n\n     [,1] [,2] [,3]\n[1,]    1    2    1\n[2,]    0    0    0\n[3,]   -1   -2   -1\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.8: Laplacian Filter\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.9: Sobel (x-direction)\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.10: SObel (y-direction)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -566,7 +626,7 @@
     "section": "Focal weights (3)",
     "text": "Focal weights (3)\n\nWe can also create specific shapes using weights\nWe don’t need to create these matrices by hand. Rather, we can use the function focalMat to create different shapes automatically\n\n\n# Note \n# - \"d\" is evaluated in the units of \"x\" (in our case: meters)\n# - The sum of all weights equals to 1\n# - Note how the edges receive a value of 0\nfocal_circle3000 &lt;- focalMat(x = r, d = 3000, \"circle\")\n\nfocal_circle3000\n\n           [,1]       [,2]       [,3]       [,4]       [,5]\n[1,] 0.00000000 0.00000000 0.03703704 0.00000000 0.00000000\n[2,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[3,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[4,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[5,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[6,] 0.03703704 0.03703704 0.03703704 0.03703704 0.03703704\n[7,] 0.00000000 0.00000000 0.03703704 0.00000000 0.00000000\n\n\n\n\n\n\n\nA visual representation of the matrix / filter above\n\n\n\n\n\nfocal_gauss1000 &lt;- focalMat(x = r, d = 1000, \"Gauss\")\n\nfocal_gauss1000\n\n            [,1]        [,2]        [,3]        [,4]        [,5]\n[1,] 0.000241551 0.001082556 0.001784834 0.001082556 0.000241551\n[2,] 0.002942693 0.013188236 0.021743725 0.013188236 0.002942693\n[3,] 0.013188236 0.059105572 0.097448614 0.059105572 0.013188236\n[4,] 0.021743725 0.097448614 0.160665602 0.097448614 0.021743725\n[5,] 0.013188236 0.059105572 0.097448614 0.059105572 0.013188236\n[6,] 0.002942693 0.013188236 0.021743725 0.013188236 0.002942693\n[7,] 0.000241551 0.001082556 0.001784834 0.001082556 0.000241551\n\n\n\n\n\n\n\nA visual representation of the matrix / filter above",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -577,7 +637,7 @@
     "section": "Focal functions in terrain processing",
     "text": "Focal functions in terrain processing\n\nFocal functions are used to calculate the slope of a specific location, e.g. using the algorithm by Horn (1981)\nSimilarly, calculating the aspect (azimuth) of a location is a very typical task when dealing with elevation data\nThese algorithms are used so often, that they are implemented in a dedicated function (terrain())\n\nterrain(r, \"slope\") |&gt; plot()\nterrain(r, \"aspect\") |&gt; plot()\n\n\n\n\n\n\n\n\n\nFigure 6.11: Calculating slope using a predefined algorithm\n\n\n\n\n\n\n\n\n\n\n\nFigure 6.12: Calculating aspect",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -588,7 +648,7 @@
     "section": "🪕 Tasks",
     "text": "🪕 Tasks\n\nImport the elevation of Luxembourg using the following code:\n\nr &lt;- rast(system.file(\"ex/elev.tif\", package=\"terra\"))\n\nCalculate the mean, maximum and minimum elevation values\nCalculate slope and aspect (see terrain functions)\nDetermine suitable locations of solar panels using the following conditions:\n\nElevation: above 300 MASL\nSlope: Between 1 and 3°\nAspect: Southfacing (between 135 and 235°)\n\nDownload the Municipalities of Luxembourg from Moodle and calculate the minimum, maximum and mean elevation values per municipality.\nSmooth the elevation values using different focal windows\nImport the multispectral Landsat 7 as a raster using the following path\n\nsystem.file(\"tif/L7_ETMs.tif\",package = \"stars\")\n\nCalculate the NDVI using the following formula:\n\n\\[\\text{NDVI} = \\frac{\\text{NIR}-\\text{red}}{\\text{NIR}+\\text{red}}\\]\n\n\n\n\n\nThe resulting NDVI values\n\n\n\n\n\n\n\n\nHorn, Berthold KP. 1981. “Hill Shading and the Reflectance Map.” Proceedings of the IEEE 69 (1): 14–47.\n\n\nLovelace, Robin, Jakub Nowosad, and Jannes Muenchow. 2019. Geocomputation with r. Chapman; Hall/CRC.",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>Raster Operations</span>"
     ]
   },
@@ -599,7 +659,7 @@
     "section": "",
     "text": "Two worlds of spatial data",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
@@ -608,9 +668,9 @@
     "href": "raster-vector-operations.html#two-worlds-of-spatial-data",
     "title": "Raster-Vector Operations",
     "section": "",
-    "text": "Till now, we have treated vector and raster data separately\nHowever, in many cases, you will need to combine both types of data\nFor example, take the Zonal operation we discussed previously (see sec-zonal-1): Typically, your “zones” will be vector polygons",
+    "text": "Till now, we have treated vector and raster data separately\nHowever, in many cases, you will need to combine both types of data\nFor example, take the Zonal operation we discussed previously (see Zonal): Typically, your “zones” will be vector polygons",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
@@ -621,7 +681,7 @@
     "section": "Zonal operations with vector data",
     "text": "Zonal operations with vector data\n\nThe zonal function in {terra} can handle vector data: however, it requires sf objects to be converted to terra’s own vector format, called SpatVector. - The function vect() can be used to convert sf objects to SpatVector objects:\n\n\nmean_vals &lt;- zonal(r, vect(zones), fun = mean, na.rm = TRUE)\n\n\nzones$mean &lt;- mean_vals$elevation\n\n\n\n\n\n\n\n\n\n\nFigure 7.1: The original raster data\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.2: The original zones as vector polygons\n\n\n\n\n\n\n\n\n\n\n\nFigure 7.3: The resulting zones (mean elevation per zone), also as vector data",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
@@ -630,9 +690,9 @@
     "href": "raster-vector-operations.html#extracting-raster-values-at-vector-points",
     "title": "Raster-Vector Operations",
     "section": "Extracting raster values at vector points",
-    "text": "Extracting raster values at vector points\n\nA another common operation is to extract raster values at specific points\nLet’s take the example of the city of Luxembourg (see sec-global-2)\nThe function extract() can be used to extract raster values at specific points\nextract returns a data.frame with\n\none column per raster band (1 in our case)\none row per point (also 1 in our case):\n\n\n\n\n\n\n\n\n\n\n\n\nlux_elev &lt;- extract(r, luxembourg_city)\nlux_elev\n\n  ID elevation\n1  1  293.9805",
+    "text": "Extracting raster values at vector points\n\nA another common operation is to extract raster values at specific points\nLet’s take the example of the city of Luxembourg (see Global Operation (2))\nThe function extract() can be used to extract raster values at specific points\nextract returns a data.frame with\n\none column per raster band (1 in our case)\none row per point (also 1 in our case):\n\n\n\n\n\n\n\n\n\n\n\n\nlux_elev &lt;- extract(r, luxembourg_city)\nlux_elev\n\n  ID elevation\n1  1  293.9805",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
@@ -643,7 +703,7 @@
     "section": "Vector to raster conversion",
     "text": "Vector to raster conversion\n\nFunctions that combine raster and vector data usually convert vector to raster internally\nSometimes, we might want to do this conversion explicitly. This can be done using the rasterize() function\nThis function takes three arguments:\n\nx: The vector data (either of class sf or SpatVector)\ny: A raster object that defines the extent, resolution, and CRS of the resulting raster (i.e. a “template”)\nfield: The name of the column in the vector data that should be used to fill the raster cells\n\n\n\n# we can create a template using the input vector. All we have to specify \n# is the resolution of the output raster, which is evalutated in the units of\n# the CRS of the input vector data (meters in our case).\n\ntemplate &lt;- rast(zones, resolution = 1000)\n\nzones_raster &lt;- rasterize(zones, template, \"zone\")\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) The original zones as polygon data\n\n\n\n\n\n\n\n\n\n\n\n(b) The zones as raster data\n\n\n\n\n\n\n\nFigure 7.4: Note how the conversion to polygons results in a loss of detail\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nNote that rasters don’t store character information. The above zones are coded as integers with a corresponding look-up table (see ?terra::levels).",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
@@ -654,7 +714,7 @@
     "section": "Raster to vector conversion",
     "text": "Raster to vector conversion\n\nThe opposite operation, converting raster data to vector data, can be done using the {terra} functions as.points, as.lines and as.polygons:\nThe resulting object will be of class SpatVector. This can be converted to the sf class using st_as_sf()\n\n\nzones_poly &lt;- as.polygons(zones_raster) |&gt; \n  st_as_sf()\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) The zones as raster data\n\n\n\n\n\n\n\n\n\n\n\n(b) The zones as polygon data\n\n\n\n\n\n\n\nFigure 7.5: Note how the conversion back to polygons preserves the cell boundaries",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   },
@@ -665,7 +725,7 @@
     "section": "🪕 Tasks",
     "text": "🪕 Tasks\n\nImport Arealstatistik.gpkg from Spatial_Analysis_II using {sf}\nTo rasterize the data, we need a template raster object. Create a template raster object with a resolution of 100m using the rast() function\nRasterize the arealstatistik data using the function rasterize, the tempalte from the previous step, and the column AS_4 as the field to fill the raster cells\n\n\nThe resulting raster contains the integer values 1 to 4. These values correspond to the following land use categories (see metadata):\n\nSettlement and urban areas\nAgricultural areas\nWooded areas\nUnproductive areas\n\n\nTo make the raster more interpretable, assign the corresponding names to the levels of the raster using the levels() function. The levels should be a data.frame with two columns: ID and name (see below)\n\nlevs &lt;- data.frame(\n  ID = 1:4, \n  name = c(\n    \"Settlement and urban areas\", \n    \"Agricultural areas\", \n    \"Wooded areas\", \n    \"Unproductive areas\"\n    ) \n  )\n\nlevels(areal_rast) &lt;- levs\n\nplot(areal_rast)",
     "crumbs": [
-      "Raster Data",
+      "Raster Data Lecture",
       "<span class='chapter-number'>7</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
   }

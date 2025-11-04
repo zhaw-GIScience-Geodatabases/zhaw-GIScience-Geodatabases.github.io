@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="raster-data-exercise_files/libs/clipboard/clipboard.min.js"></script>
+<script src="raster-data-exercise_files/libs/quarto-html/tabby.min.js"></script>
+<script src="raster-data-exercise_files/libs/quarto-html/popper.min.js"></script>
+<script src="raster-data-exercise_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="raster-data-exercise_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="raster-data-exercise_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="raster-data-exercise_files/libs/quarto-html/quarto-syntax-highlighting-46eeb4c476de49ef7df495821a6125d9.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.19">
+
+  <title>Raster Data Exercise</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="raster-data-exercise_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="raster-data-exercise_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="raster-data-exercise_files/libs/revealjs/dist/theme/quarto-d8a14bde08cc4819f93bf0f91a6e5ba7.css">
+  <link rel="stylesheet" href="misc/style-slides.css">
+  <link href="raster-data-exercise_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="raster-data-exercise_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="raster-data-exercise_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="raster-data-exercise_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+<script src="mathjax-config.js"></script>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Raster Data Exercise</h1>
+
+<div class="quarto-title-authors">
+</div>
+
+</section>
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<p>In this exercise, you will develop a spatial habitat suitability model to identify potential chamois habitats in the Canton of Lucerne. This multi-criteria analysis will combine your knowledge of vector and raster data processing, spatial analysis, and ecological modeling.</p>
+<h3 id="ecological-background">Ecological Background</h3>
+<p>Chamois (<em>Rupicapra rupicapra</em>) are mountain ungulates native to European mountain ranges. Understanding their habitat requirements is crucial for conservation planning. Based on ecological research, chamois have the following habitat requirements:</p>
+<ul>
+<li><strong>Home range size</strong>: Approximately 1 km²</li>
+<li><strong>Forest cover</strong>: Require sufficient forest within their home range for refuge and thermal protection</li>
+<li><strong>Steep terrain</strong>: Need steep areas (&gt; 30°) where they have physiological advantages over predators</li>
+<li><strong>Human disturbance</strong>: Avoid human settlements and heavily trafficked roads</li>
+</ul>
+<h3 id="analytical-workflow">Analytical Workflow</h3>
+<p><a href="#/fig-process-model" class="quarto-xref">Figure&nbsp;1</a> shows the complete workflow for this analysis. Study this process model carefully - it will guide you through the entire exercise. The process model is also available as a high-resolution PDF on Moodle.</p>
+
+<img data-src="images/ProcessModel_MCA_Chamois.PNG" class="r-stretch quarto-figure-center" id="fig-process-model"><p class="caption">
+Figure&nbsp;1: Process model for chamois habitat suitability analysis
+</p><div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Working with the Process Model</strong></p>
+</div>
+<div class="callout-content">
+<p>Before you begin, take time to understand:</p>
+<ul>
+<li>What input datasets are needed?</li>
+<li>What geoprocessing steps will you perform?</li>
+<li>How do the steps connect to each other?</li>
+<li>What is the final output?</li>
+</ul>
+</div>
+</div>
+</div>
+<p>Your task is to implement this workflow using R, combining vector and raster analysis techniques to produce a habitat suitability map.</p>
+</section>
+<section id="task-1-data-exploration-and-project-setup" class="slide level2">
+<h2>Task 1: Data Exploration and Project Setup</h2>
+<h3 id="setup-your-workspace">Setup Your Workspace</h3>
+<ol type="1">
+<li>Create a new R Project</li>
+<li>Download the exercise data from Moodle (section “CW 39 – Spatial Analysis II”)</li>
+<li>Extract the data into your new folder</li>
+<li>Create a new R script or Quarto document for this exercise</li>
+</ol>
+<h3 id="understanding-your-data">Understanding Your Data</h3>
+<p>Your downloaded data folder contains several datasets:</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Input Datasets</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong>Raster data:</strong>
+<ul>
+<li><code>dhm25_lu.tif</code> - Digital elevation model at 25m resolution</li>
+</ul></li>
+<li><strong>Vector data (in GeoPackages):</strong>
+<ul>
+<li><code>tlm_bb</code> (polygon layer) - Land cover classification from swiss_TLM3.gpkg</li>
+<li><code>tlm_strassen</code> (line layer) - Road network from swiss_TLM3.gpkg</li>
+<li><code>arealstatistik</code> (point layer) - Swiss land use statistics from Arealstatistik.gpkg</li>
+<li><code>kantonsgebiet_lu</code> (polygon layer) - Canton boundary from swissBOUNDARIES3D.gpkg</li>
+</ul></li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="metadata-resources">Metadata Resources</h3>
+<p>Understanding your data is crucial for proper analysis. Familiarize yourself with these metadata sources:</p>
+<ul>
+<li><strong>DHM25</strong>: <a href="https://www.swisstopo.admin.ch/de/hoehenmodell-dhm25">Data source &amp; description</a></li>
+<li><strong>swissTLM3D</strong>: <a href="https://www.swisstopo.admin.ch/de/landschaftsmodell-swisstlm3d">Data source &amp; description</a> | <a href="https://backend.swisstopo.admin.ch/fileservice/sdweb-docs-prod-swisstopoch-files/files/2024/03/06/b2e890ee-a5a4-4ea6-8b87-13f74eb41a1a.pdf">Objektkatalog (2024)</a></li>
+<li><strong>Arealstatistik BFS</strong>: <a href="https://www.bfs.admin.ch/bfs/de/home/dienstleistungen/geostat/geodaten-bundesstatistik/boden-nutzung-bedeckung-eignung/arealstatistik-schweiz.html">Data source &amp; description</a> | <a href="https://www.bfs.admin.ch/bfs/de/home/statistiken/raum-umwelt/nomenklaturen/arealstatistik/noas2004/72-grundkategorien.html">Nomenklatur 72 Grundkategorien</a></li>
+</ul>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Required R Packages</strong></p>
+</div>
+<div class="callout-content">
+<p>You’ll need the following packages for this exercise:</p>
+<ul>
+<li><code>sf</code> for vector data</li>
+<li><code>terra</code> for raster data</li>
+<li><code>dplyr</code> for data manipulation</li>
+<li><code>ggplot2</code> or <code>tmap</code> for visualisation</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="your-first-tasks">Your First Tasks</h3>
+<p>Load the data and explore its properties. Consider these questions:</p>
+<ol type="1">
+<li>What coordinate reference system (CRS) are the datasets using?</li>
+<li>What is the spatial extent and resolution of the elevation model?</li>
+<li>What attributes are available in each vector layer?</li>
+<li>Do all datasets cover the same geographic area?</li>
+</ol>
+<p>Create a visualization to familiarize yourself with the data.</p>
+</section>
+<section id="task-2-create-a-forest-cover-raster" class="slide level2">
+<h2>Task 2: Create a Forest Cover Raster</h2>
+<p><strong>Objective</strong>: Convert the vector-based land cover layer (<code>tlm_bb</code>) into a raster format that represents forest areas. This raster will serve as one of your habitat suitability criteria.</p>
+<p><strong>Background</strong>: Before proceeding, consult the swissTLM3D <a href="https://backend.swisstopo.admin.ch/fileservice/sdweb-docs-prod-swisstopoch-files/files/2024/03/06/b2e890ee-a5a4-4ea6-8b87-13f74eb41a1a.pdf">Objektkatalog</a> to understand the classification system. The land use types are stored in the field <strong>“OBJEKTART”</strong> (see TOPIC TLM_BB).</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Think About This</strong></p>
+</div>
+<div class="callout-content">
+<p>Which <code>OBJEKTART</code> categories represent forest that chamois would use for refuge? Consider different forest types and their characteristics.</p>
+</div>
+</div>
+</div>
+<h3 id="workflow-steps">Workflow Steps</h3>
+<p>Your task involves several sequential operations:</p>
+<ol type="1">
+<li><strong>Select forest features</strong> - Filter the <code>tlm_bb</code> layer to extract only forest-related land cover types</li>
+<li><strong>Dissolve boundaries</strong> - Merge all forest polygons into a single multipart feature</li>
+<li><strong>Rasterize</strong> - Convert the vector layer to raster format using the DHM25 as a template</li>
+<li><strong>Validate</strong> - Examine the output to ensure it’s correct</li>
+</ol>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Forest Categories</strong></p>
+</div>
+<div class="callout-content">
+<p>For this analysis, consider these forest types as suitable chamois habitat: - Gebüschwald - Wald - Wald offen</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Vector to Raster Conversion</strong></p>
+</div>
+<div class="callout-content">
+<p>When rasterizing: - Use the DHM25 as a template to ensure matching extent and resolution - The <code>terra</code> package has a <code>rasterize()</code> function - You may need to convert sf objects to terra’s vect format - Consider what value to assign to forest cells (e.g., 1 = forest)</p>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reflection Question</strong></p>
+</div>
+<div class="callout-content">
+<p>Examine the properties of your <code>forest_raster</code>. Is it an integer or floating-point raster? What values does it contain? Why might this matter for subsequent analyses?</p>
+</div>
+</div>
+</div>
+</section>
+<section id="task-3-derive-terrain-slope" class="slide level2">
+<h2>Task 3: Derive Terrain Slope</h2>
+<p><strong>Objective</strong>: Calculate slope from the digital elevation model. Slope is a critical habitat parameter - chamois use steep terrain as refuges where they have physiological advantages over predators.</p>
+<p><strong>Background</strong>: Slope represents the rate of change in elevation and can be calculated from a DEM using neighborhood operations. The <code>terra</code> package provides the <code>terrain()</code> function for this purpose.</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Terrain Analysis</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>The <code>terrain()</code> function requires specifying which terrain variable to calculate (e.g., “slope”, “aspect”)</li>
+<li>Choose appropriate units for your analysis (degrees vs.&nbsp;radians)</li>
+<li>The output will be a floating-point raster</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reflection Questions</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>What data type is the slope raster? Why does this differ from the forest raster?</li>
+<li>What is the steepest slope in your study area? Is this realistic?</li>
+<li>Where would you expect to find the steepest slopes?</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="task-4-identify-steep-terrain" class="slide level2">
+<h2>Task 4: Identify Steep Terrain</h2>
+<p><strong>Objective</strong>: Reclassify the continuous slope values into a binary classification: steep vs.&nbsp;non-steep areas. Based on ecological studies, chamois benefit from slopes steeper than 30°.</p>
+<p><strong>Background</strong>: Reclassification transforms continuous data into categorical classes. You’ll create a binary raster where: - <strong>0</strong> = non-steep areas (0-30°) - <strong>1</strong> = steep areas (&gt;30°)</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Reclassification in terra</strong></p>
+</div>
+<div class="callout-content">
+<p>The <code>classify()</code> function uses a reclassification matrix with three columns: - Column 1: Lower bound of range - Column 2: Upper bound of range - Column 3: New value to assign</p>
+<p>Remember to use <code>include.lowest = TRUE</code> to handle boundary values correctly.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="task-5-extract-high-traffic-roads" class="slide level2">
+<h2>Task 5: Extract High-Traffic Roads</h2>
+<p><strong>Objective</strong>: Identify heavily trafficked roads that chamois would avoid. While we don’t have direct traffic volume data, we can use road type as a proxy for traffic intensity.</p>
+<p><strong>Background</strong>: Consult the swissTLM3D Objektkatalog to understand the road classification system. The <code>OBJEKTART</code> field contains road type information, and the <code>KUNSTBAUTE</code> field indicates infrastructure like tunnels.</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important Consideration</strong></p>
+</div>
+<div class="callout-content">
+<p>Why should roads in tunnels be excluded from this analysis? Think about how chamois would perceive and respond to different road types.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Road Types to Consider</strong></p>
+</div>
+<div class="callout-content">
+<p>Major road types that typically carry high traffic: - Autobahn (highways) - Autostrasse (expressways) - 10m, 8m, 6m, 4m Strasse (roads classified by width) - Einfahrt, Ausfahrt, Zufahrt (on/off ramps and access roads)</p>
+<p>Exclude roads where <code>KUNSTBAUTE</code> equals “Tunnel”.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="task-6-delineate-settlement-areas" class="slide level2">
+<h2>Task 6: Delineate Settlement Areas</h2>
+<p><strong>Objective</strong>: Create a spatial layer representing human settlement areas that chamois would avoid. You’ll use the Swiss Land Use Statistics (Arealstatistik) dataset for this purpose.</p>
+<p><strong>Background</strong>: The <a href="https://www.bfs.admin.ch/bfs/de/home/dienstleistungen/geostat/geodaten-bundesstatistik/boden-nutzung-bedeckung-eignung/arealstatistik-schweiz.html">Arealstatistik</a> provides detailed land use information at the hectare level. The dataset uses a classification system with 72 basic categories (see <a href="https://www.bfs.admin.ch/bfs/de/home/statistiken/raum-umwelt/nomenklaturen/arealstatistik/noas2004/72-grundkategorien.html">Nomenklatur 72 Grundkategorien</a>).</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Your Task: Define Settlement Areas</strong></p>
+</div>
+<div class="callout-content">
+<p>Before looking at the hint below, download and examine the variable list (<a href="https://dam-api.bfs.admin.ch/hub/api/dam/assets/32376296/master">xlsx-file</a>) - specifically the sheet “Codes AS_72”.</p>
+<p><strong>Think about:</strong> Which categories represent areas where human activity would disturb chamois? Consider different types of buildings and their surroundings (in German, “Umschwung” refers to the area immediately surrounding buildings).</p>
+</div>
+</div>
+</div>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Settlement Categories (AS_72 codes)</strong></p>
+</div>
+<div class="callout-content">
+<p>For this analysis, consider these categories as settlement areas: - 1: Industrie- und Gewerbegebäude - 2: Umschwung von Industrie- und Gewerbegebäuden - 3: Ein- und Zweifamilienhäuser - 4: Umschwung von Ein- und Zweifamilienhäusern - 5: Reihen- und Terrassenhäuser - 6: Umschwung von Reihen- und Terrassenhäusern - 7: Mehrfamilienhäuser - 8: Umschwung von Mehrfamilienhäusern - 9: Öffentliche Gebäude - 10: Umschwung von öffentlichen Gebäuden - 11: Landwirtschaftliche Gebäude - 13: Nicht spezifizierte Gebäude</p>
+</div>
+</div>
+</div>
+<h3 id="workflow">Workflow</h3>
+<p>Your analysis should:</p>
+<ol type="1">
+<li><strong>Filter</strong> the Arealstatistik points to extract settlement-related categories</li>
+<li><strong>Buffer</strong> these points by 150 meters (representing a zone of human influence)</li>
+<li><strong>Dissolve</strong> overlapping buffers to create contiguous settlement areas</li>
+</ol>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Why Buffer?</strong></p>
+</div>
+<div class="callout-content">
+<p>The Arealstatistik uses point samples at hectare intervals. Buffering creates a more realistic representation of settlement extent and the zone of human disturbance around settlements.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="task-7-analyze-local-habitat-characteristics" class="slide level2">
+<h2>Task 7: Analyze Local Habitat Characteristics</h2>
+<p><strong>Objective</strong>: Evaluate the landscape surrounding every location in terms of forest cover and steep terrain availability. This analysis accounts for the chamois home range size (~1 km²) by examining the local neighborhood around each potential habitat location.</p>
+<h3 id="conceptual-background">Conceptual Background</h3>
+<p>Chamois don’t just need forest and steep slopes - they need sufficient amounts of these resources <em>within their home range</em>. A focal (moving window) analysis evaluates each cell by examining its neighborhood, essentially asking: “If a chamois lived here, would there be enough resources within its typical home range?”</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Think About This</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Why is it not enough to simply identify where forests and steep slopes exist?</li>
+<li>How does home range size influence habitat suitability?</li>
+<li>What does it mean if a location has high forest cover within 1 km² but no steep slopes nearby?</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="data-preparation">Data Preparation</h3>
+<p>Before conducting focal statistics, you need to handle NA (no data) values. Binary rasters (forest/non-forest, steep/non-steep) need to explicitly represent “absence” as 0 rather than NA.</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Replacing NA Values</strong></p>
+</div>
+<div class="callout-content">
+<p>Use the <code>classify()</code> function with a reclassification matrix that maps NA to 0:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="" aria-hidden="true" tabindex="-1"></a>new_raster <span class="ot">&lt;-</span> <span class="fu">classify</span>(old_raster, <span class="fu">cbind</span>(<span class="cn">NA</span>, <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<h3 id="calculate-window-size">Calculate Window Size</h3>
+<p>To represent a 1 km² home range, you need to determine the appropriate window size in raster cells.</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Mathematical Approach</strong></p>
+</div>
+<div class="callout-content">
+<p>Given: - Home range area = 1 km² = 1,000,000 m² - Raster resolution = 25m × 25m = 625 m² per cell - Number of cells needed = 1,000,000 m² ÷ 625 m²/cell = ? - Window dimensions (assuming square window) = √(number of cells) = ?</p>
+<p>Calculate this yourself, then check the code below.</p>
+</div>
+</div>
+</div>
+<h3 id="perform-focal-analysis">Perform Focal Analysis</h3>
+<p>The focal analysis counts how many forest cells (or steep cells) exist within the moving window around each location.</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Focal Analysis in terra</strong></p>
+</div>
+<div class="callout-content">
+<p>The <code>focal()</code> function requires: - Input raster - Weight matrix (<code>w</code>) - use <code>matrix(1, nrow=size, ncol=size)</code> for equal weights - Function to apply (<code>fun = "sum"</code> to count cells with value 1) - <code>na.rm = TRUE</code> to handle any remaining NA values</p>
+</div>
+</div>
+</div>
+<div id="fig-focal-results" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-focal-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Focal analysis results showing local resource availability</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-focal-results-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Interpret Your Results</strong></p>
+</div>
+<div class="callout-content">
+<p>The output values typically range from 0 to ~1500-1600.</p>
+<p><strong>Think about:</strong> - What does a value of 0 mean? What about 1600? - Why might the maximum be less than 1600 (the theoretical maximum)? - Which areas have the highest forest counts? Highest steep terrain counts? - How do these patterns relate to the topography of Canton Lucerne?</p>
+</div>
+</div>
+</div>
+</section>
+<section id="task-8-calculate-distance-to-human-disturbance" class="slide level2">
+<h2>Task 8: Calculate Distance to Human Disturbance</h2>
+<p><strong>Objective</strong>: Quantify how far each location is from human disturbance sources (settlements and major roads). Chamois are sensitive to human activity, so greater distances should indicate better habitat quality.</p>
+<p><strong>Background</strong>: Distance calculations create continuous surfaces where each cell’s value represents its proximity to the nearest feature. This allows you to model avoidance behavior - animals may select habitat based on distance to disturbance sources.</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Conceptual Question</strong></p>
+</div>
+<div class="callout-content">
+<p>How is a distance-based criterion different from the binary (present/absent) classification we used for forest and steep areas? Why use distance rather than simply excluding areas near roads and settlements?</p>
+</div>
+</div>
+</div>
+<h3 id="workflow-1">Workflow</h3>
+<p>To calculate distances in a raster environment:</p>
+<ol type="1">
+<li><strong>Rasterize</strong> vector features (roads and settlements)</li>
+<li><strong>Calculate Euclidean distance</strong> from each cell to the nearest feature</li>
+<li><strong>Analyze</strong> the resulting distance surfaces</li>
+</ol>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Distance Calculation</strong></p>
+</div>
+<div class="callout-content">
+<p>The terra <code>distance()</code> function: - Takes a raster where features are marked with values (typically 1) - Calculates the straight-line distance from each cell to the nearest non-NA cell - Returns distances in map units (meters for EPSG:2056)</p>
+</div>
+</div>
+</div>
+<div id="fig-distances" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p>Distance surfaces from human disturbance sources</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-distances-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reflection Questions</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>What are the maximum distances to roads and settlements in your study area?</li>
+<li>Where would you expect to find the most remote areas?</li>
+<li>How might chamois use areas at different distances from human activity?</li>
+<li>Could there be areas that are <em>too</em> remote for chamois? What other factors might limit habitat beyond distance to disturbance?</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="task-9-standardize-criteria-to-common-scale" class="slide level2">
+<h2>Task 9: Standardize Criteria to Common Scale</h2>
+<p><strong>Objective</strong>: Transform all four habitat criteria onto a common suitability scale, enabling meaningful comparison and combination of different environmental factors.</p>
+<h3 id="the-standardization-problem">The Standardization Problem</h3>
+<p>You now have four criteria measured in different units: - <code>focal_forest</code>: count of forest cells (0-1600) - <code>focal_steepness</code>: count of steep cells (0-1600) - <code>distance_roads</code>: meters (0-several thousand) - <code>distance_settlement</code>: meters (0-several thousand)</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Critical Question</strong></p>
+</div>
+<div class="callout-content">
+<p>Why can’t we directly combine these raw values? What problems would arise if we simply added them together?</p>
+<p>Consider: - A location with 500 forest cells + 500 steep cells + 5000m from roads + 3000m from settlements = 9000 - Another location with 100 forest cells + 100 steep cells + 200m from roads + 100m from settlements = 500</p>
+<p>Does the first location really have 18× better habitat? How do the different measurement units affect interpretation?</p>
+</div>
+</div>
+</div>
+<h3 id="solution-suitability-classification-grading">Solution: Suitability Classification (Grading)</h3>
+<p>Standardize all criteria using a common five-class suitability scale:</p>
+<ul>
+<li><strong>1</strong> = unsuitable</li>
+<li><strong>2</strong> = conditionally suitable</li>
+<li><strong>3</strong> = moderately suitable</li>
+<li><strong>4</strong> = well suitable</li>
+<li><strong>5</strong> = very well suitable</li>
+</ul>
+<h3 id="classification-thresholds">Classification Thresholds</h3>
+<p>The following thresholds are based on ecological considerations and expert knowledge:</p>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Forest Cover</a></li><li><a href="#tabset-1-2">Steep Terrain</a></li><li><a href="#tabset-1-3">Road Distance</a></li><li><a href="#tabset-1-4">Settlement Distance</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<p><strong>focal_forest</strong> (cell count within 1 km²):</p>
+<ul>
+<li>0 - 300 → 1 (unsuitable: &lt;20% forest)</li>
+<li>300 - 600 → 2 (conditional: 20-37%)</li>
+<li>600 - 900 → 3 (moderate: 37-56%)</li>
+<li>900 - 1200 → 4 (good: 56-75%)</li>
+<li>1200 - 2000 → 5 (excellent: &gt;75%)</li>
+</ul>
+</div>
+<div id="tabset-1-2">
+<p><strong>focal_steepness</strong> (cell count within 1 km²):</p>
+<ul>
+<li>0 - 200 → 1 (unsuitable: &lt;12% steep)</li>
+<li>200 - 400 → 2 (conditional: 12-25%)</li>
+<li>400 - 600 → 3 (moderate: 25-37%)</li>
+<li>600 - 800 → 4 (good: 37-50%)</li>
+<li>800 - 2000 → 5 (excellent: &gt;50%)</li>
+</ul>
+</div>
+<div id="tabset-1-3">
+<p><strong>distance_roads</strong> (meters):</p>
+<ul>
+<li>0 - 150 → 1 (unsuitable: very close)</li>
+<li>150 - 300 → 2 (conditional: close)</li>
+<li>300 - 450 → 3 (moderate: medium distance)</li>
+<li>450 - 600 → 4 (good: far)</li>
+<li>600 - 20000 → 5 (excellent: very far)</li>
+</ul>
+</div>
+<div id="tabset-1-4">
+<p><strong>distance_settlement</strong> (meters):</p>
+<ul>
+<li>0 - 250 → 1 (unsuitable: very close)</li>
+<li>250 - 500 → 2 (conditional: close)</li>
+<li>500 - 750 → 3 (moderate: medium distance)</li>
+<li>750 - 1000 → 4 (good: far)</li>
+<li>1000 - 20000 → 5 (excellent: very far)</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Think About the Thresholds</strong></p>
+</div>
+<div class="callout-content">
+<p>These classifications represent ecological hypotheses about chamois habitat preferences.</p>
+<p><strong>Questions to consider:</strong> - Are these thresholds reasonable? - How might you validate or refine them? - Should all criteria have equal weight in the final analysis? - How sensitive might the results be to these classification boundaries?</p>
+</div>
+</div>
+</div>
+<h3 id="perform-the-reclassifications">Perform the Reclassifications</h3>
+<p>Now apply these classification schemes to each criterion. You’ll use the same reclassification approach you learned earlier.</p>
+<h3 id="visualize-and-compare">Visualize and Compare</h3>
+<p>Examine all four standardized criteria side-by-side:</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Compare the Patterns</strong></p>
+</div>
+<div class="callout-content">
+<p>Now that all criteria are on the same scale (1-5), you can meaningfully compare them.</p>
+<p><strong>Look for:</strong> - Which criterion shows the most variability? - Which areas score high on multiple criteria? - Are there any surprising patterns? - How do topographic factors (forest, slope) relate to human factors (roads, settlements)?</p>
+</div>
+</div>
+</div>
+</section>
+<section id="task-10-multi-criteria-overlay-analysis" class="slide level2">
+<h2>Task 10: Multi-Criteria Overlay Analysis</h2>
+<p><strong>Objective</strong>: Combine all four standardized criteria into a single habitat suitability map using raster overlay analysis.</p>
+<h3 id="conceptual-background-1">Conceptual Background</h3>
+<p>Now that all criteria are on a common 1-5 scale, you can combine them to identify areas that satisfy multiple habitat requirements simultaneously. This is the essence of Multi-Criteria Evaluation (MCE).</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Think About the Method</strong></p>
+</div>
+<div class="callout-content">
+<p>We’ll use a simple additive model (sum of all criteria).</p>
+<p><strong>Consider:</strong> - What assumptions does this make about how criteria interact? - Does it assume all criteria are equally important? - Could two moderate scores compensate for one poor score? - What’s the theoretical range of output values? (Min = ?, Max = ?)</p>
+</div>
+</div>
+</div>
+<h3 id="perform-the-overlay">Perform the Overlay</h3>
+<p>One of the great advantages of raster data is that map algebra is straightforward - you can use standard arithmetic operators:</p>
+<h3 id="analyze-the-results">Analyze the Results</h3>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Interpret the Value Range</strong></p>
+</div>
+<div class="callout-content">
+<p>The sum values range from 4 (all criteria scored 1) to 20 (all criteria scored 5).</p>
+<p><strong>What does this mean?</strong> - <strong>4-8</strong>: Poor habitat - multiple limiting factors - <strong>9-14</strong>: Moderate habitat - mixed conditions - <strong>15-20</strong>: Excellent habitat - all requirements met</p>
+<p>Do you observe the full range in your study area? Why or why not?</p>
+</div>
+</div>
+</div>
+<h3 id="visualize-the-habitat-suitability-map">Visualize the Habitat Suitability Map</h3>
+<h3 id="create-simplified-classification">Create Simplified Classification</h3>
+<p>For management and communication purposes, create a three-class version:</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Geographic Patterns</strong></p>
+</div>
+<div class="callout-content">
+<p>Examine your final map carefully:</p>
+<ul>
+<li>Where are the most suitable habitats located?</li>
+<li>What geographic features characterize high-suitability areas?</li>
+<li>Are there surprising results? Areas you expected to be suitable that aren’t, or vice versa?</li>
+<li>How contiguous are the suitable habitat patches?</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="task-11-model-validation-and-critical-evaluation" class="slide level2">
+<h2>Task 11: Model Validation and Critical Evaluation</h2>
+<p><strong>Objective</strong>: Critically evaluate your habitat suitability model by comparing it with actual chamois distribution data and calculating quantitative statistics.</p>
+<h3 id="final-data-processing">Final Data Processing</h3>
+<p>Create a final, polished version of your suitability map:</p>
+<h3 id="calculate-habitat-availability">Calculate Habitat Availability</h3>
+<p>Quantify how much suitable habitat exists in each suitability class:</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Interpret the Statistics</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>What percentage of Canton Lucerne is “highly suitable” for chamois?</li>
+<li>How much area is in each category?</li>
+<li>Does this match your expectations based on the canton’s geography?</li>
+</ul>
+</div>
+</div>
+</div>
+<h3 id="compare-with-actual-distribution">Compare with Actual Distribution</h3>
+<p>Now validate your model against reality. Visit the Info Fauna database to view actual chamois observations:</p>
+<p><strong><a href="https://lepus.infofauna.ch/carto/70791">Chamois Distribution Map - Info Fauna</a></strong></p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Critical Evaluation</strong></p>
+</div>
+<div class="callout-content">
+<p>Compare your suitability map with the actual distribution:</p>
+<p><strong>Questions to consider:</strong> 1. Do areas with high predicted suitability show actual chamois presence? 2. Are there areas you predicted as suitable but have no observations? Why might this be? 3. Are there observed chamois in areas your model predicts as unsuitable? What factors might your model be missing? 4. How well does your model capture the overall distribution pattern? 5. What are the main sources of agreement and disagreement?</p>
+<p><strong>Important:</strong> Absence of observations doesn’t always mean absence of animals - consider sampling effort, accessibility, and data reporting biases.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="critical-discussion" class="slide level2">
+<h2>Critical Discussion</h2>
+<h3 id="model-limitations-and-improvements">Model Limitations and Improvements</h3>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Reflect on Your Methodology</strong></p>
+</div>
+<div class="callout-content">
+<p>Your model makes several simplifying assumptions. Consider these limitations and potential improvements:</p>
+</div>
+</div>
+</div>
+<h4 id="equal-weighting-of-criteria">1. Equal Weighting of Criteria</h4>
+<p><strong>Current approach:</strong> All four criteria contribute equally (simple sum).</p>
+<p><strong>Questions:</strong> - Is forest cover really as important as distance to settlements? - Should steep terrain be weighted more heavily, as it’s a primary anti-predator strategy? - How could you determine appropriate weights?</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Hint: Weighted Overlay</strong></p>
+</div>
+<div class="callout-content">
+<p>You could modify the overlay to use weights:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: assign different importance weights</span></span>
+<span id="cb2-2"><a href="" aria-hidden="true" tabindex="-1"></a>weighted_suitability <span class="ot">&lt;-</span> <span class="fl">0.3</span><span class="sc">*</span>grading_forest <span class="sc">+</span> <span class="fl">0.3</span><span class="sc">*</span>grading_steepness <span class="sc">+</span></span>
+<span id="cb2-3"><a href="" aria-hidden="true" tabindex="-1"></a>                        <span class="fl">0.2</span><span class="sc">*</span>grading_roads <span class="sc">+</span> <span class="fl">0.2</span><span class="sc">*</span>grading_settlement</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<h4 id="classification-thresholds-1">2. Classification Thresholds</h4>
+<p><strong>Current approach:</strong> Fixed thresholds based on general ecological principles.</p>
+<p><strong>Improvements:</strong> - Calibrate thresholds using actual chamois location data - Use statistical methods (e.g., resource selection functions) - Incorporate uncertainty in threshold definitions - Test sensitivity to different threshold values</p>
+<h4 id="missing-criteria">3. Missing Criteria</h4>
+<p><strong>What factors did we omit?</strong></p>
+<div class="panel-tabset">
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Environmental</a></li><li><a href="#tabset-2-2">Human Impact</a></li><li><a href="#tabset-2-3">Biotic Interactions</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1">
+<ul>
+<li><strong>Elevation</strong>: Chamois prefer specific elevation ranges (typically 1000-3000m in Alps)</li>
+<li><strong>Aspect</strong>: South-facing slopes have less snow and earlier vegetation</li>
+<li><strong>Vegetation type</strong>: Not all forests are equal - species composition matters</li>
+<li><strong>Snow depth</strong>: Critical for winter survival and accessibility</li>
+<li><strong>Rock/cliff presence</strong>: Provides additional escape terrain</li>
+</ul>
+</div>
+<div id="tabset-2-2">
+<ul>
+<li><strong>Recreation areas</strong>: Hiking trails, ski resorts, climbing areas</li>
+<li><strong>Seasonal access</strong>: Different impacts in winter vs.&nbsp;summer</li>
+<li><strong>Hunting pressure</strong>: Legal hunting affects distribution</li>
+<li><strong>Historical presence</strong>: Where have chamois traditionally been?</li>
+</ul>
+</div>
+<div id="tabset-2-3">
+<ul>
+<li><strong>Predators</strong>: Lynx, wolf distribution</li>
+<li><strong>Competitors</strong>: Red deer, ibex overlap</li>
+<li><strong>Disease</strong>: Presence of keratoconjunctivitis or other diseases</li>
+</ul>
+</div>
+</div>
+</div>
+<h4 id="compensatory-vs.-limiting-factors">4. Compensatory vs.&nbsp;Limiting Factors</h4>
+<p><strong>Current model:</strong> Allows compensation - high scores on some criteria can offset low scores on others.</p>
+<p><strong>Ecological reality:</strong> Some factors may be <em>limiting</em> - absolutely required regardless of other conditions.</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Think About This</strong></p>
+</div>
+<div class="callout-content">
+<p>Should the model allow an area with zero steep terrain but excellent forest cover to be classified as “suitable”? Or is steep terrain a non-negotiable requirement?</p>
+<p>You could implement threshold constraints:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="" aria-hidden="true" tabindex="-1"></a><span class="co"># Example: require minimum steepness</span></span>
+<span id="cb3-2"><a href="" aria-hidden="true" tabindex="-1"></a>suitable_habitat <span class="ot">&lt;-</span> grading_sum</span>
+<span id="cb3-3"><a href="" aria-hidden="true" tabindex="-1"></a>suitable_habitat[grading_steepness <span class="sc">&lt;</span> <span class="dv">3</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span>  <span class="co"># Exclude areas without adequate steep terrain</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<h3 id="data-quality-considerations">Data Quality Considerations</h3>
+<h4 id="spatial-resolution">Spatial Resolution</h4>
+<ul>
+<li>Is 25m appropriate for modeling home ranges of ~1 km²?</li>
+<li>How does resolution affect focal analysis results?</li>
+</ul>
+<h4 id="temporal-mismatch">Temporal Mismatch</h4>
+<ul>
+<li>Are all datasets from the same time period?</li>
+<li>Have land use patterns changed since data collection?</li>
+</ul>
+<h4 id="data-accuracy">Data Accuracy</h4>
+<ul>
+<li>How accurate is the land cover classification?</li>
+<li>Are road and settlement data complete and current?</li>
+</ul>
+<h3 id="scale-dependencies">Scale Dependencies</h3>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Multi-Scale Considerations</strong></p>
+</div>
+<div class="callout-content">
+<p>Chamois habitat selection operates at multiple scales: - <strong>Regional scale</strong>: Climate, elevation zones - <strong>Landscape scale</strong>: Home range characteristics (what we modeled) - <strong>Local scale</strong>: Specific feeding sites, bedding areas</p>
+<p>Your model addresses primarily the landscape scale. Results might differ at other scales.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="extension-ideas" class="slide level2">
+<h2>Extension Ideas</h2>
+<p>If you want to take this analysis further:</p>
+<h3 id="remove-water-bodies">1. Remove Water Bodies</h3>
+<h3 id="add-elevation-constraints">2. Add Elevation Constraints</h3>
+<h3 id="conduct-sensitivity-analysis">3. Conduct Sensitivity Analysis</h3>
+<p>Test how results change with different: - Classification thresholds - Criterion weights - Home range window sizes - Inclusion/exclusion of criteria</p>
+<h3 id="validate-quantitatively">4. Validate Quantitatively</h3>
+<p>If you have access to presence/absence data: - Calculate AUC (Area Under Curve) or similar metrics - Perform cross-validation - Test predictive accuracy</p>
+</section>
+<section id="concluding-thoughts" class="slide level2">
+<h2>Concluding Thoughts</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Professional Responsibility</strong></p>
+</div>
+<div class="callout-content">
+<p>As a GIS analyst, you must:</p>
+<p>✓ <strong>Acknowledge limitations</strong> - No model is perfect; be transparent about assumptions and constraints ✓ <strong>Validate results</strong> - Compare predictions with empirical data whenever possible ✓ <strong>Consider context</strong> - Understand the ecology, not just the technical methods ✓ <strong>Communicate uncertainty</strong> - Decision-makers need to know confidence levels ✓ <strong>Document thoroughly</strong> - Future users must understand your methodology</p>
+<p><strong>Remember:</strong> A beautiful map doesn’t necessarily represent reality. Critical thinking and validation are essential.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-of-key-concepts" class="slide level2">
+<h2>Summary of Key Concepts</h2>
+<p>Through this exercise, you’ve learned:</p>
+<ol type="1">
+<li><strong>Vector to raster conversion</strong> - Transforming different data types for analysis</li>
+<li><strong>Terrain analysis</strong> - Deriving slope from elevation data</li>
+<li><strong>Reclassification</strong> - Converting continuous and categorical data</li>
+<li><strong>Focal analysis</strong> - Neighborhood operations for landscape context</li>
+<li><strong>Distance calculation</strong> - Euclidean distance surfaces</li>
+<li><strong>Multi-criteria evaluation</strong> - Standardization and overlay of disparate criteria</li>
+<li><strong>Model validation</strong> - Comparing predictions with observations</li>
+<li><strong>Critical evaluation</strong> - Understanding limitations and assumptions</li>
+</ol>
+<p>These skills are fundamental to spatial analysis and transferable to many other applications beyond wildlife habitat modeling.</p>
+
+</section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p><a href="../index.html">home</a></p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="raster-data-exercise_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="raster-data-exercise_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1050,
+
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
