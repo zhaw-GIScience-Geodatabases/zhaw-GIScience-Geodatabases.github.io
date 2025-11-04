@@ -16,7 +16,7 @@ book:
       - simple-features.qmd
       - vector-io.qmd
       - spatial-operations.qmd
-    - part:  vector-data-exercise.qmd
+    - vector-data-exercise.qmd
     - part: Raster Data Lecture
       chapters:
       - raster-data.qmd
