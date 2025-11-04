@@ -1,0 +1,302 @@
+---
+title: "Vector Data Exercise"
+format: html
+execute:
+  echo: false
+  eval: false
+---
+
+## Introduction
+
+In this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.
+
+Choose at least 2 Tasks ("Szenarios") and solve these!
+
+```{r}
+library(sf)
+library(dplyr)
+library(ggplot2)
+```
+
+All data is available on moodle, under the section *Spatial Analysis I*:
+
+- **swiss_TLM3D.gpkg** contains:
+  - `tlm_bb`: Land cover polygons with attribute `objektart` (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)
+  - `tlm_strassen`: Road network with attribute `objektart` (Autobahn, Autostrasse, various street widths, paths, etc.)
+- **swissBOUNDARIES3D.gpkg** contains:
+  - `kantonsgebiet_lu`: Canton of Luzern boundary
+
+All data use CRS EPSG:2056 (CH1903+ / LV95).
+
+## Scenario 1: Protected Area Planning
+
+The canton is considering establishing a nature protection zone for wetland ecosystems. To inform this decision, you need to analyze the current state of wetlands.
+
+- **Question 1.1:** How much wetland area ("Feuchtgebiet") currently exists in the canton of Luzern (in km²)?
+- **Question 1.2:** Wetlands are ecologically most valuable when they are connected to water bodies. Identify all wetlands that are either directly adjacent to or within 50 meters of standing water bodies ("Stehende Gewaesser"). What percentage of the total wetland area does this represent?
+- **Question 1.3:** Create a map showing:
+  - All wetlands in the canton
+  - Wetlands connected to water (highlighted differently)
+  - Standing water bodies
+
+*Think about: Which spatial operations do you need? How do you define "connected"?*
+
+```{r}
+# Load data
+tlm3d_path <- "data/Spatial_Analysis_II/swiss_TLM3D.gpkg"
+luzern <- read_sf("data/Spatial_Analysis_II/swissBOUNDARIES3D.gpkg")
+tlm_bb <- read_sf(tlm3d_path, "tlm_bb")
+tlm_bb <- st_set_crs(tlm_bb, 2056)
+
+# Question 1.1: Total wetland area
+wetlands <- tlm_bb |>
+  filter(objektart == "Feuchtgebiet") |>
+  st_filter(luzern)
+
+wetlands_clipped <- st_intersection(wetlands, luzern)
+total_wetland_area <- sum(st_area(wetlands_clipped))
+total_wetland_area_km2 <- as.numeric(total_wetland_area) / 1e6
+
+# Question 1.2: Wetlands connected to water
+water_bodies <- tlm_bb |>
+  filter(objektart == "Stehende Gewaesser") |>
+  st_filter(luzern)
+
+water_bodies_clipped <- st_intersection(water_bodies, luzern)
+
+# Create 50m buffer around water bodies
+water_buffer <- st_buffer(water_bodies_clipped, dist = 50)
+
+# Find wetlands that intersect with water bodies or their buffers
+wetlands_connected <- st_filter(wetlands_clipped, water_buffer, .predicate = st_intersects)
+
+connected_area <- sum(st_area(wetlands_connected))
+connected_area_km2 <- as.numeric(connected_area) / 1e6
+percentage_connected <- (connected_area / total_wetland_area) * 100
+
+# Question 1.3: Visualization
+ggplot() +
+  geom_sf(data = luzern, fill = "gray95", color = "black") +
+  geom_sf(data = wetlands_clipped, aes(fill = "All wetlands"), alpha = 0.6) +
+  geom_sf(data = wetlands_connected, aes(fill = "Connected wetlands"), alpha = 0.8) +
+  geom_sf(data = water_bodies_clipped, aes(fill = "Water bodies"), alpha = 0.7) +
+  scale_fill_manual(
+    values = c("All wetlands" = "lightgreen",
+               "Connected wetlands" = "darkgreen",
+               "Water bodies" = "steelblue"),
+    name = "Feature type"
+  ) +
+  theme_minimal() +
+  labs(title = "Wetlands and Water Bodies in Canton Luzern",
+       subtitle = sprintf("%.1f%% of wetlands are connected to water bodies", percentage_connected))
+
+library(glue)
+glue("**Answer 1.1:** The canton of Luzern contains approximately {round(total_wetland_area_km2, 2)} km² of wetland area.")
+glue("**Answer 1.2:** Approximately {round(connected_area_km2, 2)} km² of wetlands are connected to water bodies, representing {round(percentage_connected, 1)}% of the total wetland area.")
+```
+
+
+
+
+
+## Scenario 2: Accessibility Analysis
+
+A hiking organization wants to understand forest accessibility in Luzern.
+
+- **Question 2.1:** Calculate the total forest area in Luzern that is accessible by small paths (1m or 2m wide paths: "1m Weg", "2m Weg"). Define "accessible" as being within 200 meters of such a path.
+- **Question 2.2:** What percentage of Luzern's total forest area is accessible by these small paths?
+- **Question 2.3:** Compare this with accessibility by major roads (Autobahn, Autostrasse, and streets ≥6m). How much forest area is within 200m of major roads? 
+- **Question 2.4:** Create a visualization that effectively communicates your findings.
+
+*Think about: How do you combine multiple road types? How do you avoid double-counting areas accessible by multiple paths?*
+
+```{r}
+# Load road data
+tlm_strassen <- read_sf(tlm3d_path, "tlm_strassen")
+tlm_strassen <- st_set_crs(tlm_strassen, 2056)
+
+# Get forests in Luzern
+forests <- tlm_bb |>
+  filter(objektart == "Wald") |>
+  st_filter(luzern)
+
+forests_clipped <- st_intersection(forests, luzern)
+total_forest_area <- sum(st_area(forests_clipped))
+
+# Question 2.1 & 2.2: Forests accessible by small paths
+small_paths <- tlm_strassen |>
+  filter(objektart %in% c("1m Weg", "2m Weg")) |>
+  st_filter(luzern)
+
+# Create 200m buffer around small paths
+small_paths_buffer <- st_buffer(small_paths, dist = 200)
+
+# Union overlapping buffers to avoid double counting
+small_paths_buffer_union <- st_union(small_paths_buffer)
+
+# Find forest areas within buffers
+forests_accessible_paths <- st_intersection(forests_clipped, small_paths_buffer_union)
+accessible_path_area <- sum(st_area(forests_accessible_paths))
+percentage_accessible_paths <- (accessible_path_area / total_forest_area) * 100
+
+# Question 2.3: Forests accessible by major roads
+major_roads <- tlm_strassen |>
+  filter(objektart %in% c("Autobahn", "Autostrasse", "10m Strasse",
+                          "8m Strasse", "6m Strasse")) |>
+  st_filter(luzern)
+
+# Create 200m buffer around major roads
+major_roads_buffer <- st_buffer(major_roads, dist = 200)
+major_roads_buffer_union <- st_union(major_roads_buffer)
+
+# Find forest areas within buffers
+forests_accessible_roads <- st_intersection(forests_clipped, major_roads_buffer_union)
+accessible_road_area <- sum(st_area(forests_accessible_roads))
+percentage_accessible_roads <- (accessible_road_area / total_forest_area) * 100
+
+# Question 2.4: Visualization
+ggplot() +
+  geom_sf(data = luzern, fill = "gray95", color = "black", linewidth = 0.8) +
+  geom_sf(data = forests_clipped, fill = "lightgreen", alpha = 0.3) +
+  geom_sf(data = forests_accessible_paths, aes(fill = "Accessible by paths"), alpha = 0.6) +
+  geom_sf(data = forests_accessible_roads, aes(fill = "Accessible by roads"), alpha = 0.6) +
+  scale_fill_manual(
+    values = c("Accessible by paths" = "forestgreen",
+               "Accessible by roads" = "orange"),
+    name = "Forest accessibility"
+  ) +
+  theme_minimal() +
+  labs(title = "Forest Accessibility in Canton Luzern",
+       subtitle = sprintf("Paths: %.1f%% | Major roads: %.1f%%",
+                         percentage_accessible_paths, percentage_accessible_roads))
+
+
+
+glue("**Answer 2.1:** Approximately {round(as.numeric(accessible_path_area) / 1e6, 2)} km² of forest area is accessible by small paths (within 200m).")
+glue("**Answer 2.2:** This represents {round(percentage_accessible_paths, 1)}% of Luzern's total forest area.")
+glue("**Answer 2.3:** In comparison, {round(as.numeric(accessible_road_area) / 1e6, 2)} km² ({round(percentage_accessible_roads, 1)}%) of forest area is accessible by major roads. The higher percentage accessible by major roads suggests significant forest fragmentation by infrastructure, which can impact wildlife habitat and forest ecosystem connectivity.")
+```
+
+
+
+## Scenario 3: Alpine Environment Analysis
+
+Climate researchers are interested in high-altitude features in Luzern.
+
+- **Question 3.1:** Identify all rocky areas in Luzern by combining the following land cover types: "Fels", "Fels locker", "Felsbloecke", "Felsbloecke locker", and "Lockergestein". What is their total area?
+- **Question 3.2:** Some of these rocky areas may contain glaciers or permanent snow. Find all rocky areas that are within 100 meters of glaciers ("Gletscher") or snow fields ("Schneefeld Toteis"). How much area does this represent?
+- **Question 3.3:** Create a map showing the spatial distribution of:
+  - All rocky areas
+  - Rocky areas near ice/snow
+  - Glaciers and snow fields
+
+*Think about: Are glaciers and snow fields already part of rocky areas, or separate? How does this affect your analysis?*
+
+```{r}
+# Question 3.1: All rocky areas
+rocky_types <- c("Fels", "Fels locker", "Felsbloecke", "Felsbloecke locker", "Lockergestein")
+
+rocky_areas <- tlm_bb |>
+  filter(objektart %in% rocky_types) 
+
+total_rocky_area <- sum(st_area(rocky_areas))
+total_rocky_area_km2 <- as.numeric(total_rocky_area) / 1e6
+
+# Question 3.2: Rocky areas near glaciers/snow
+ice_snow <- tlm_bb |>
+  filter(objektart %in% c("Gletscher", "Schneefeld Toteis"))
+
+# Create 100m buffer around ice/snow
+ice_snow_buffer <- st_buffer(ice_snow, dist = 100)
+
+# Find rocky areas (in Luzern) within buffer
+rocky_near_ice <- st_filter(rocky_areas, ice_snow_buffer, .predicate = st_intersects)
+rocky_near_ice_area <- sum(st_area(rocky_near_ice))
+rocky_near_ice_area_km2 <- as.numeric(rocky_near_ice_area) / 1e6
+percentage_near_ice <- (rocky_near_ice_area / total_rocky_area) * 100
+
+# Question 3.3: Visualization
+ggplot() +
+  geom_sf(data = rocky_areas, aes(fill = "Rocky areas"), alpha = 0.5) +
+  geom_sf(data = rocky_near_ice, aes(fill = "Rocky near ice/snow"), alpha = 0.7) +
+  scale_fill_manual(
+    values = c("Rocky areas" = "gray70",
+               "Rocky near ice/snow" = "brown",
+               "Glaciers/snow" = "lightblue"),
+    name = "Feature type"
+  ) +
+  theme_minimal() +
+  labs(title = "Alpine Environment in Canton Luzern",
+       subtitle = sprintf("%.1f%% of rocky areas are near glaciers/snow fields", percentage_near_ice))
+
+
+```
+
+## Scenario 4: Integrated Analysis
+
+**Research Question:** The canton wants to identify potential locations for small reservoirs for agricultural water supply. Suitable locations should meet ALL of the following criteria:
+
+- Located in or near wetlands (within 20m)
+- Within 300m of an existing road (any type, for construction access)
+- NOT in protected forest areas
+- NOT on steep rocky terrain (Fels, Felsbloecke)
+
+**Task:** Identify and map all suitable areas. Report the total area available and discuss the spatial distribution of suitable locations.
+
+*Think about: This requires combining multiple spatial operations. What is the logical sequence? Do you need union, intersection, or difference operations?*
+
+```{r}
+# Step 1: Create suitable wetland zones (wetlands + 20m buffer)
+wetland_buffer <- st_buffer(wetlands_clipped, dist = 20)
+wetland_zones <- st_union(wetland_buffer)
+
+# Step 2: Create road accessibility zones (300m buffer around all roads)
+all_roads <- tlm_strassen |>
+  st_filter(luzern)
+
+road_buffer <- st_buffer(all_roads, dist = 300)
+road_zones <- st_union(road_buffer)
+
+# Step 3: Identify exclusion zones (forests and steep rocky terrain)
+forests_exclusion <- forests_clipped
+
+rocky_exclusion_types <- c("Fels", "Felsbloecke")
+rocky_exclusion <- tlm_bb |>
+  filter(objektart %in% rocky_exclusion_types) |>
+  st_filter(luzern) |>
+  st_intersection(luzern)
+
+# Union all exclusion zones
+exclusion_zones <- st_union(st_union(forests_exclusion), rocky_exclusion)
+
+# Step 4: Find suitable areas (intersection of criteria, minus exclusions)
+# Areas must be in both wetland zones AND road zones
+suitable_base <- st_intersection(wetland_zones, road_zones)
+
+# Remove exclusion zones
+suitable_areas <- st_difference(suitable_base, exclusion_zones)
+
+# Calculate total suitable area
+suitable_area_total <- sum(st_area(suitable_areas))
+suitable_area_km2 <- as.numeric(suitable_area_total) / 1e6
+
+# Visualization
+ggplot() +
+  geom_sf(data = luzern, fill = "gray95", color = "black", linewidth = 0.8) +
+  geom_sf(data = wetlands_clipped, fill = "lightblue", alpha = 0.3) +
+  geom_sf(data = forests_exclusion, fill = "lightgreen", alpha = 0.3) +
+  geom_sf(data = rocky_exclusion, fill = "gray60", alpha = 0.3) +
+  geom_sf(data = suitable_areas, fill = "gold", alpha = 0.8) +
+  theme_minimal() +
+  labs(title = "Potential Reservoir Sites in Canton Luzern",
+       subtitle = sprintf("Total suitable area: %.2f km²", suitable_area_km2))
+
+glue("**Answer:** The analysis identified approximately {round(suitable_area_km2, 2)} km² of potentially suitable area for small reservoir construction. These areas meet all criteria: they are located near wetlands, accessible by roads within 300m, and exclude both forest and steep rocky terrain.")
+
+glue("The spatial distribution shows that suitable locations are relatively limited and scattered throughout the canton. This is because the combination of all criteria creates a restrictive set of conditions. Most wetland areas are either located within forests (excluded for environmental protection) or far from road infrastructure. The identified suitable areas represent a compromise between ecological considerations (proximity to wetlands for water availability), practical constraints (road accessibility), and land use restrictions (avoiding forests and steep terrain).")
+```
+
+
+
+
+

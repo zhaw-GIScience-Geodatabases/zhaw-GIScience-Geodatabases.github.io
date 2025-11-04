@@ -11,17 +11,21 @@ book:
         href: https://twitter.com
   chapters:
     - index.qmd
-    - part: Vector Data
+    - part: Vector Data Lecture
       chapters:
       - simple-features.qmd
       - vector-io.qmd
       - spatial-operations.qmd
-    - part: Raster Data
+    - part:  vector-data-exercise.qmd
+    - part: Raster Data Lecture
       chapters:
       - raster-data.qmd
       - raster-io.qmd
       - raster-operations.qmd
       - raster-vector-operations.qmd
+    # - part: Raster Data Exercises
+    #   chapters: 
+    #   - raster-data-exercise.qmd
 
 
 format: 
