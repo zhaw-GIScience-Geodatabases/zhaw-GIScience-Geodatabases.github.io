@@ -728,5 +728,192 @@
       "Raster Data Lecture",
       "<span class='chapter-number'>8</span>  <span class='chapter-title'>Raster-Vector Operations</span>"
     ]
+  },
+  {
+    "objectID": "raster-data-exercise.html",
+    "href": "raster-data-exercise.html",
+    "title": "Raster Data Exercise",
+    "section": "",
+    "text": "Introduction\nIn this exercise, you will develop a spatial habitat suitability model to identify potential chamois habitats in the Canton of Lucerne. This multi-criteria analysis will combine your knowledge of vector and raster data processing, spatial analysis, and ecological modeling.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#introduction",
+    "href": "raster-data-exercise.html#introduction",
+    "title": "Raster Data Exercise",
+    "section": "",
+    "text": "Ecological Background\nChamois (Rupicapra rupicapra) are mountain ungulates native to European mountain ranges. Understanding their habitat requirements is crucial for conservation planning. Based on ecological research, chamois have the following habitat requirements:\n\nHome range size: Approximately 1 km²\nForest cover: Require sufficient forest within their home range for refuge and thermal protection\nSteep terrain: Need steep areas (&gt; 30°) where they have physiological advantages over predators\nHuman disturbance: Avoid human settlements and heavily trafficked roads\n\n\n\nAnalytical Workflow\nFigure 9.1 shows the complete workflow for this analysis. Study this process model carefully - it will guide you through the entire exercise. The process model is also available as a high-resolution PDF on Moodle.\n\n\n\n\n\n\nFigure 9.1: Process model for chamois habitat suitability analysis\n\n\n\n\n\n\n\n\n\nTipWorking with the Process Model\n\n\n\nBefore you begin, take time to understand:\n\nWhat input datasets are needed?\nWhat geoprocessing steps will you perform?\nHow do the steps connect to each other?\nWhat is the final output?\n\n\n\nYour task is to implement this workflow using R, combining vector and raster analysis techniques to produce a habitat suitability map.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-1-data-exploration-and-project-setup",
+    "href": "raster-data-exercise.html#task-1-data-exploration-and-project-setup",
+    "title": "Raster Data Exercise",
+    "section": "Task 1: Data Exploration and Project Setup",
+    "text": "Task 1: Data Exploration and Project Setup\n\nSetup Your Workspace\n\nCreate a new R Project\nDownload the exercise data from Moodle (section “CW 39 – Spatial Analysis II”)\nExtract the data into your new folder\nCreate a new R script or Quarto document for this exercise\n\n\n\nUnderstanding Your Data\nYour downloaded data folder contains several datasets:\n\n\n\n\n\n\nNoteInput Datasets\n\n\n\n\nRaster data:\n\ndhm25_lu.tif - Digital elevation model at 25m resolution\n\nVector data (in GeoPackages):\n\ntlm_bb (polygon layer) - Land cover classification from swiss_TLM3.gpkg\ntlm_strassen (line layer) - Road network from swiss_TLM3.gpkg\narealstatistik (point layer) - Swiss land use statistics from Arealstatistik.gpkg\nkantonsgebiet_lu (polygon layer) - Canton boundary from swissBOUNDARIES3D.gpkg\n\n\n\n\n\n\nMetadata Resources\nUnderstanding your data is crucial for proper analysis. Familiarize yourself with these metadata sources:\n\nDHM25: Data source & description\nswissTLM3D: Data source & description | Objektkatalog (2024)\nArealstatistik BFS: Data source & description | Nomenklatur 72 Grundkategorien\n\n\n\n\n\n\n\nTipHint: Required R Packages\n\n\n\nYou’ll need the following packages for this exercise:\n\nsf for vector data\nterra for raster data\ndplyr for data manipulation\nggplot2 or tmap for visualisation\n\n\n\n\n\nYour First Tasks\nLoad the data and explore its properties. Consider these questions:\n\nWhat coordinate reference system (CRS) are the datasets using?\nWhat is the spatial extent and resolution of the elevation model?\nWhat attributes are available in each vector layer?\nDo all datasets cover the same geographic area?\n\nCreate a visualization to familiarize yourself with the data.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-2-create-a-forest-cover-raster",
+    "href": "raster-data-exercise.html#task-2-create-a-forest-cover-raster",
+    "title": "Raster Data Exercise",
+    "section": "Task 2: Create a Forest Cover Raster",
+    "text": "Task 2: Create a Forest Cover Raster\nObjective: Convert the vector-based land cover layer (tlm_bb) into a raster format that represents forest areas. This raster will serve as one of your habitat suitability criteria.\nBackground: Before proceeding, consult the swissTLM3D Objektkatalog to understand the classification system. The land use types are stored in the field “OBJEKTART” (see TOPIC TLM_BB).\n\n\n\n\n\n\nImportantThink About This\n\n\n\nWhich OBJEKTART categories represent forest that chamois would use for refuge? Consider different forest types and their characteristics.\n\n\n\nWorkflow Steps\nYour task involves several sequential operations:\n\nSelect forest features - Filter the tlm_bb layer to extract only forest-related land cover types\nDissolve boundaries - Merge all forest polygons into a single multipart feature\nRasterize - Convert the vector layer to raster format using the DHM25 as a template\nValidate - Examine the output to ensure it’s correct\n\n\n\n\n\n\n\nTipHint: Forest Categories\n\n\n\nFor this analysis, consider these forest types as suitable chamois habitat: - Gebüschwald - Wald - Wald offen\n\n\n\n\n\n\n\n\nTipHint: Vector to Raster Conversion\n\n\n\n\n\nWhen rasterizing: - Use the DHM25 as a template to ensure matching extent and resolution - The terra package has a rasterize() function - You may need to convert sf objects to terra’s vect format - Consider what value to assign to forest cells (e.g., 1 = forest)\n\n\n\n\n\n\n\n\n\nNoteReflection Question\n\n\n\nExamine the properties of your forest_raster. Is it an integer or floating-point raster? What values does it contain? Why might this matter for subsequent analyses?",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-3-derive-terrain-slope",
+    "href": "raster-data-exercise.html#task-3-derive-terrain-slope",
+    "title": "Raster Data Exercise",
+    "section": "Task 3: Derive Terrain Slope",
+    "text": "Task 3: Derive Terrain Slope\nObjective: Calculate slope from the digital elevation model. Slope is a critical habitat parameter - chamois use steep terrain as refuges where they have physiological advantages over predators.\nBackground: Slope represents the rate of change in elevation and can be calculated from a DEM using neighborhood operations. The terra package provides the terrain() function for this purpose.\n\n\n\n\n\n\nTipHint: Terrain Analysis\n\n\n\n\n\n\nThe terrain() function requires specifying which terrain variable to calculate (e.g., “slope”, “aspect”)\nChoose appropriate units for your analysis (degrees vs. radians)\nThe output will be a floating-point raster\n\n\n\n\n\n\n\n\n\n\nNoteReflection Questions\n\n\n\n\nWhat data type is the slope raster? Why does this differ from the forest raster?\nWhat is the steepest slope in your study area? Is this realistic?\nWhere would you expect to find the steepest slopes?",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-4-identify-steep-terrain",
+    "href": "raster-data-exercise.html#task-4-identify-steep-terrain",
+    "title": "Raster Data Exercise",
+    "section": "Task 4: Identify Steep Terrain",
+    "text": "Task 4: Identify Steep Terrain\nObjective: Reclassify the continuous slope values into a binary classification: steep vs. non-steep areas. Based on ecological studies, chamois benefit from slopes steeper than 30°.\nBackground: Reclassification transforms continuous data into categorical classes. You’ll create a binary raster where: - 0 = non-steep areas (0-30°) - 1 = steep areas (&gt;30°)\n\n\n\n\n\n\nTipHint: Reclassification in terra\n\n\n\n\n\nThe classify() function uses a reclassification matrix with three columns: - Column 1: Lower bound of range - Column 2: Upper bound of range - Column 3: New value to assign\nRemember to use include.lowest = TRUE to handle boundary values correctly.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-5-extract-high-traffic-roads",
+    "href": "raster-data-exercise.html#task-5-extract-high-traffic-roads",
+    "title": "Raster Data Exercise",
+    "section": "Task 5: Extract High-Traffic Roads",
+    "text": "Task 5: Extract High-Traffic Roads\nObjective: Identify heavily trafficked roads that chamois would avoid. While we don’t have direct traffic volume data, we can use road type as a proxy for traffic intensity.\nBackground: Consult the swissTLM3D Objektkatalog to understand the road classification system. The OBJEKTART field contains road type information, and the KUNSTBAUTE field indicates infrastructure like tunnels.\n\n\n\n\n\n\nImportantImportant Consideration\n\n\n\nWhy should roads in tunnels be excluded from this analysis? Think about how chamois would perceive and respond to different road types.\n\n\n\n\n\n\n\n\nTipHint: Road Types to Consider\n\n\n\nMajor road types that typically carry high traffic: - Autobahn (highways) - Autostrasse (expressways) - 10m, 8m, 6m, 4m Strasse (roads classified by width) - Einfahrt, Ausfahrt, Zufahrt (on/off ramps and access roads)\nExclude roads where KUNSTBAUTE equals “Tunnel”.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-6-delineate-settlement-areas",
+    "href": "raster-data-exercise.html#task-6-delineate-settlement-areas",
+    "title": "Raster Data Exercise",
+    "section": "Task 6: Delineate Settlement Areas",
+    "text": "Task 6: Delineate Settlement Areas\nObjective: Create a spatial layer representing human settlement areas that chamois would avoid. You’ll use the Swiss Land Use Statistics (Arealstatistik) dataset for this purpose.\nBackground: The Arealstatistik provides detailed land use information at the hectare level. The dataset uses a classification system with 72 basic categories (see Nomenklatur 72 Grundkategorien).\n\n\n\n\n\n\nImportantYour Task: Define Settlement Areas\n\n\n\nBefore looking at the hint below, download and examine the variable list (xlsx-file) - specifically the sheet “Codes AS_72”.\nThink about: Which categories represent areas where human activity would disturb chamois? Consider different types of buildings and their surroundings (in German, “Umschwung” refers to the area immediately surrounding buildings).\n\n\n\n\n\n\n\n\nTipHint: Settlement Categories (AS_72 codes)\n\n\n\n\n\nFor this analysis, consider these categories as settlement areas: - 1: Industrie- und Gewerbegebäude - 2: Umschwung von Industrie- und Gewerbegebäuden - 3: Ein- und Zweifamilienhäuser - 4: Umschwung von Ein- und Zweifamilienhäusern - 5: Reihen- und Terrassenhäuser - 6: Umschwung von Reihen- und Terrassenhäusern - 7: Mehrfamilienhäuser - 8: Umschwung von Mehrfamilienhäusern - 9: Öffentliche Gebäude - 10: Umschwung von öffentlichen Gebäuden - 11: Landwirtschaftliche Gebäude - 13: Nicht spezifizierte Gebäude\n\n\n\n\nWorkflow\nYour analysis should:\n\nFilter the Arealstatistik points to extract settlement-related categories\nBuffer these points by 150 meters (representing a zone of human influence)\nDissolve overlapping buffers to create contiguous settlement areas\n\n\n\n\n\n\n\nNoteWhy Buffer?\n\n\n\nThe Arealstatistik uses point samples at hectare intervals. Buffering creates a more realistic representation of settlement extent and the zone of human disturbance around settlements.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-7-analyze-local-habitat-characteristics",
+    "href": "raster-data-exercise.html#task-7-analyze-local-habitat-characteristics",
+    "title": "Raster Data Exercise",
+    "section": "Task 7: Analyze Local Habitat Characteristics",
+    "text": "Task 7: Analyze Local Habitat Characteristics\nObjective: Evaluate the landscape surrounding every location in terms of forest cover and steep terrain availability. This analysis accounts for the chamois home range size (~1 km²) by examining the local neighborhood around each potential habitat location.\n\nConceptual Background\nChamois don’t just need forest and steep slopes - they need sufficient amounts of these resources within their home range. A focal (moving window) analysis evaluates each cell by examining its neighborhood, essentially asking: “If a chamois lived here, would there be enough resources within its typical home range?”\n\n\n\n\n\n\nImportantThink About This\n\n\n\n\nWhy is it not enough to simply identify where forests and steep slopes exist?\nHow does home range size influence habitat suitability?\nWhat does it mean if a location has high forest cover within 1 km² but no steep slopes nearby?\n\n\n\n\n\nData Preparation\nBefore conducting focal statistics, you need to handle NA (no data) values. Binary rasters (forest/non-forest, steep/non-steep) need to explicitly represent “absence” as 0 rather than NA.\n\n\n\n\n\n\nTipHint: Replacing NA Values\n\n\n\n\n\nUse the classify() function with a reclassification matrix that maps NA to 0:\nnew_raster &lt;- classify(old_raster, cbind(NA, 0))\n\n\n\n\n\nCalculate Window Size\nTo represent a 1 km² home range, you need to determine the appropriate window size in raster cells.\n\n\n\n\n\n\nNoteMathematical Approach\n\n\n\nGiven: - Home range area = 1 km² = 1,000,000 m² - Raster resolution = 25m × 25m = 625 m² per cell - Number of cells needed = 1,000,000 m² ÷ 625 m²/cell = ? - Window dimensions (assuming square window) = √(number of cells) = ?\nCalculate this yourself, then check the code below.\n\n\n\n\nPerform Focal Analysis\nThe focal analysis counts how many forest cells (or steep cells) exist within the moving window around each location.\n\n\n\n\n\n\nTipHint: Focal Analysis in terra\n\n\n\n\n\nThe focal() function requires: - Input raster - Weight matrix (w) - use matrix(1, nrow=size, ncol=size) for equal weights - Function to apply (fun = \"sum\" to count cells with value 1) - na.rm = TRUE to handle any remaining NA values\n\n\n\n\n\n\n\n\nFocal analysis results showing local resource availability\n\n\n\n\nFigure 9.2\n\n\n\n\n\n\n\n\n\nNoteInterpret Your Results\n\n\n\nThe output values typically range from 0 to ~1500-1600.\nThink about: - What does a value of 0 mean? What about 1600? - Why might the maximum be less than 1600 (the theoretical maximum)? - Which areas have the highest forest counts? Highest steep terrain counts? - How do these patterns relate to the topography of Canton Lucerne?",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-8-calculate-distance-to-human-disturbance",
+    "href": "raster-data-exercise.html#task-8-calculate-distance-to-human-disturbance",
+    "title": "Raster Data Exercise",
+    "section": "Task 8: Calculate Distance to Human Disturbance",
+    "text": "Task 8: Calculate Distance to Human Disturbance\nObjective: Quantify how far each location is from human disturbance sources (settlements and major roads). Chamois are sensitive to human activity, so greater distances should indicate better habitat quality.\nBackground: Distance calculations create continuous surfaces where each cell’s value represents its proximity to the nearest feature. This allows you to model avoidance behavior - animals may select habitat based on distance to disturbance sources.\n\n\n\n\n\n\nImportantConceptual Question\n\n\n\nHow is a distance-based criterion different from the binary (present/absent) classification we used for forest and steep areas? Why use distance rather than simply excluding areas near roads and settlements?\n\n\n\nWorkflow\nTo calculate distances in a raster environment:\n\nRasterize vector features (roads and settlements)\nCalculate Euclidean distance from each cell to the nearest feature\nAnalyze the resulting distance surfaces\n\n\n\n\n\n\n\nTipHint: Distance Calculation\n\n\n\n\n\nThe terra distance() function: - Takes a raster where features are marked with values (typically 1) - Calculates the straight-line distance from each cell to the nearest non-NA cell - Returns distances in map units (meters for EPSG:2056)\n\n\n\n\n\n\n\n\nDistance surfaces from human disturbance sources\n\n\n\n\nFigure 9.3\n\n\n\n\n\n\n\n\n\nNoteReflection Questions\n\n\n\n\nWhat are the maximum distances to roads and settlements in your study area?\nWhere would you expect to find the most remote areas?\nHow might chamois use areas at different distances from human activity?\nCould there be areas that are too remote for chamois? What other factors might limit habitat beyond distance to disturbance?",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-9-standardize-criteria-to-common-scale",
+    "href": "raster-data-exercise.html#task-9-standardize-criteria-to-common-scale",
+    "title": "Raster Data Exercise",
+    "section": "Task 9: Standardize Criteria to Common Scale",
+    "text": "Task 9: Standardize Criteria to Common Scale\nObjective: Transform all four habitat criteria onto a common suitability scale, enabling meaningful comparison and combination of different environmental factors.\n\nThe Standardization Problem\nYou now have four criteria measured in different units: - focal_forest: count of forest cells (0-1600) - focal_steepness: count of steep cells (0-1600) - distance_roads: meters (0-several thousand) - distance_settlement: meters (0-several thousand)\n\n\n\n\n\n\nImportantCritical Question\n\n\n\nWhy can’t we directly combine these raw values? What problems would arise if we simply added them together?\nConsider: - A location with 500 forest cells + 500 steep cells + 5000m from roads + 3000m from settlements = 9000 - Another location with 100 forest cells + 100 steep cells + 200m from roads + 100m from settlements = 500\nDoes the first location really have 18× better habitat? How do the different measurement units affect interpretation?\n\n\n\n\nSolution: Suitability Classification (Grading)\nStandardize all criteria using a common five-class suitability scale:\n\n1 = unsuitable\n2 = conditionally suitable\n3 = moderately suitable\n4 = well suitable\n5 = very well suitable\n\n\n\nClassification Thresholds\nThe following thresholds are based on ecological considerations and expert knowledge:\n\nForest CoverSteep TerrainRoad DistanceSettlement Distance\n\n\nfocal_forest (cell count within 1 km²):\n\n0 - 300 → 1 (unsuitable: &lt;20% forest)\n300 - 600 → 2 (conditional: 20-37%)\n600 - 900 → 3 (moderate: 37-56%)\n900 - 1200 → 4 (good: 56-75%)\n1200 - 2000 → 5 (excellent: &gt;75%)\n\n\n\nfocal_steepness (cell count within 1 km²):\n\n0 - 200 → 1 (unsuitable: &lt;12% steep)\n200 - 400 → 2 (conditional: 12-25%)\n400 - 600 → 3 (moderate: 25-37%)\n600 - 800 → 4 (good: 37-50%)\n800 - 2000 → 5 (excellent: &gt;50%)\n\n\n\ndistance_roads (meters):\n\n0 - 150 → 1 (unsuitable: very close)\n150 - 300 → 2 (conditional: close)\n300 - 450 → 3 (moderate: medium distance)\n450 - 600 → 4 (good: far)\n600 - 20000 → 5 (excellent: very far)\n\n\n\ndistance_settlement (meters):\n\n0 - 250 → 1 (unsuitable: very close)\n250 - 500 → 2 (conditional: close)\n500 - 750 → 3 (moderate: medium distance)\n750 - 1000 → 4 (good: far)\n1000 - 20000 → 5 (excellent: very far)\n\n\n\n\n\n\n\n\n\n\nNoteThink About the Thresholds\n\n\n\nThese classifications represent ecological hypotheses about chamois habitat preferences.\nQuestions to consider: - Are these thresholds reasonable? - How might you validate or refine them? - Should all criteria have equal weight in the final analysis? - How sensitive might the results be to these classification boundaries?\n\n\n\n\nPerform the Reclassifications\nNow apply these classification schemes to each criterion. You’ll use the same reclassification approach you learned earlier.\n\n\nVisualize and Compare\nExamine all four standardized criteria side-by-side:\n\n\n\n\n\n\nNoteCompare the Patterns\n\n\n\nNow that all criteria are on the same scale (1-5), you can meaningfully compare them.\nLook for: - Which criterion shows the most variability? - Which areas score high on multiple criteria? - Are there any surprising patterns? - How do topographic factors (forest, slope) relate to human factors (roads, settlements)?",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-10-multi-criteria-overlay-analysis",
+    "href": "raster-data-exercise.html#task-10-multi-criteria-overlay-analysis",
+    "title": "Raster Data Exercise",
+    "section": "Task 10: Multi-Criteria Overlay Analysis",
+    "text": "Task 10: Multi-Criteria Overlay Analysis\nObjective: Combine all four standardized criteria into a single habitat suitability map using raster overlay analysis.\n\nConceptual Background\nNow that all criteria are on a common 1-5 scale, you can combine them to identify areas that satisfy multiple habitat requirements simultaneously. This is the essence of Multi-Criteria Evaluation (MCE).\n\n\n\n\n\n\nImportantThink About the Method\n\n\n\nWe’ll use a simple additive model (sum of all criteria).\nConsider: - What assumptions does this make about how criteria interact? - Does it assume all criteria are equally important? - Could two moderate scores compensate for one poor score? - What’s the theoretical range of output values? (Min = ?, Max = ?)\n\n\n\n\nPerform the Overlay\nOne of the great advantages of raster data is that map algebra is straightforward - you can use standard arithmetic operators:\n\n\nAnalyze the Results\n\n\n\n\n\n\nNoteInterpret the Value Range\n\n\n\nThe sum values range from 4 (all criteria scored 1) to 20 (all criteria scored 5).\nWhat does this mean? - 4-8: Poor habitat - multiple limiting factors - 9-14: Moderate habitat - mixed conditions - 15-20: Excellent habitat - all requirements met\nDo you observe the full range in your study area? Why or why not?\n\n\n\n\nVisualize the Habitat Suitability Map\n\n\nCreate Simplified Classification\nFor management and communication purposes, create a three-class version:\n\n\n\n\n\n\nNoteGeographic Patterns\n\n\n\nExamine your final map carefully:\n\nWhere are the most suitable habitats located?\nWhat geographic features characterize high-suitability areas?\nAre there surprising results? Areas you expected to be suitable that aren’t, or vice versa?\nHow contiguous are the suitable habitat patches?",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#task-11-model-validation-and-critical-evaluation",
+    "href": "raster-data-exercise.html#task-11-model-validation-and-critical-evaluation",
+    "title": "Raster Data Exercise",
+    "section": "Task 11: Model Validation and Critical Evaluation",
+    "text": "Task 11: Model Validation and Critical Evaluation\nObjective: Critically evaluate your habitat suitability model by comparing it with actual chamois distribution data and calculating quantitative statistics.\n\nFinal Data Processing\nCreate a final, polished version of your suitability map:\n\n\nCalculate Habitat Availability\nQuantify how much suitable habitat exists in each suitability class:\n\n\n\n\n\n\nNoteInterpret the Statistics\n\n\n\n\nWhat percentage of Canton Lucerne is “highly suitable” for chamois?\nHow much area is in each category?\nDoes this match your expectations based on the canton’s geography?\n\n\n\n\n\nCompare with Actual Distribution\nNow validate your model against reality. Visit the Info Fauna database to view actual chamois observations:\nChamois Distribution Map - Info Fauna\n\n\n\n\n\n\nImportantCritical Evaluation\n\n\n\nCompare your suitability map with the actual distribution:\nQuestions to consider: 1. Do areas with high predicted suitability show actual chamois presence? 2. Are there areas you predicted as suitable but have no observations? Why might this be? 3. Are there observed chamois in areas your model predicts as unsuitable? What factors might your model be missing? 4. How well does your model capture the overall distribution pattern? 5. What are the main sources of agreement and disagreement?\nImportant: Absence of observations doesn’t always mean absence of animals - consider sampling effort, accessibility, and data reporting biases.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#critical-discussion",
+    "href": "raster-data-exercise.html#critical-discussion",
+    "title": "Raster Data Exercise",
+    "section": "Critical Discussion",
+    "text": "Critical Discussion\n\nModel Limitations and Improvements\n\n\n\n\n\n\nWarningReflect on Your Methodology\n\n\n\nYour model makes several simplifying assumptions. Consider these limitations and potential improvements:\n\n\n\n1. Equal Weighting of Criteria\nCurrent approach: All four criteria contribute equally (simple sum).\nQuestions: - Is forest cover really as important as distance to settlements? - Should steep terrain be weighted more heavily, as it’s a primary anti-predator strategy? - How could you determine appropriate weights?\n\n\n\n\n\n\nTipHint: Weighted Overlay\n\n\n\n\n\nYou could modify the overlay to use weights:\n# Example: assign different importance weights\nweighted_suitability &lt;- 0.3*grading_forest + 0.3*grading_steepness +\n                        0.2*grading_roads + 0.2*grading_settlement\n\n\n\n\n\n2. Classification Thresholds\nCurrent approach: Fixed thresholds based on general ecological principles.\nImprovements: - Calibrate thresholds using actual chamois location data - Use statistical methods (e.g., resource selection functions) - Incorporate uncertainty in threshold definitions - Test sensitivity to different threshold values\n\n\n3. Missing Criteria\nWhat factors did we omit?\n\nEnvironmentalHuman ImpactBiotic Interactions\n\n\n\nElevation: Chamois prefer specific elevation ranges (typically 1000-3000m in Alps)\nAspect: South-facing slopes have less snow and earlier vegetation\nVegetation type: Not all forests are equal - species composition matters\nSnow depth: Critical for winter survival and accessibility\nRock/cliff presence: Provides additional escape terrain\n\n\n\n\nRecreation areas: Hiking trails, ski resorts, climbing areas\nSeasonal access: Different impacts in winter vs. summer\nHunting pressure: Legal hunting affects distribution\nHistorical presence: Where have chamois traditionally been?\n\n\n\n\nPredators: Lynx, wolf distribution\nCompetitors: Red deer, ibex overlap\nDisease: Presence of keratoconjunctivitis or other diseases\n\n\n\n\n\n\n4. Compensatory vs. Limiting Factors\nCurrent model: Allows compensation - high scores on some criteria can offset low scores on others.\nEcological reality: Some factors may be limiting - absolutely required regardless of other conditions.\n\n\n\n\n\n\nImportantThink About This\n\n\n\nShould the model allow an area with zero steep terrain but excellent forest cover to be classified as “suitable”? Or is steep terrain a non-negotiable requirement?\nYou could implement threshold constraints:\n# Example: require minimum steepness\nsuitable_habitat &lt;- grading_sum\nsuitable_habitat[grading_steepness &lt; 3] &lt;- NA  # Exclude areas without adequate steep terrain\n\n\n\n\n\nData Quality Considerations\n\nSpatial Resolution\n\nIs 25m appropriate for modeling home ranges of ~1 km²?\nHow does resolution affect focal analysis results?\n\n\n\nTemporal Mismatch\n\nAre all datasets from the same time period?\nHave land use patterns changed since data collection?\n\n\n\nData Accuracy\n\nHow accurate is the land cover classification?\nAre road and settlement data complete and current?\n\n\n\n\nScale Dependencies\n\n\n\n\n\n\nNoteMulti-Scale Considerations\n\n\n\nChamois habitat selection operates at multiple scales: - Regional scale: Climate, elevation zones - Landscape scale: Home range characteristics (what we modeled) - Local scale: Specific feeding sites, bedding areas\nYour model addresses primarily the landscape scale. Results might differ at other scales.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#extension-ideas",
+    "href": "raster-data-exercise.html#extension-ideas",
+    "title": "Raster Data Exercise",
+    "section": "Extension Ideas",
+    "text": "Extension Ideas\nIf you want to take this analysis further:\n\n1. Remove Water Bodies\n\n\n2. Add Elevation Constraints\n\n\n3. Conduct Sensitivity Analysis\nTest how results change with different: - Classification thresholds - Criterion weights - Home range window sizes - Inclusion/exclusion of criteria\n\n\n4. Validate Quantitatively\nIf you have access to presence/absence data: - Calculate AUC (Area Under Curve) or similar metrics - Perform cross-validation - Test predictive accuracy",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#concluding-thoughts",
+    "href": "raster-data-exercise.html#concluding-thoughts",
+    "title": "Raster Data Exercise",
+    "section": "Concluding Thoughts",
+    "text": "Concluding Thoughts\n\n\n\n\n\n\nImportantProfessional Responsibility\n\n\n\nAs a GIS analyst, you must:\n✓ Acknowledge limitations - No model is perfect; be transparent about assumptions and constraints ✓ Validate results - Compare predictions with empirical data whenever possible ✓ Consider context - Understand the ecology, not just the technical methods ✓ Communicate uncertainty - Decision-makers need to know confidence levels ✓ Document thoroughly - Future users must understand your methodology\nRemember: A beautiful map doesn’t necessarily represent reality. Critical thinking and validation are essential.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
+  },
+  {
+    "objectID": "raster-data-exercise.html#summary-of-key-concepts",
+    "href": "raster-data-exercise.html#summary-of-key-concepts",
+    "title": "Raster Data Exercise",
+    "section": "Summary of Key Concepts",
+    "text": "Summary of Key Concepts\nThrough this exercise, you’ve learned:\n\nVector to raster conversion - Transforming different data types for analysis\nTerrain analysis - Deriving slope from elevation data\nReclassification - Converting continuous and categorical data\nFocal analysis - Neighborhood operations for landscape context\nDistance calculation - Euclidean distance surfaces\nMulti-criteria evaluation - Standardization and overlay of disparate criteria\nModel validation - Comparing predictions with observations\nCritical evaluation - Understanding limitations and assumptions\n\nThese skills are fundamental to spatial analysis and transferable to many other applications beyond wildlife habitat modeling.",
+    "crumbs": [
+      "Raster Data Exercises",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Raster Data Exercise</span>"
+    ]
   }
 ]
