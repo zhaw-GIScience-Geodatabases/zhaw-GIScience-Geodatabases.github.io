@@ -128,9 +128,12 @@
     <div class="slides">
 
 
-<section id="publish" class="slide level2">
-<h2>Publish</h2>
-<p>Since we have two profiles with nested <code>output-dir</code>s, we cannot publish with <code>quarto publish</code>. Use <code>ghp-import</code>instead:</p>
+<section id="render-publish" class="slide level2">
+<h2>Render / Publish</h2>
+<p><strong>Render</strong>: We have two version of the output: <em>profile: book</em> and no profile. Always render <code>book</code> first, then no profile. If done vice versa, the <code>slides</code> folder in <code>_book</code> is lost.</p>
+<pre><code>quarto render --profile book    # render with profile book
+quarto render                   # render default</code></pre>
+<p><strong>Publish</strong>: Since we have two profiles with nested <code>output-dir</code>s, we cannot publish with <code>quarto publish</code>. Use <code>ghp-import</code>instead:</p>
 <pre><code>ghp-import -p _book</code></pre>
 </section>
 <section id="profile" class="title-slide slide level1 center">
