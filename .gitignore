@@ -10,3 +10,5 @@ data-out
 _book
 _slides
 **/*.quarto_ipynb
+*_cache/
+*_files/

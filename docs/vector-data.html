@@ -233,6 +233,17 @@
 <p>Research Associate at the Research Group for Geoinformatics <a href="http://www.zhaw.ch/iunr/geoinformatik">www.zhaw.ch/iunr/geoinformatik</a></p>
 </div></div>
 </section>
+<section id="today" class="slide level2">
+<h2>Today</h2>
+<ol type="1">
+<li><strong>Simple Features</strong> — the standard behind all vector GIS tools</li>
+<li><strong>Coordinate Reference Systems</strong> — datums, projections, units, silent errors</li>
+<li><strong>GDAL &amp; file formats</strong> — the common backbone, format trade-offs</li>
+<li><strong>Binary Predicates</strong> — spatial relationships and choosing the right one</li>
+<li><strong>Geometry Operations</strong> — set algebra, type changes</li>
+<li><strong>Group Work</strong> — two algorithmic challenges</li>
+</ol>
+</section>
 <section>
 <section id="simple-features" class="title-slide slide level1 subtitle center">
 <h1>Simple Features</h1>
@@ -1254,7 +1265,7 @@ Pebesma, Edzer. 2018. <span>“<span class="nocase">Simple Features for R: Stand
         }
           var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
           var mailtoRegex = new RegExp(/^mailto:/);
-            var filterRegex = new RegExp("https:\/\/zhaw-GIScience-Geodatabases\.github\.io\/");
+            var filterRegex = new RegExp('/' + window.location.host + '/');
           var isInternal = (href) => {
               return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
           }
