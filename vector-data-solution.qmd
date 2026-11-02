@@ -1,0 +1,161 @@
+---
+title: "Solutions: Algorithmic Challenges"
+format:
+  clean-revealjs:
+    css: misc/style-slides.css
+    code-line-numbers: false
+    footer: "[Home](../index.html)"
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: true
+knitr:
+  opts_chunk:
+    tidy: false
+---
+
+```{r}
+#| echo: false
+library(ggplot2)
+library(sf)
+```
+
+# Challenge 1: Bounding Box {.subtitle}
+
+## A bounding box is four numbers
+
+- The **axis-aligned bounding box** of a set of points is the smallest rectangle (with sides parallel to the axes) that contains all of them
+- Numerically: just four values
+
+$$\text{BB} = (x_{\min},\ y_{\min},\ x_{\max},\ y_{\max})$$
+
+- **Key insight:** you never need to store the full point list — only the current extremes
+
+## The algorithm
+
+Initialize with the first point:
+
+$$x_{\min} = x_{\max} = x_0 \quad y_{\min} = y_{\max} = y_0$$
+
+For every subsequent point $(x, y)$:
+
+- if $x < x_{\min}$ → update $x_{\min}$
+- if $x > x_{\max}$ → update $x_{\max}$
+- if $y < y_{\min}$ → update $y_{\min}$
+- if $y > y_{\max}$ → update $y_{\max}$
+
+Four comparisons per point. Memory: constant (four numbers, regardless of stream length).
+
+## R implementation
+
+```{r}
+stream <- matrix(c(
+  2489750, 1117500,
+  2506250, 1172500,
+  2552750, 1223500,
+  2498000, 1198000,
+  2470000, 1145000
+), ncol = 2, byrow = TRUE)
+
+bb <- c(xmin = stream[1,1], xmax = stream[1,1],
+        ymin = stream[1,2], ymax = stream[1,2])
+
+for (i in seq_len(nrow(stream))) {
+  bb["xmin"] <- min(bb["xmin"], stream[i, 1])
+  bb["xmax"] <- max(bb["xmax"], stream[i, 1])
+  bb["ymin"] <- min(bb["ymin"], stream[i, 2])
+  bb["ymax"] <- max(bb["ymax"], stream[i, 2])
+}
+bb
+```
+
+# Challenge 2: Point in Polygon {.subtitle}
+
+## The intuition
+
+Draw a ray from the point horizontally to the right (→ infinity):
+
+- Count how many **polygon edges** the ray crosses
+- **Odd** number of crossings → point is **inside**
+- **Even** number of crossings → point is **outside**
+
+```{r}
+#| echo: false
+#| fig-width: 5
+#| fig-height: 3.5
+poly_coords <- data.frame(
+  x = c(1, 3, 4, 3, 1, 0.5, 1),
+  y = c(0, 0, 2,  4, 4, 2,   0)
+)
+pt <- data.frame(x = 2, y = 2)
+ray <- data.frame(x = c(2, 5), y = c(2, 2))
+
+crossings <- data.frame(x = c(3.5, 1), y = c(2, 2))
+
+ggplot() +
+  geom_polygon(data = poly_coords, aes(x, y),
+               fill = "#d1e5f0", color = "#2166ac", linewidth = 1) +
+  geom_line(data = ray, aes(x, y),
+            color = "#d6604d", linewidth = 1, linetype = "dashed") +
+  geom_point(data = pt, aes(x, y), color = "#d6604d", size = 4) +
+  geom_point(data = crossings, aes(x, y),
+             shape = 4, size = 5, stroke = 2, color = "#333333") +
+  annotate("text", x = 2, y = 2.25, label = "P", size = 5, color = "#d6604d") +
+  annotate("text", x = 3.5, y = 2.3, label = "✕ 1", size = 4) +
+  annotate("text", x = 1,   y = 2.3, label = "✕ 2", size = 4) +
+  annotate("text", x = 4.7, y = 2.2, label = "→", size = 6, color = "#d6604d") +
+  coord_equal() +
+  theme_void() +
+  labs(caption = "2 crossings → even → outside? No: count is 2, so outside. Try a point clearly inside.")
+```
+
+## Ray casting: the algorithm
+
+For each **edge** of the polygon (vertex $i$ → vertex $i+1$):
+
+1. Does the edge **straddle** the horizontal line $y = p_y$?
+   $$( y_i > p_y ) \ne ( y_{i+1} > p_y )$$
+
+2. If yes: is the ray–edge intersection **to the right** of $p_x$?
+   $$x_{\text{hit}} = x_i + \frac{(p_y - y_i)(x_{i+1} - x_i)}{y_{i+1} - y_i} > p_x$$
+
+3. If both conditions hold → **flip** an `inside` boolean (starts `FALSE`)
+
+Result: `inside` after all edges = TRUE if the point is inside.
+
+## R implementation
+
+```{r}
+point_in_poly <- function(px, py, vx, vy) {
+  n <- length(vx)
+  inside <- FALSE
+  j <- n
+  for (i in seq_len(n)) {
+    if (((vy[i] > py) != (vy[j] > py)) &&
+        (px < (vx[j] - vx[i]) * (py - vy[i]) / (vy[j] - vy[i]) + vx[i])) {
+      inside <- !inside
+    }
+    j <- i
+  }
+  inside
+}
+
+# polygon: a rough triangle
+vx <- c(1, 4, 2.5); vy <- c(1, 1, 4)
+
+point_in_poly(2.5, 2,   vx, vy)  # inside  → TRUE
+point_in_poly(0,   0,   vx, vy)  # outside → FALSE
+point_in_poly(3.5, 3.5, vx, vy)  # outside → FALSE
+```
+
+## Edge cases
+
+| Situation | How to handle |
+|---|---|
+| Ray passes exactly through a vertex | Use strict `>` on one side, `>=` on the other — ensures each vertex is counted at most once |
+| Point lies exactly on an edge | Technically undefined; most implementations return TRUE |
+| Polygon is not closed | Close it: ensure last vertex = first vertex |
+| Concave / complex polygons | Algorithm works unchanged — this is its strength over simpler methods |
+
+## References {#refs}

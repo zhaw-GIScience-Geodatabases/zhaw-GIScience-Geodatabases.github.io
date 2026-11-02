@@ -1,32 +1,21 @@
-.note{
-    visibility: hidden;
-}
-
-.smaller-font{
-    font-size: smaller !important;
-}
-
-h1.speaker, h2.speaker {
-    margin-top: 100vh;
-}
-
-/* either this, or hide hr.speaker alltogether */
-hr.speaker{
-    margin-bottom: 100vh;
-}
-
-.presenter-btn{
-    background-color: gray;
-}
-
-figcaption{
-  text-align: center;
-}
-
-hr{
+/* Hide notes — only shown via browser console (Ctrl+Y) */
+.notes {
   display: none;
 }
 
-.lts{
-  text-align: right;
+.speaker {
+  margin-top: 100vh;
+}
+
+.presenter-btn {
+  background-color: gray;
+}
+
+/* Slide separators (---) render as <hr> in HTML — hide them */
+hr {
+  display: none;
+}
+
+figcaption {
+  text-align: center;
 }

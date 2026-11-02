@@ -4,8 +4,7 @@ echo: false
 
 # Raster Data
 
-[]{.lts .content-hidden unless-profile="book"}
-
+<!-- []{.lts .content-hidden unless-profile="book"} -->
 
 
 

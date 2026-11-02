@@ -1,0 +1,21 @@
+/* Hide notes — only shown via browser console (Ctrl+Y) */
+.notes {
+  display: none;
+}
+
+.speaker {
+  margin-top: 100vh;
+}
+
+.presenter-btn {
+  background-color: gray;
+}
+
+/* Slide separators (---) render as <hr> in HTML — hide them */
+hr {
+  display: none;
+}
+
+figcaption {
+  text-align: center;
+}

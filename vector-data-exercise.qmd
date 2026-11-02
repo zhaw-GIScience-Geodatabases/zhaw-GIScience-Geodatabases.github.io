@@ -1,10 +1,12 @@
 ---
-title: "Vector Data Exercise"
-format: html
+title: "Vector Data"
 execute:
   echo: false
   eval: false
 ---
+
+[Introduction Vector Data](vector-data.qmd) (slides)
+
 
 ## Introduction
 

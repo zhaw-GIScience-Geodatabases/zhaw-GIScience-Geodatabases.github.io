@@ -2,7 +2,9 @@
 
 # Raster Data I/O
 
-[]{.lts .content-hidden unless-profile="book"}
+<!-- []{.lts .content-hidden unless-profile="book"} -->
+
+
 
 
 - In R, several libraries are available to work with raster data

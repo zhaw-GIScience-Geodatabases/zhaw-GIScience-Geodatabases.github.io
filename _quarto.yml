@@ -1,19 +1,47 @@
 project:
-  title: "ADSL GIScience and Geodatabases"
-  output-dir: _book/slides
-  
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - vector-data.qmd
+    - vector-data-solution.qmd
+    - vector-data-exercise.qmd
+    # - worksheet-de9im.qmd  (used in a later session)
+    # - raster-data.qmd
+    # - raster-io.qmd
+    # - raster-operations.qmd
+    # - raster-vector-operations.qmd
+    - references.qmd
+
+website:
+  title: "GIScience and Geodatabases"
+  page-navigation: true
+  sidebar:
+    contents:
+      - index.qmd
+      - vector-data-exercise.qmd
+      # - section: "Raster Data"
+      #   contents:
+      #     - raster-data.qmd
+      #     - raster-io.qmd
+      #     - raster-operations.qmd
+      #     - raster-vector-operations.qmd
+      - references.qmd
 
 bibliography: misc/references.bib
 
-
-execute: 
+execute:
   warning: false
+  message: false
+  echo: false
   freeze: true
 
-
-format: 
-  clean-revealjs:
-    css: misc/style-slides.css
-    code-line-numbers: false
-    theme: beige
-    footer: "[home](../index.html)"
+format:
+  html:
+    number-depth: -1
+    number-sections: false
+    css: misc/style-book.css
+    include-in-header:
+      - misc/script.html
+    theme:
+      light: [flatly]
