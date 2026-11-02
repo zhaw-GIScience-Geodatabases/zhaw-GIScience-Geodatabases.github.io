@@ -101,6 +101,71 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// Slide timer (data-timer="N" on slide, click to start/pause, resets on slide change)
+document.addEventListener('DOMContentLoaded', function () {
+  const el = document.createElement('div');
+  el.id = 'slide-timer';
+  el.style.cssText = `
+    position: fixed; top: 20px; left: 20px;
+    font-size: 3em; font-weight: bold; font-family: monospace;
+    color: white; background: rgba(0,0,0,0.55);
+    padding: 0.15em 0.4em; border-radius: 8px;
+    cursor: pointer; display: none; z-index: 100000;
+    user-select: none;
+  `;
+  document.body.appendChild(el);
+
+  let total = 0, remaining = 0, interval = null, running = false;
+
+  function fmt(s) {
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function tick() {
+    remaining--;
+    el.textContent = fmt(remaining);
+    el.style.color = remaining < 60 ? '#ff4444' : 'white';
+    if (remaining <= 0) { clearInterval(interval); running = false; el.style.color = '#ff4444'; }
+  }
+
+  el.addEventListener('click', function () {
+    if (running) {
+      clearInterval(interval); running = false;
+      el.style.opacity = '0.5';
+    } else if (remaining > 0) {
+      interval = setInterval(tick, 1000); running = true;
+      el.style.opacity = '1';
+    }
+  });
+
+  function onSlideChange(event) {
+    clearInterval(interval); running = false;
+    const slide = event ? event.currentSlide : Reveal.getCurrentSlide();
+    const timerSpan = slide ? slide.querySelector('.timer[data-minutes]') : null;
+    const mins = timerSpan ? parseInt(timerSpan.getAttribute('data-minutes')) : NaN;
+    if (!isNaN(mins) && mins > 0) {
+      total = remaining = mins * 60;
+      el.textContent = fmt(remaining);
+      el.style.color = 'white';
+      el.style.opacity = '0.7';
+      el.title = 'Click to start';
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function initTimer() {
+    if (typeof Reveal !== 'undefined' && Reveal.isReady()) {
+      Reveal.on('slidechanged', onSlideChange);
+      onSlideChange();
+    } else {
+      setTimeout(initTimer, 200);
+    }
+  }
+  initTimer();
+});
+
 // Presenter mode toggle (Ctrl+Y)
 document.addEventListener('keydown', function(event) {
   if (event.ctrlKey && event.keyCode === 89) {

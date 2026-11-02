@@ -209,13 +209,117 @@
       margin-right: 0; 
     }
   </style>
+  <script>
+  // Console approach for speaker notes
+  document.addEventListener('DOMContentLoaded', function() {
+    const clickableAreas = document.querySelectorAll(".level2, .level3");
+
+    clickableAreas.forEach(area => {
+      area.addEventListener('click', function() {
+        const notes = this.querySelector('.notes');
+        if (notes) {
+          console.clear();
+
+          setTimeout(console.log.bind(console, '%c🎯 SPEAKER NOTES', 'color: #ff6b35; font-size: 18px; font-weight: bold; background: #fff3e0; padding: 8px; border-radius: 4px; margin: 10px 0;'));
+          setTimeout(console.log.bind(console, '%c═══════════════════════════════════════', 'color: #ff6b35; font-weight: bold;'));
+
+          const noteText = notes.textContent.trim();
+          const noteLines = noteText.split('\n').filter(line => line.trim());
+
+          noteLines.forEach(line => {
+            const trimmed = line.trim();
+            setTimeout(console.log.bind(console, '%c▶ ' + trimmed, 'color: #2196f3; font-weight: 500;'));
+          });
+
+          setTimeout(console.log.bind(console, '%c═══════════════════════════════════════', 'color: #ff6b35; font-weight: bold;'));
+          setTimeout(console.log.bind(console, '%c💡 Click another section for more notes', 'color: #9e9e9e; font-style: italic; font-size: 12px;'));
+        }
+      });
+    });
+  });
+
+  // Slide timer (data-timer="N" on slide, click to start/pause, resets on slide change)
+  document.addEventListener('DOMContentLoaded', function () {
+    const el = document.createElement('div');
+    el.id = 'slide-timer';
+    el.style.cssText = `
+      position: fixed; top: 20px; left: 20px;
+      font-size: 3em; font-weight: bold; font-family: monospace;
+      color: white; background: rgba(0,0,0,0.55);
+      padding: 0.15em 0.4em; border-radius: 8px;
+      cursor: pointer; display: none; z-index: 100000;
+      user-select: none;
+    `;
+    document.body.appendChild(el);
+
+    let total = 0, remaining = 0, interval = null, running = false;
+
+    function fmt(s) {
+      return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+    }
+
+    function tick() {
+      remaining--;
+      el.textContent = fmt(remaining);
+      el.style.color = remaining < 60 ? '#ff4444' : 'white';
+      if (remaining <= 0) { clearInterval(interval); running = false; el.style.color = '#ff4444'; }
+    }
+
+    el.addEventListener('click', function () {
+      if (running) {
+        clearInterval(interval); running = false;
+        el.style.opacity = '0.5';
+      } else if (remaining > 0) {
+        interval = setInterval(tick, 1000); running = true;
+        el.style.opacity = '1';
+      }
+    });
+
+    function onSlideChange(event) {
+      clearInterval(interval); running = false;
+      const slide = event ? event.currentSlide : Reveal.getCurrentSlide();
+      const timerSpan = slide ? slide.querySelector('.timer[data-minutes]') : null;
+      const mins = timerSpan ? parseInt(timerSpan.getAttribute('data-minutes')) : NaN;
+      if (!isNaN(mins) && mins > 0) {
+        total = remaining = mins * 60;
+        el.textContent = fmt(remaining);
+        el.style.color = 'white';
+        el.style.opacity = '0.7';
+        el.title = 'Click to start';
+        el.style.display = 'block';
+      } else {
+        el.style.display = 'none';
+      }
+    }
+
+    function initTimer() {
+      if (typeof Reveal !== 'undefined' && Reveal.isReady()) {
+        Reveal.on('slidechanged', onSlideChange);
+        onSlideChange();
+      } else {
+        setTimeout(initTimer, 200);
+      }
+    }
+    initTimer();
+  });
+
+  // Presenter mode toggle (Ctrl+Y)
+  document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.keyCode === 89) {
+      const paragraphs = document.querySelectorAll("h2, h3");
+      paragraphs.forEach(function (paragraph) {
+        paragraph.classList.toggle("speaker");
+      });
+    }
+  });
+  </script>
 </head>
 <body class="quarto-light">
 <script src="mathjax-config.js"></script>
   <div class="reveal">
     <div class="slides">
 
-<section id="title-slide" class="quarto-title-block center">
+<section id="title-slide" data-background-image="images/interlaken.png" class="quarto-title-block center">
   <h1 class="title">Geocomputation with Vector Data</h1>
 
 <div class="quarto-title-authors">
@@ -535,8 +639,8 @@ Projected CRS: CH1903+ / LV95</code></pre>
 <li>GDAL supports <a href="https://gdal.org/en/latest/drivers/vector/index.html">80+ vector formats</a>; <code>sf</code> inherits all of them</li>
 </ul>
 </section>
-<section id="vector-file-formats" class="slide level2">
-<h2>Vector file formats</h2>
+<section id="important-vector-file-formats" class="slide level2">
+<h2>Important Vector file formats</h2>
 <table class="caption-top">
 <colgroup>
 <col style="width: 25%">
@@ -614,10 +718,10 @@ Projected CRS: CH1903+ / LV95</code></pre>
 <h2>Named predicates</h2>
 <table class="caption-top">
 <colgroup>
-<col style="width: 21%">
-<col style="width: 35%">
-<col style="width: 21%">
-<col style="width: 21%">
+<col style="width: 9%">
+<col style="width: 23%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -630,39 +734,48 @@ Projected CRS: CH1903+ / LV95</code></pre>
 <tbody>
 <tr class="odd">
 <td><code>intersects</code></td>
-<td style="text-align: center;"><img data-src="images/predicates/intersects.png" width="130"></td>
+<td style="text-align: center;"><img data-src="images/predicates/intersects.png" width="100"></td>
 <td>Any overlap exists (broadest)</td>
 <td>Initial spatial filter</td>
 </tr>
 <tr class="even">
 <td><code>disjoint</code></td>
-<td style="text-align: center;"><img data-src="images/predicates/disjoint.png" width="130"></td>
+<td style="text-align: center;"><img data-src="images/predicates/disjoint.png" width="100"></td>
 <td>No overlap whatsoever</td>
 <td>Exclusion / NOT queries</td>
 </tr>
 <tr class="odd">
 <td><code>touches</code></td>
-<td style="text-align: center;"><img data-src="images/predicates/touches.png" width="130"></td>
+<td style="text-align: center;"><img data-src="images/predicates/touches.png" width="100"></td>
 <td>Boundaries meet; interiors do not</td>
 <td>Adjacent parcels, shared borders</td>
 </tr>
-<tr class="even">
-<td><code>within</code></td>
-<td style="text-align: center;"><img data-src="images/predicates/within.png" width="130"></td>
-<td>All of A is inside B</td>
-<td>Point-in-polygon, containment</td>
-</tr>
 </tbody>
 </table>
+<aside class="notes">
+<ul>
+<li><code>intersects</code> is almost always TRUE for non-trivial pairs — rarely the right predicate for a precise question</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
-<section class="slide level2">
-
+<section id="named-predicates-1" class="slide level2">
+<h2>Named predicates</h2>
 <table class="caption-top">
 <colgroup>
-<col style="width: 21%">
-<col style="width: 35%">
-<col style="width: 21%">
-<col style="width: 21%">
+<col style="width: 9%">
+<col style="width: 23%">
+<col style="width: 33%">
+<col style="width: 33%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -674,28 +787,31 @@ Projected CRS: CH1903+ / LV95</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
+<td><code>within</code></td>
+<td style="text-align: center;"><img data-src="images/predicates/within.png" width="100"></td>
+<td>All of A is inside B</td>
+<td>Point-in-polygon, containment</td>
+</tr>
+<tr class="even">
 <td><code>contains</code></td>
-<td style="text-align: center;"><img data-src="images/predicates/contains.png" width="130"></td>
+<td style="text-align: center;"><img data-src="images/predicates/contains.png" width="100"></td>
 <td>All of B is inside A</td>
 <td>Inverse of <code>within</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code>overlaps</code></td>
-<td style="text-align: center;"><img data-src="images/predicates/overlaps.png" width="130"></td>
+<td style="text-align: center;"><img data-src="images/predicates/overlaps.png" width="100"></td>
 <td>Interiors intersect; neither contains the other</td>
 <td>Partial overlap of same-type features</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>crosses</code></td>
-<td style="text-align: center;"><img data-src="images/predicates/crosses.png" width="130"></td>
+<td style="text-align: center;"><img data-src="images/predicates/crosses.png" width="100"></td>
 <td>Interior of A intersects interior of B in lower dimension</td>
 <td>Road through a zone</td>
 </tr>
 </tbody>
 </table>
-<ul>
-<li><code>intersects</code> is almost always TRUE for non-trivial pairs — rarely the right predicate for a precise question</li>
-</ul>
 </section>
 <section id="choosing-the-right-predicate" class="slide level2">
 <h2>Choosing the right predicate</h2>
@@ -718,35 +834,10 @@ Projected CRS: CH1903+ / LV95</code></pre>
 </section>
 <section class="slide level2">
 
-<div class="cell quarto-layout-panel" data-layout-ncol="2">
-<div class="quarto-layout-row">
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-predicates-1" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-predicates-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="vector-data_files/figure-revealjs/fig-predicates-1.png" width="960">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-predicates-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+
+<img data-src="vector-data_files/figure-revealjs/fig-predicates-1.png" width="960" class="r-stretch quarto-figure-center" id="fig-predicates"><p class="caption">
 Figure&nbsp;2: <code>st_intersects</code> (left) vs <code>st_within</code> (right) — same data, different predicate, different question answered
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
-<div id="fig-predicates-2" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-predicates-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="vector-data_files/figure-revealjs/fig-predicates-2.png" width="960">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-predicates-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3: <code>st_intersects</code> (left) vs <code>st_within</code> (right) — same data, different predicate, different question answered
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</section></section>
+</p></section></section>
 <section>
 <section id="geometry-operations" class="title-slide slide level1 subtitle center">
 <h1>Geometry Operations</h1>
@@ -802,7 +893,8 @@ Figure&nbsp;3: <code>st_intersects</code> (left) vs <code>st_within</code> (righ
 <section id="binary-set-operations" class="slide level2">
 <h2>Binary set operations</h2>
 <ul>
-<li>Set algebra on geometries — same logic as SQL set operations:</li>
+<li>Set algebra on geometries — same logic as SQL set operations</li>
+<li><code>st_union()</code> on a <strong>single layer</strong>: dissolve / aggregate — analogous to <code>GROUP BY</code> in SQL</li>
 </ul>
 <table class="caption-top">
 <thead>
@@ -835,9 +927,6 @@ Figure&nbsp;3: <code>st_intersects</code> (left) vs <code>st_within</code> (righ
 </tr>
 </tbody>
 </table>
-<ul>
-<li><code>st_union()</code> on a <strong>single layer</strong>: dissolve / aggregate — analogous to <code>GROUP BY</code> in SQL</li>
-</ul>
 </section>
 <section id="operations-can-change-geometry-type" class="slide level2">
 <h2>Operations can change geometry type</h2>
@@ -867,7 +956,7 @@ Figure&nbsp;3: <code>st_intersects</code> (left) vs <code>st_within</code> (righ
 <!-- todo: buffer and dissolve examples -->
 <img data-src="vector-data_files/figure-revealjs/unnamed-chunk-9-1.png" width="960" class="r-stretch"></section></section>
 <section>
-<section id="group-work" class="title-slide slide level1 center">
+<section id="group-work" class="title-slide slide level1 subtitle center">
 <h1>Group Work</h1>
 
 </section>
@@ -881,6 +970,7 @@ Figure&nbsp;3: <code>st_intersects</code> (left) vs <code>st_within</code> (righ
 </section>
 <section id="challenge-1-bounding-box-of-a-point-stream" class="slide level2">
 <h2>Challenge 1: Bounding box of a point stream</h2>
+<p><span class="timer" data-minutes="10"></span></p>
 <ul>
 <li><p>A continuous stream of 2D coordinates arrives one point at a time.</p></li>
 <li><p><strong>Task:</strong> develop an algorithm for the smallest axis-aligned bounding box of all points received so far.</p></li>
@@ -908,6 +998,7 @@ Figure&nbsp;3: <code>st_intersects</code> (left) vs <code>st_within</code> (righ
 </section>
 <section id="challenge-2-is-a-point-inside-a-polygon" class="slide level2">
 <h2>Challenge 2: Is a point inside a polygon?</h2>
+<p><span class="timer" data-minutes="20"></span></p>
 <ul>
 <li><strong>Given:</strong> an ordered sequence of 2D polygon vertices and a point with known coordinates.</li>
 <li><strong>Task:</strong> develop an algorithm that determines whether the point is inside or outside the polygon.</li>
