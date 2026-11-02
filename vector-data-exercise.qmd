@@ -5,13 +5,16 @@ execute:
   eval: false
 ---
 
-
-
 ## Introduction
 
 In this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.
 
-Choose at least 2 Tasks ("Scenario") and solve these!
+Choose at least 2 Tasks ("Scenarios") and solve these!
+
+
+:::{.callout-note title="No AI!"}
+These tasks were specifically designed to be simple and solveable without the use of AI. They are aimed at helping you understand some simple spatial concepts. Solve them without using AI!
+:::
 
 ```{r}
 library(sf)
