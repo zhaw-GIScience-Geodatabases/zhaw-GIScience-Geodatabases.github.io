@@ -33,6 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./vector-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -123,9 +125,7 @@ document.addEventListener('keydown', function(event) {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
-      GIScience and Geodatabases
-      </li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./vector-data-exercise.html">Vecor Data Exercise</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -163,8 +163,11 @@ document.addEventListener('keydown', function(event) {
   </div>
 </li>
         <li class="sidebar-item">
- <span class="menu-text">Vecor Data Exercise (TBD)</span>
-  </li>
+  <div class="sidebar-item-container"> 
+  <a href="./vector-data-exercise.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Vecor Data Exercise</span></a>
+  </div>
+</li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
@@ -202,7 +205,7 @@ document.addEventListener('keydown', function(event) {
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.</p>
-<p>Choose at least 2 Tasks (“Szenarios”) and solve these!</p>
+<p>Choose at least 2 Tasks (“Scenario”) and solve these!</p>
 <p>All data is available on moodle, under the section <em>Spatial Analysis I</em>:</p>
 <ul>
 <li><strong>swiss_TLM3D.gpkg</strong> contains:
@@ -230,7 +233,6 @@ document.addEventListener('keydown', function(event) {
 <li>Standing water bodies</li>
 </ul></li>
 </ul>
-<p><em>Think about: Which spatial operations do you need? How do you define “connected”?</em></p>
 </section>
 <section id="scenario-2-accessibility-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="scenario-2-accessibility-analysis">Scenario 2: Accessibility Analysis</h2>
@@ -241,7 +243,6 @@ document.addEventListener('keydown', function(event) {
 <li><strong>Question 2.3:</strong> Compare this with accessibility by major roads (Autobahn, Autostrasse, and streets ≥6m). How much forest area is within 200m of major roads?</li>
 <li><strong>Question 2.4:</strong> Create a visualization that effectively communicates your findings.</li>
 </ul>
-<p><em>Think about: How do you combine multiple road types? How do you avoid double-counting areas accessible by multiple paths?</em></p>
 </section>
 <section id="scenario-3-alpine-environment-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="scenario-3-alpine-environment-analysis">Scenario 3: Alpine Environment Analysis</h2>
@@ -256,7 +257,6 @@ document.addEventListener('keydown', function(event) {
 <li>Glaciers and snow fields</li>
 </ul></li>
 </ul>
-<p><em>Think about: Are glaciers and snow fields already part of rocky areas, or separate? How does this affect your analysis?</em></p>
 </section>
 <section id="scenario-4-integrated-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="scenario-4-integrated-analysis">Scenario 4: Integrated Analysis</h2>
@@ -268,7 +268,6 @@ document.addEventListener('keydown', function(event) {
 <li>NOT on steep rocky terrain (Fels, Felsbloecke)</li>
 </ul>
 <p><strong>Task:</strong> Identify and map all suitable areas. Report the total area available and discuss the spatial distribution of suitable locations.</p>
-<p><em>Think about: This requires combining multiple spatial operations. What is the logical sequence? Do you need union, intersection, or difference operations?</em></p>
 
 
 </section>
@@ -674,6 +673,18 @@ document.addEventListener('keydown', function(event) {
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./vector-data.html" class="pagination-link" aria-label="Vecor Data Slides">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Vecor Data Slides</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
