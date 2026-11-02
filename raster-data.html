@@ -2,13 +2,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.19">
+<meta name="generator" content="quarto-1.9.36">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Raster Data – ADSL GIScience and Geodatabases</title>
+<title>raster-data – GIScience and Geodatabases</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -24,7 +27,6 @@ ul.task-list li input[type="checkbox"] {
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
-  margin-bottom: 0em;
 }
 .hanging-indent div.csl-entry {
   margin-left:2em;
@@ -51,24 +53,23 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./raster-io.html" rel="next">
-<link href="./vector-data-exercise.html" rel="prev">
+<link href="./vector-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-46eeb4c476de49ef7df495821a6125d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-845c23b38eaddc0f92fda52bfe77a8c8.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-bee2e4bd7d1f3bec86f216a696c13e04.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-d867abd0543d256dea9b7c5d344ee862.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
+  "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
+  "panel-placement": "start",
+  "type": "textbox",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -90,48 +91,82 @@ div.csl-indent {
     "search-label": "Search"
   }
 }</script>
+<script>
+// Console approach for speaker notes
+document.addEventListener('DOMContentLoaded', function() {
+  const clickableAreas = document.querySelectorAll(".level2, .level3");
+
+  clickableAreas.forEach(area => {
+    area.addEventListener('click', function() {
+      const notes = this.querySelector('.notes');
+      if (notes) {
+        console.clear();
+
+        setTimeout(console.log.bind(console, '%c🎯 SPEAKER NOTES', 'color: #ff6b35; font-size: 18px; font-weight: bold; background: #fff3e0; padding: 8px; border-radius: 4px; margin: 10px 0;'));
+        setTimeout(console.log.bind(console, '%c═══════════════════════════════════════', 'color: #ff6b35; font-weight: bold;'));
+
+        const noteText = notes.textContent.trim();
+        const noteLines = noteText.split('\n').filter(line => line.trim());
+
+        noteLines.forEach(line => {
+          const trimmed = line.trim();
+          setTimeout(console.log.bind(console, '%c▶ ' + trimmed, 'color: #2196f3; font-weight: 500;'));
+        });
+
+        setTimeout(console.log.bind(console, '%c═══════════════════════════════════════', 'color: #ff6b35; font-weight: bold;'));
+        setTimeout(console.log.bind(console, '%c💡 Click another section for more notes', 'color: #9e9e9e; font-style: italic; font-size: 12px;'));
+      }
+    });
+  });
+});
+
+// Presenter mode toggle (Ctrl+Y)
+document.addEventListener('keydown', function(event) {
+  if (event.ctrlKey && event.keyCode === 89) {
+    const paragraphs = document.querySelectorAll("h2, h3");
+    paragraphs.forEach(function (paragraph) {
+      paragraph.classList.toggle("speaker");
+    });
+  }
+});
+</script>
 
 
 <link rel="stylesheet" href="misc/style-book.css">
 </head>
 
-<body class="nav-sidebar floating nav-fixed quarto-light">
+<body class="nav-sidebar floating fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    </a>
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">ADSL GIScience and Geodatabases</span>
-    </a>
-  </div>
-        <div class="quarto-navbar-tools tools-end">
-</div>
-          <div id="quarto-search" class="" title="Search"></div>
-      </div> <!-- /container-fluid -->
-    </nav>
   <nav class="quarto-secondary-nav">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data Lecture</a></li><li class="breadcrumb-item"><a href="./raster-data.html"><span class="chapter-title">Raster Data</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
     </div>
   </nav>
 </header>
 <!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
-    <div class="pt-lg-2 mt-2 text-left sidebar-header sidebar-header-stacked">
-      <a href="./index.html" class="sidebar-logo-link">
-      </a>
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">GIScience and Geodatabases</a> 
+    </div>
       </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -143,7 +178,7 @@ div.csl-indent {
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Vector Data Lecture</span></a>
+ <span class="menu-text">Vector Data</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -151,30 +186,16 @@ div.csl-indent {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./simple-features.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Simple Features</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./vector-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector data I/O</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./spatial-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Spatial Vector Operation</span></a>
+  <a href="./vector-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Geocomputation with Vector Data</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./vector-data-exercise.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Vector Data Exercise</span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Raster Data Lecture</span></a>
+ <span class="menu-text">Raster Data</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -182,84 +203,50 @@ div.csl-indent {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./raster-data.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Raster Data</span></a>
+  <a href="./raster-data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Raster Data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./raster-io.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Raster Data I/O</span></a>
+  <a href="./raster-io.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Raster Data I/O</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./raster-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Raster Operations</span></a>
+  <a href="./raster-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Raster Operations</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./raster-vector-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Raster-Vector Operations</span></a>
+  <a href="./raster-vector-operations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Raster-Vector Operations</span></a>
   </div>
 </li>
       </ul>
   </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Raster Data Exercises</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./raster-data-exercise.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Raster Data Exercise</span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
   </div>
 </li>
-      </ul>
-  </li>
     </ul>
     </div>
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#types-of-raster-data" id="toc-types-of-raster-data" class="nav-link active" data-scroll-target="#types-of-raster-data">Types of raster data</a></li>
-  <li><a href="#a-simple-example-elevation" id="toc-a-simple-example-elevation" class="nav-link" data-scroll-target="#a-simple-example-elevation">A simple example: Elevation</a></li>
-  <li><a href="#a-more-complex-example-rbg-image" id="toc-a-more-complex-example-rbg-image" class="nav-link" data-scroll-target="#a-more-complex-example-rbg-image">A more complex example: RBG Image</a></li>
-  <li><a href="#each-band-is-a-2d-matrix" id="toc-each-band-is-a-2d-matrix" class="nav-link" data-scroll-target="#each-band-is-a-2d-matrix">Each band is a 2D matrix</a></li>
-  <li><a href="#multispectral-datasets" id="toc-multispectral-datasets" class="nav-link" data-scroll-target="#multispectral-datasets">Multispectral Datasets</a></li>
-  <li><a href="#nirgb-image" id="toc-nirgb-image" class="nav-link" data-scroll-target="#nirgb-image">NirGB Image</a></li>
-  <li><a href="#representations-of-multispectral-data" id="toc-representations-of-multispectral-data" class="nav-link" data-scroll-target="#representations-of-multispectral-data">Representations of multispectral data</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
-<main class="content page-columns page-full" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data Lecture</a></li><li class="breadcrumb-item"><a href="./raster-data.html"><span class="chapter-title">Raster Data</span></a></li></ol></nav>
-<div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Raster Data</span></h1>
-</div>
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li><li class="breadcrumb-item"><a href="./raster-data.html">Raster Data</a></li></ol></nav></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
+<section id="raster-data" class="level1 page-columns page-full">
+<h1>Raster Data</h1>
 <!-- []{.lts .content-hidden unless-profile="book"} -->
 <ul>
 <li>The spatial raster data model represents the world with the continuous grid of cells (a.k.a. pixels)</li>
@@ -275,7 +262,7 @@ div.csl-indent {
 <img src="raster-data_files/figure-html/fig-raster-example-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-raster-example-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.1: Cell offset from origin (lower left)
+Figure&nbsp;1: Cell offset from origin (lower left)
 </figcaption>
 </figure>
 </div>
@@ -287,7 +274,7 @@ Figure&nbsp;5.1: Cell offset from origin (lower left)
 <img src="raster-data_files/figure-html/fig-raster-example-2.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-raster-example-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.2: Cell values (for example elevation)
+Figure&nbsp;2: Cell values (for example elevation)
 </figcaption>
 </figure>
 </div>
@@ -299,7 +286,7 @@ Figure&nbsp;5.2: Cell values (for example elevation)
 <img src="raster-data_files/figure-html/fig-raster-example-3.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-raster-example-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.3: Color representation of cell value
+Figure&nbsp;3: Color representation of cell value
 </figcaption>
 </figure>
 </div>
@@ -359,7 +346,7 @@ Figure&nbsp;5.3: Color representation of cell value
 <img src="raster-data_files/figure-html/fig-multi-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-multi-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.4: The bands stored internally
+Figure&nbsp;4: The bands stored internally
 </figcaption>
 </figure>
 </div>
@@ -371,7 +358,7 @@ Figure&nbsp;5.4: The bands stored internally
 <img src="raster-data_files/figure-html/fig-multi-2.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-multi-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.5: The RGB Composite
+Figure&nbsp;5: The RGB Composite
 </figcaption>
 </figure>
 </div>
@@ -390,7 +377,7 @@ Figure&nbsp;5.5: The RGB Composite
 <img src="raster-data_files/figure-html/fig-raster-composite-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-raster-composite-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.6: Band values
+Figure&nbsp;6: Band values
 </figcaption>
 </figure>
 </div>
@@ -402,7 +389,7 @@ Figure&nbsp;5.6: Band values
 <img src="raster-data_files/figure-html/fig-raster-composite-2.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-raster-composite-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.7: RGB True Color Image
+Figure&nbsp;7: RGB True Color Image
 </figcaption>
 </figure>
 </div>
@@ -436,7 +423,7 @@ Figure&nbsp;5.7: RGB True Color Image
 <img src="raster-data_files/figure-html/fig-nirgb-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nirgb-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.8: Band values
+Figure&nbsp;8: Band values
 </figcaption>
 </figure>
 </div>
@@ -448,7 +435,7 @@ Figure&nbsp;5.8: Band values
 <img src="raster-data_files/figure-html/fig-nirgb-2.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-nirgb-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.9: NIR-GB False Color Image
+Figure&nbsp;9: NIR-GB False Color Image
 </figcaption>
 </figure>
 </div>
@@ -471,7 +458,7 @@ Figure&nbsp;5.9: NIR-GB False Color Image
 <img src="raster-data_files/figure-html/fig-rgb-nirgb-1.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rgb-nirgb-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.10: The R, G and B bands mapped to RGB
+Figure&nbsp;10: The R, G and B bands mapped to RGB
 </figcaption>
 </figure>
 </div>
@@ -483,7 +470,7 @@ Figure&nbsp;5.10: The R, G and B bands mapped to RGB
 <img src="raster-data_files/figure-html/fig-rgb-nirgb-2.png" class="img-fluid figure-img" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rgb-nirgb-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5.11: NIR, G and B bands mapped to RGB
+Figure&nbsp;11: NIR, G and B bands mapped to RGB
 </figcaption>
 </figure>
 </div>
@@ -492,22 +479,15 @@ Figure&nbsp;5.11: NIR, G and B bands mapped to RGB
 </div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-edzer2023" class="csl-entry" role="listitem">
-Pebesma, Edzer, and Roger Bivand. 2023. <em>Spatial Data Science: With Applications in <span>R</span></em>. Boca Raton: Chapman; Hall/CRC. <a href="https://doi.org/10.1201/9780429459016">https://doi.org/10.1201/9780429459016</a>.
-</div>
-</div>
+
+</section>
 </section>
 
-</main> <!-- /main -->
-<script>
-  const currentFile = window.location.pathname.split('/').pop();
-  console.log(currentFile);
-  const span = document.querySelector('.lts');
-  span.outerHTML = `<p class="lts">↪ <a href="slides/${currentFile}" target="_blank">slides</a></p>`;
-
-
-</script>
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-edzer2023" class="csl-entry" role="listitem">
+Pebesma, Edzer, and Roger Bivand. 2023. <em>Spatial Data Science: With Applications in <span>R</span></em>. Chapman; Hall/CRC. <a href="https://doi.org/10.1201/9780429459016">https://doi.org/10.1201/9780429459016</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -559,13 +539,14 @@ Pebesma, Edzer, and Roger Bivand. 2023. <em>Spatial Data Science: With Applicati
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -909,13 +890,13 @@ Pebesma, Edzer, and Roger Bivand. 2023. <em>Spatial Data Science: With Applicati
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./vector-data-exercise.html" class="pagination-link" aria-label="Vector Data Exercise">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Vector Data Exercise</span></span>
+      <a href="./vector-data.html" class="pagination-link" aria-label="Geocomputation with Vector Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Geocomputation with Vector Data</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./raster-io.html" class="pagination-link" aria-label="Raster Data I/O">
-        <span class="nav-page-text"><span class="chapter-title">Raster Data I/O</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text">Raster Data I/O</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
