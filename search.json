@@ -80,192 +80,231 @@
     "href": "vector-data.html#why-a-standard",
     "title": "Geocomputation with Vector Data",
     "section": "Why a standard?",
-    "text": "Why a standard?\n\nVector data is used in PostGIS, QGIS, R, Python, ArcGIS, GDAL, …\nSimple Features (ISO 19125-1:2004) is the OGC standard all major spatial tools implement\nIt defines: geometry types, encoding, and spatial relationships"
+    "text": "Why a standard?\n\nVector data is used in PostGIS, QGIS, R, Python, ArcGIS, GDAL, …\nSimple Features (ISO 19125-1:2004) is the OGC standard all major spatial tools implement\nIt defines: geometry types, encoding, and spatial relationships",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#what-is-a-feature",
     "href": "vector-data.html#what-is-a-feature",
     "title": "Geocomputation with Vector Data",
     "section": "What is a feature?",
-    "text": "What is a feature?\n\nA simple feature is defined […] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices.\n\n— ISO 19125"
+    "text": "What is a feature?\n\nA simple feature is defined […] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices.\n\n— ISO 19125",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#geometry-types",
     "href": "vector-data.html#geometry-types",
     "title": "Geocomputation with Vector Data",
     "section": "Geometry types",
-    "text": "Geometry types\n\n18 types defined in the standard; 7 cover the vast majority of real-world data:\n\n\n\n\n\nTable 1: Source: Pebesma (2018)\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\nDimensions\n\n\n\n\nPOINT\nzero-dimensional geometry containing a single point\n0\n\n\nLINESTRING\nsequence of points connected by straight, non-self-intersecting line pieces\n1\n\n\nPOLYGON\nsequence of points forming a closed, non-self-intersecting ring (with optional holes)\n2\n\n\nMULTIPOINT\nset of points\n0\n\n\nMULTILINESTRING\nset of linestrings\n1\n\n\nMULTIPOLYGON\nset of polygons\n2\n\n\nGEOMETRYCOLLECTION\nset of geometries of any of the above types\nNA"
+    "text": "Geometry types\n\n18 types defined in the standard; 7 cover the vast majority of real-world data:\n\n\n\n\n\nTable 1: Source: Pebesma (2018)\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\nDimensions\n\n\n\n\nPOINT\nzero-dimensional geometry containing a single point\n0\n\n\nLINESTRING\nsequence of points connected by straight, non-self-intersecting line pieces\n1\n\n\nPOLYGON\nsequence of points forming a closed, non-self-intersecting ring (with optional holes)\n2\n\n\nMULTIPOINT\nset of points\n0\n\n\nMULTILINESTRING\nset of linestrings\n1\n\n\nMULTIPOLYGON\nset of polygons\n2\n\n\nGEOMETRYCOLLECTION\nset of geometries of any of the above types\nNA",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#the-earth-is-not-flat",
     "href": "vector-data.html#the-earth-is-not-flat",
     "title": "Geocomputation with Vector Data",
     "section": "The Earth is not flat",
-    "text": "The Earth is not flat\n\nThe Earth is approximated as an ellipsoid: slightly flattened at the poles, bulging at the equator\nA datum defines which ellipsoid to use and how to orient it:\n\nWGS84 — global datum, used by GPS and internet maps\nCH1903+ / LV95 — Swiss national datum, optimized for Switzerland\n\nThe same point has different coordinates in different datums"
+    "text": "The Earth is not flat\n\nThe Earth is approximated as an ellipsoid: slightly flattened at the poles, bulging at the equator\nA datum defines which ellipsoid to use and how to orient it:\n\nWGS84 — global datum, used by GPS and internet maps\nCH1903+ / LV95 — Swiss national datum, optimized for Switzerland\n\nThe same point has different coordinates in different datums",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#projections",
     "href": "vector-data.html#projections",
     "title": "Geocomputation with Vector Data",
     "section": "Projections",
-    "text": "Projections\n\nA projection transforms 3D ellipsoid coordinates onto a flat 2D plane\nEvery projection distorts at least one property — there is no undistorted flat map:\n\nEqual-area — preserves area; distorts shape and angles\nConformal — preserves local shape / angles; distorts area\nEquidistant — preserves distance from a point; distorts area and shape\n\nNational systems (e.g. LV95 / EPSG:2056) are conformal, minimizing distortion locally"
+    "text": "Projections\n\nA projection transforms 3D ellipsoid coordinates onto a flat 2D plane\nEvery projection distorts at least one property — there is no undistorted flat map:\n\nEqual-area — preserves area; distorts shape and angles\nConformal — preserves local shape / angles; distorts area\nEquidistant — preserves distance from a point; distorts area and shape\n\nNational systems (e.g. LV95 / EPSG:2056) are conformal, minimizing distortion locally",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#epsg-codes",
     "href": "vector-data.html#epsg-codes",
     "title": "Geocomputation with Vector Data",
     "section": "EPSG codes",
-    "text": "EPSG codes\n\nEPSG codes are the standard identifiers for coordinate reference systems:\n\n\n\n\nEPSG\nName\nUnit\nTypical use\n\n\n\n\n4326\nWGS84\ndegree\nGPS, global data, GeoJSON default\n\n\n2056\nCH1903+ / LV95\nmeter\nSwiss national datasets\n\n\n3857\nWeb Mercator\nmeter\nWeb map tiles (Google, OSM)\n\n\n25832\nETRS89 / UTM Zone 32N\nmeter\nCentral Europe"
+    "text": "EPSG codes\n\nEPSG codes are the standard identifiers for coordinate reference systems:\n\n\n\n\nEPSG\nName\nUnit\nTypical use\n\n\n\n\n4326\nWGS84\ndegree\nGPS, global data, GeoJSON default\n\n\n2056\nCH1903+ / LV95\nmeter\nSwiss national datasets\n\n\n3857\nWeb Mercator\nmeter\nWeb map tiles (Google, OSM)\n\n\n25832\nETRS89 / UTM Zone 32N\nmeter\nCentral Europe",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#crs-in-practice-the-silent-error",
     "href": "vector-data.html#crs-in-practice-the-silent-error",
     "title": "Geocomputation with Vector Data",
     "section": "CRS in practice: the silent error",
-    "text": "CRS in practice: the silent error\n\nMeasurement operations (distance, area, buffer) use the CRS unit\nEPSG:4326 unit is degrees — st_buffer(x, 1000) means 1000 degrees, not meters\n\n\nzh &lt;- st_sfc(st_point(c(8.54, 47.38)), crs = 4326)\nst_crs(zh)$ud_unit       \n\n1 [°]\n\n\nhttps://www.google.com/maps/place/8°32'24.0\"N+47°22'48.0\"E/@8.54,47.3774197,10z"
+    "text": "CRS in practice: the silent error\n\nMeasurement operations (distance, area, buffer) use the CRS unit\nEPSG:4326 unit is degrees — st_buffer(x, 1000) means 1000 degrees, not meters\n\n\nzh &lt;- st_sfc(st_point(c(8.54, 47.38)), crs = 4326)\nst_crs(zh)$ud_unit       \n\n1 [°]\n\n\nhttps://www.google.com/maps/place/8°32'24.0\"N+47°22'48.0\"E/@8.54,47.3774197,10z",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#gdal-one-library-many-tools",
     "href": "vector-data.html#gdal-one-library-many-tools",
     "title": "Geocomputation with Vector Data",
     "section": "GDAL: one library, many tools",
-    "text": "GDAL: one library, many tools\n\nGDAL (Geospatial Data Abstraction Library) underlies almost all GIS software:\n\nQGIS, ArcGIS, GRASS, SAGA, FME, …\nR (sf)\nPython (geopandas)\nPostGIS\n\n\n\n# sf delegates format detection to GDAL — driver chosen from file extension\nstationen &lt;- read_sf(\"data/uebung1/stationen_schweiz.geojson\")   # → GeoJSON driver\nhoheitsgebiet &lt;- read_sf(\"data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR.shp\")  # → Shapefile driver\n\n\nGDAL supports 80+ vector formats; sf inherits all of them"
+    "text": "GDAL: one library, many tools\n\nGDAL (Geospatial Data Abstraction Library) underlies almost all GIS software:\n\nQGIS, ArcGIS, GRASS, SAGA, FME, …\nR (sf)\nPython (geopandas)\nPostGIS\n\n\n\n# sf delegates format detection to GDAL — driver chosen from file extension\nstationen &lt;- read_sf(\"data/uebung1/stationen_schweiz.geojson\")   # → GeoJSON driver\nhoheitsgebiet &lt;- read_sf(\"data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR.shp\")  # → Shapefile driver\n\n\nGDAL supports 80+ vector formats; sf inherits all of them",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#vector-file-formats",
     "href": "vector-data.html#vector-file-formats",
     "title": "Geocomputation with Vector Data",
     "section": "Vector file formats",
-    "text": "Vector file formats\n\n\n\n\n\n\n\n\n\nFormat\nExtension\nStrengths\nLimitations\n\n\n\n\nShapefile\n.shp (+ 4 files)\nUniversal legacy support\n10-char field names; 2 GB limit; no nulls\n\n\nGeoJSON\n.geojson\nHuman-readable; single file; web-native\nLarge files; no spatial index\n\n\nGeoPackage\n.gpkg\nModern; single file; multiple layers; SQLite inside\nLess universal than Shapefile\n\n\nPostGIS\n(database)\nLive DB; concurrent access; fast spatial index\nRequires a server\n\n\nFlatGeobuf\n.fgb\nVery fast; streamable; built-in spatial index\nNewer, less tool support\n\n\nDuckDB\n.duckdb\nColumnar analytics; spatial extension; queries remote files\nNot a traditional GIS format"
+    "text": "Vector file formats\n\n\n\n\n\n\n\n\n\nFormat\nExtension\nStrengths\nLimitations\n\n\n\n\nShapefile\n.shp (+ 4 files)\nUniversal legacy support\n10-char field names; 2 GB limit; no nulls\n\n\nGeoJSON\n.geojson\nHuman-readable; single file; web-native\nLarge files; no spatial index\n\n\nGeoPackage\n.gpkg\nModern; single file; multiple layers; SQLite inside\nLess universal than Shapefile\n\n\nPostGIS\n(database)\nLive DB; concurrent access; fast spatial index\nRequires a server\n\n\nFlatGeobuf\n.fgb\nVery fast; streamable; built-in spatial index\nNewer, less tool support\n\n\nDuckDB\n.duckdb\nColumnar analytics; spatial extension; queries remote files\nNot a traditional GIS format",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#spatial-relationships-as-questions",
     "href": "vector-data.html#spatial-relationships-as-questions",
     "title": "Geocomputation with Vector Data",
     "section": "Spatial relationships as questions",
-    "text": "Spatial relationships as questions\n\nBinary predicates return TRUE/FALSE for a pair of geometries\nThe question determines the correct predicate:\n\nIs this building inside the flood zone? → st_within(building, zone)\nDoes this road cross the zone? → st_crosses(road, zone)\nDoes any part of this forest touch Luzern? → st_intersects(forest, luzern)\n\nThe same pair can satisfy multiple predicates — wrong choice gives silently wrong results"
+    "text": "Spatial relationships as questions\n\nBinary predicates return TRUE/FALSE for a pair of geometries\nThe question determines the correct predicate:\n\nIs this building inside the flood zone? → st_within(building, zone)\nDoes this road cross the zone? → st_crosses(road, zone)\nDoes any part of this forest touch Luzern? → st_intersects(forest, luzern)\n\nThe same pair can satisfy multiple predicates — wrong choice gives silently wrong results",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#named-predicates",
     "href": "vector-data.html#named-predicates",
     "title": "Geocomputation with Vector Data",
     "section": "Named predicates",
-    "text": "Named predicates\n\n\n\n\n\n\n\n\n\nPredicate\n\nWhen TRUE\nTypical use case\n\n\n\n\nintersects\n\nAny overlap exists (broadest)\nInitial spatial filter\n\n\ndisjoint\n\nNo overlap whatsoever\nExclusion / NOT queries\n\n\ntouches\n\nBoundaries meet; interiors do not\nAdjacent parcels, shared borders\n\n\nwithin\n\nAll of A is inside B\nPoint-in-polygon, containment"
+    "text": "Named predicates\n\n\n\n\n\n\n\n\n\nPredicate\n\nWhen TRUE\nTypical use case\n\n\n\n\nintersects\n\nAny overlap exists (broadest)\nInitial spatial filter\n\n\ndisjoint\n\nNo overlap whatsoever\nExclusion / NOT queries\n\n\ntouches\n\nBoundaries meet; interiors do not\nAdjacent parcels, shared borders\n\n\nwithin\n\nAll of A is inside B\nPoint-in-polygon, containment",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#choosing-the-right-predicate",
     "href": "vector-data.html#choosing-the-right-predicate",
     "title": "Geocomputation with Vector Data",
     "section": "Choosing the right predicate",
-    "text": "Choosing the right predicate\n\n# intersects: any part of the forest touches Luzern (including tiny overlap at the border)\nwald_intersects &lt;- st_filter(tlm_wald, luzern, .predicate = st_intersects)\n\n# within: the *entire* forest polygon lies inside Luzern\nwald_within &lt;- st_filter(tlm_wald, luzern, .predicate = st_within)\n\nnrow(wald_intersects)  # more: includes forests that merely touch the border\n\n[1] 3852\n\nnrow(wald_within)      # fewer: only forests completely inside\n\n[1] 3729"
+    "text": "Choosing the right predicate\n\n# intersects: any part of the forest touches Luzern (including tiny overlap at the border)\nwald_intersects &lt;- st_filter(tlm_wald, luzern, .predicate = st_intersects)\n\n# within: the *entire* forest polygon lies inside Luzern\nwald_within &lt;- st_filter(tlm_wald, luzern, .predicate = st_within)\n\nnrow(wald_intersects)  # more: includes forests that merely touch the border\n\n[1] 3852\n\nnrow(wald_within)      # fewer: only forests completely inside\n\n[1] 3729",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#unary-operations",
     "href": "vector-data.html#unary-operations",
     "title": "Geocomputation with Vector Data",
     "section": "Unary operations",
-    "text": "Unary operations\n\nTake one geometry, return a (possibly different type of) geometry:\n\n\n\n\n\n\n\n\n\nOperation\nWhat it does\nOutput type\n\n\n\n\nst_buffer(x, dist)\nExpand by distance\nPolygon\n\n\nst_centroid(x)\nCenter point\nPoint\n\n\nst_simplify(x, tol)\nReduce vertex count\nSame type\n\n\nst_convex_hull(x)\nSmallest convex polygon enclosing the geometry\nPolygon\n\n\nst_boundary(x)\nThe boundary of the geometry\nLower dimension"
+    "text": "Unary operations\n\nTake one geometry, return a (possibly different type of) geometry:\n\n\n\n\n\n\n\n\n\nOperation\nWhat it does\nOutput type\n\n\n\n\nst_buffer(x, dist)\nExpand by distance\nPolygon\n\n\nst_centroid(x)\nCenter point\nPoint\n\n\nst_simplify(x, tol)\nReduce vertex count\nSame type\n\n\nst_convex_hull(x)\nSmallest convex polygon enclosing the geometry\nPolygon\n\n\nst_boundary(x)\nThe boundary of the geometry\nLower dimension",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#binary-set-operations",
     "href": "vector-data.html#binary-set-operations",
     "title": "Geocomputation with Vector Data",
     "section": "Binary set operations",
-    "text": "Binary set operations\n\nSet algebra on geometries — same logic as SQL set operations:\n\n\n\n\nOperation\nReturns\nSet notation\n\n\n\n\nst_intersection(A, B)\nParts where A and B overlap\nA ∩ B\n\n\nst_union(A, B)\nAll of A and B, merged\nA ∪ B\n\n\nst_difference(A, B)\nParts of A outside B\nA  B\n\n\nst_sym_difference(A, B)\nParts of A or B, but not both\nA △ B\n\n\n\n\nst_union() on a single layer: dissolve / aggregate — analogous to GROUP BY in SQL"
+    "text": "Binary set operations\n\nSet algebra on geometries — same logic as SQL set operations:\n\n\n\n\nOperation\nReturns\nSet notation\n\n\n\n\nst_intersection(A, B)\nParts where A and B overlap\nA ∩ B\n\n\nst_union(A, B)\nAll of A and B, merged\nA ∪ B\n\n\nst_difference(A, B)\nParts of A outside B\nA  B\n\n\nst_sym_difference(A, B)\nParts of A or B, but not both\nA △ B\n\n\n\n\nst_union() on a single layer: dissolve / aggregate — analogous to GROUP BY in SQL",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#operations-can-change-geometry-type",
     "href": "vector-data.html#operations-can-change-geometry-type",
     "title": "Geocomputation with Vector Data",
     "section": "Operations can change geometry type",
-    "text": "Operations can change geometry type\n\nOutput type depends on the geometry relationship, not just the operation\nIntersecting two polygons can yield a polygon, a line, or a point:\n\nOverlapping → polygon;\nsharing only an edge → line;\nsharing only a corner → point\n\nCode expecting a polygon fails silently if inputs only touch"
+    "text": "Operations can change geometry type\n\nOutput type depends on the geometry relationship, not just the operation\nIntersecting two polygons can yield a polygon, a line, or a point:\n\nOverlapping → polygon;\nsharing only an edge → line;\nsharing only a corner → point\n\nCode expecting a polygon fails silently if inputs only touch",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#write-an-algorithm",
     "href": "vector-data.html#write-an-algorithm",
     "title": "Geocomputation with Vector Data",
     "section": "Write an algorithm",
-    "text": "Write an algorithm\nHow do you make a Peanutbutter & Jelly Sandwitch (PB&J)"
+    "text": "Write an algorithm\nHow do you make a Peanutbutter & Jelly Sandwitch (PB&J)",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#challenge-1-bounding-box-of-a-point-stream",
     "href": "vector-data.html#challenge-1-bounding-box-of-a-point-stream",
     "title": "Geocomputation with Vector Data",
     "section": "Challenge 1: Bounding box of a point stream",
-    "text": "Challenge 1: Bounding box of a point stream\n\nA continuous stream of 2D coordinates arrives one point at a time.\nTask: develop an algorithm for the smallest axis-aligned bounding box of all points received so far.\nConstraints: process each point once; do not store the full list; update the box on each new point.\nExample stream:\n2489750, 1117500\n2506250, 1172500\n2552750, 1223500  ...\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups"
+    "text": "Challenge 1: Bounding box of a point stream\n\nA continuous stream of 2D coordinates arrives one point at a time.\nTask: develop an algorithm for the smallest axis-aligned bounding box of all points received so far.\nConstraints: process each point once; do not store the full list; update the box on each new point.\nExample stream:\n2489750, 1117500\n2506250, 1172500\n2552750, 1223500  ...\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#challenge-2-is-a-point-inside-a-polygon",
     "href": "vector-data.html#challenge-2-is-a-point-inside-a-polygon",
     "title": "Geocomputation with Vector Data",
     "section": "Challenge 2: Is a point inside a polygon?",
-    "text": "Challenge 2: Is a point inside a polygon?\n\nGiven: an ordered sequence of 2D polygon vertices and a point with known coordinates.\nTask: develop an algorithm that determines whether the point is inside or outside the polygon.\nConstraints: use only the vertex coordinates; no visual inspection; must work for arbitrary simple polygons.\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups"
+    "text": "Challenge 2: Is a point inside a polygon?\n\nGiven: an ordered sequence of 2D polygon vertices and a point with known coordinates.\nTask: develop an algorithm that determines whether the point is inside or outside the polygon.\nConstraints: use only the vertex coordinates; no visual inspection; must work for arbitrary simple polygons.\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data.html#refs",
     "href": "vector-data.html#refs",
     "title": "Geocomputation with Vector Data",
     "section": "References",
-    "text": "References\n\n\n\n\nDorman, Michael. 2023. Spatial Data Programming with Python — Geobgu.xyz. Https://geobgu.xyz/py/.\n\n\nPebesma, Edzer. 2018. “Simple Features for R: Standardized Support for Spatial Vector Data.” The R Journal 10 (1): 439–46. https://doi.org/10.32614/RJ-2018-009."
+    "text": "References\n\n\n\n\nDorman, Michael. 2023. Spatial Data Programming with Python — Geobgu.xyz. Https://geobgu.xyz/py/.\n\n\nPebesma, Edzer. 2018. “Simple Features for R: Standardized Support for Spatial Vector Data.” The R Journal 10 (1): 439–46. https://doi.org/10.32614/RJ-2018-009.",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
   },
   {
     "objectID": "vector-data-exercise.html",
     "href": "vector-data-exercise.html",
     "title": "Vector Data",
     "section": "",
-    "text": "Introduction Vector Data (slides)",
-    "crumbs": [
-      "Vector Data"
-    ]
+    "text": "In this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.\nChoose at least 2 Tasks (“Szenarios”) and solve these!\nAll data is available on moodle, under the section Spatial Analysis I:\n\nswiss_TLM3D.gpkg contains:\n\ntlm_bb: Land cover polygons with attribute objektart (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)\ntlm_strassen: Road network with attribute objektart (Autobahn, Autostrasse, various street widths, paths, etc.)\n\nswissBOUNDARIES3D.gpkg contains:\n\nkantonsgebiet_lu: Canton of Luzern boundary\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95)."
   },
   {
     "objectID": "vector-data-exercise.html#introduction",
     "href": "vector-data-exercise.html#introduction",
     "title": "Vector Data",
-    "section": "Introduction",
-    "text": "Introduction\nIn this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.\nChoose at least 2 Tasks (“Szenarios”) and solve these!\nAll data is available on moodle, under the section Spatial Analysis I:\n\nswiss_TLM3D.gpkg contains:\n\ntlm_bb: Land cover polygons with attribute objektart (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)\ntlm_strassen: Road network with attribute objektart (Autobahn, Autostrasse, various street widths, paths, etc.)\n\nswissBOUNDARIES3D.gpkg contains:\n\nkantonsgebiet_lu: Canton of Luzern boundary\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95).",
-    "crumbs": [
-      "Vector Data"
-    ]
+    "section": "",
+    "text": "In this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.\nChoose at least 2 Tasks (“Szenarios”) and solve these!\nAll data is available on moodle, under the section Spatial Analysis I:\n\nswiss_TLM3D.gpkg contains:\n\ntlm_bb: Land cover polygons with attribute objektart (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)\ntlm_strassen: Road network with attribute objektart (Autobahn, Autostrasse, various street widths, paths, etc.)\n\nswissBOUNDARIES3D.gpkg contains:\n\nkantonsgebiet_lu: Canton of Luzern boundary\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95)."
   },
   {
     "objectID": "vector-data-exercise.html#scenario-1-protected-area-planning",
     "href": "vector-data-exercise.html#scenario-1-protected-area-planning",
     "title": "Vector Data",
     "section": "Scenario 1: Protected Area Planning",
-    "text": "Scenario 1: Protected Area Planning\nThe canton is considering establishing a nature protection zone for wetland ecosystems. To inform this decision, you need to analyze the current state of wetlands.\n\nQuestion 1.1: How much wetland area (“Feuchtgebiet”) currently exists in the canton of Luzern (in km²)?\nQuestion 1.2: Wetlands are ecologically most valuable when they are connected to water bodies. Identify all wetlands that are either directly adjacent to or within 50 meters of standing water bodies (“Stehende Gewaesser”). What percentage of the total wetland area does this represent?\nQuestion 1.3: Create a map showing:\n\nAll wetlands in the canton\nWetlands connected to water (highlighted differently)\nStanding water bodies\n\n\nThink about: Which spatial operations do you need? How do you define “connected”?",
-    "crumbs": [
-      "Vector Data"
-    ]
+    "text": "Scenario 1: Protected Area Planning\nThe canton is considering establishing a nature protection zone for wetland ecosystems. To inform this decision, you need to analyze the current state of wetlands.\n\nQuestion 1.1: How much wetland area (“Feuchtgebiet”) currently exists in the canton of Luzern (in km²)?\nQuestion 1.2: Wetlands are ecologically most valuable when they are connected to water bodies. Identify all wetlands that are either directly adjacent to or within 50 meters of standing water bodies (“Stehende Gewaesser”). What percentage of the total wetland area does this represent?\nQuestion 1.3: Create a map showing:\n\nAll wetlands in the canton\nWetlands connected to water (highlighted differently)\nStanding water bodies\n\n\nThink about: Which spatial operations do you need? How do you define “connected”?"
   },
   {
     "objectID": "vector-data-exercise.html#scenario-2-accessibility-analysis",
     "href": "vector-data-exercise.html#scenario-2-accessibility-analysis",
     "title": "Vector Data",
     "section": "Scenario 2: Accessibility Analysis",
-    "text": "Scenario 2: Accessibility Analysis\nA hiking organization wants to understand forest accessibility in Luzern.\n\nQuestion 2.1: Calculate the total forest area in Luzern that is accessible by small paths (1m or 2m wide paths: “1m Weg”, “2m Weg”). Define “accessible” as being within 200 meters of such a path.\nQuestion 2.2: What percentage of Luzern’s total forest area is accessible by these small paths?\nQuestion 2.3: Compare this with accessibility by major roads (Autobahn, Autostrasse, and streets ≥6m). How much forest area is within 200m of major roads?\nQuestion 2.4: Create a visualization that effectively communicates your findings.\n\nThink about: How do you combine multiple road types? How do you avoid double-counting areas accessible by multiple paths?",
-    "crumbs": [
-      "Vector Data"
-    ]
+    "text": "Scenario 2: Accessibility Analysis\nA hiking organization wants to understand forest accessibility in Luzern.\n\nQuestion 2.1: Calculate the total forest area in Luzern that is accessible by small paths (1m or 2m wide paths: “1m Weg”, “2m Weg”). Define “accessible” as being within 200 meters of such a path.\nQuestion 2.2: What percentage of Luzern’s total forest area is accessible by these small paths?\nQuestion 2.3: Compare this with accessibility by major roads (Autobahn, Autostrasse, and streets ≥6m). How much forest area is within 200m of major roads?\nQuestion 2.4: Create a visualization that effectively communicates your findings.\n\nThink about: How do you combine multiple road types? How do you avoid double-counting areas accessible by multiple paths?"
   },
   {
     "objectID": "vector-data-exercise.html#scenario-3-alpine-environment-analysis",
     "href": "vector-data-exercise.html#scenario-3-alpine-environment-analysis",
     "title": "Vector Data",
     "section": "Scenario 3: Alpine Environment Analysis",
-    "text": "Scenario 3: Alpine Environment Analysis\nClimate researchers are interested in high-altitude features in Luzern.\n\nQuestion 3.1: Identify all rocky areas in Luzern by combining the following land cover types: “Fels”, “Fels locker”, “Felsbloecke”, “Felsbloecke locker”, and “Lockergestein”. What is their total area?\nQuestion 3.2: Some of these rocky areas may contain glaciers or permanent snow. Find all rocky areas that are within 100 meters of glaciers (“Gletscher”) or snow fields (“Schneefeld Toteis”). How much area does this represent?\nQuestion 3.3: Create a map showing the spatial distribution of:\n\nAll rocky areas\nRocky areas near ice/snow\nGlaciers and snow fields\n\n\nThink about: Are glaciers and snow fields already part of rocky areas, or separate? How does this affect your analysis?",
-    "crumbs": [
-      "Vector Data"
-    ]
+    "text": "Scenario 3: Alpine Environment Analysis\nClimate researchers are interested in high-altitude features in Luzern.\n\nQuestion 3.1: Identify all rocky areas in Luzern by combining the following land cover types: “Fels”, “Fels locker”, “Felsbloecke”, “Felsbloecke locker”, and “Lockergestein”. What is their total area?\nQuestion 3.2: Some of these rocky areas may contain glaciers or permanent snow. Find all rocky areas that are within 100 meters of glaciers (“Gletscher”) or snow fields (“Schneefeld Toteis”). How much area does this represent?\nQuestion 3.3: Create a map showing the spatial distribution of:\n\nAll rocky areas\nRocky areas near ice/snow\nGlaciers and snow fields\n\n\nThink about: Are glaciers and snow fields already part of rocky areas, or separate? How does this affect your analysis?"
   },
   {
     "objectID": "vector-data-exercise.html#scenario-4-integrated-analysis",
     "href": "vector-data-exercise.html#scenario-4-integrated-analysis",
     "title": "Vector Data",
     "section": "Scenario 4: Integrated Analysis",
-    "text": "Scenario 4: Integrated Analysis\nResearch Question: The canton wants to identify potential locations for small reservoirs for agricultural water supply. Suitable locations should meet ALL of the following criteria:\n\nLocated in or near wetlands (within 20m)\nWithin 300m of an existing road (any type, for construction access)\nNOT in protected forest areas\nNOT on steep rocky terrain (Fels, Felsbloecke)\n\nTask: Identify and map all suitable areas. Report the total area available and discuss the spatial distribution of suitable locations.\nThink about: This requires combining multiple spatial operations. What is the logical sequence? Do you need union, intersection, or difference operations?",
-    "crumbs": [
-      "Vector Data"
-    ]
+    "text": "Scenario 4: Integrated Analysis\nResearch Question: The canton wants to identify potential locations for small reservoirs for agricultural water supply. Suitable locations should meet ALL of the following criteria:\n\nLocated in or near wetlands (within 20m)\nWithin 300m of an existing road (any type, for construction access)\nNOT in protected forest areas\nNOT on steep rocky terrain (Fels, Felsbloecke)\n\nTask: Identify and map all suitable areas. Report the total area available and discuss the spatial distribution of suitable locations.\nThink about: This requires combining multiple spatial operations. What is the logical sequence? Do you need union, intersection, or difference operations?"
   }
 ]
