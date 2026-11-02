@@ -76,6 +76,16 @@
     ]
   },
   {
+    "objectID": "vector-data.html#today",
+    "href": "vector-data.html#today",
+    "title": "Geocomputation with Vector Data",
+    "section": "Today",
+    "text": "Today\n\nSimple Features — the standard behind all vector GIS tools\nCoordinate Reference Systems — datums, projections, units, silent errors\nGDAL & file formats — the common backbone, format trade-offs\nBinary Predicates — spatial relationships and choosing the right one\nGeometry Operations — set algebra, type changes\nGroup Work — two algorithmic challenges",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
+  },
+  {
     "objectID": "vector-data.html#why-a-standard",
     "href": "vector-data.html#why-a-standard",
     "title": "Geocomputation with Vector Data",
@@ -180,7 +190,7 @@
     "href": "vector-data.html#named-predicates",
     "title": "Geocomputation with Vector Data",
     "section": "Named predicates",
-    "text": "Named predicates\n\n\n\n\n\n\n\n\n\nPredicate\n\nWhen TRUE\nTypical use case\n\n\n\n\nintersects\n\nAny overlap exists (broadest)\nInitial spatial filter\n\n\ndisjoint\n\nNo overlap whatsoever\nExclusion / NOT queries\n\n\ntouches\n\nBoundaries meet; interiors do not\nAdjacent parcels, shared borders\n\n\nwithin\n\nAll of A is inside B\nPoint-in-polygon, containment",
+    "text": "Named predicates\n\n\n\n\n\n\n\n\n\nPredicate\n\nWhen TRUE\nTypical use case\n\n\n\n\nintersects\n\nAny overlap exists (broadest)\nInitial spatial filter\n\n\ndisjoint\n\nNo overlap whatsoever\nExclusion / NOT queries\n\n\ntouches\n\nBoundaries meet; interiors do not\nAdjacent parcels, shared borders\n\n\n\n\n\nintersects is almost always TRUE for non-trivial pairs — rarely the right predicate for a precise question",
     "crumbs": [
       "Vecor Data Slides"
     ]
@@ -210,7 +220,7 @@
     "href": "vector-data.html#binary-set-operations",
     "title": "Geocomputation with Vector Data",
     "section": "Binary set operations",
-    "text": "Binary set operations\n\nSet algebra on geometries — same logic as SQL set operations:\n\n\n\n\nOperation\nReturns\nSet notation\n\n\n\n\nst_intersection(A, B)\nParts where A and B overlap\nA ∩ B\n\n\nst_union(A, B)\nAll of A and B, merged\nA ∪ B\n\n\nst_difference(A, B)\nParts of A outside B\nA  B\n\n\nst_sym_difference(A, B)\nParts of A or B, but not both\nA △ B\n\n\n\n\nst_union() on a single layer: dissolve / aggregate — analogous to GROUP BY in SQL",
+    "text": "Binary set operations\n\nSet algebra on geometries — same logic as SQL set operations\nst_union() on a single layer: dissolve / aggregate — analogous to GROUP BY in SQL\n\n\n\n\nOperation\nReturns\nSet notation\n\n\n\n\nst_intersection(A, B)\nParts where A and B overlap\nA ∩ B\n\n\nst_union(A, B)\nAll of A and B, merged\nA ∪ B\n\n\nst_difference(A, B)\nParts of A outside B\nA  B\n\n\nst_sym_difference(A, B)\nParts of A or B, but not both\nA △ B",
     "crumbs": [
       "Vecor Data Slides"
     ]
@@ -240,7 +250,7 @@
     "href": "vector-data.html#challenge-1-bounding-box-of-a-point-stream",
     "title": "Geocomputation with Vector Data",
     "section": "Challenge 1: Bounding box of a point stream",
-    "text": "Challenge 1: Bounding box of a point stream\n\nA continuous stream of 2D coordinates arrives one point at a time.\nTask: develop an algorithm for the smallest axis-aligned bounding box of all points received so far.\nConstraints: process each point once; do not store the full list; update the box on each new point.\nExample stream:\n2489750, 1117500\n2506250, 1172500\n2552750, 1223500  ...\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
+    "text": "Challenge 1: Bounding box of a point stream\n\n\nA continuous stream of 2D coordinates arrives one point at a time.\nTask: develop an algorithm for the smallest axis-aligned bounding box of all points received so far.\nConstraints: process each point once; do not store the full list; update the box on each new point.\nExample stream:\n2489750, 1117500\n2506250, 1172500\n2552750, 1223500  ...\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
     "crumbs": [
       "Vecor Data Slides"
     ]
@@ -250,7 +260,7 @@
     "href": "vector-data.html#challenge-2-is-a-point-inside-a-polygon",
     "title": "Geocomputation with Vector Data",
     "section": "Challenge 2: Is a point inside a polygon?",
-    "text": "Challenge 2: Is a point inside a polygon?\n\nGiven: an ordered sequence of 2D polygon vertices and a point with known coordinates.\nTask: develop an algorithm that determines whether the point is inside or outside the polygon.\nConstraints: use only the vertex coordinates; no visual inspection; must work for arbitrary simple polygons.\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
+    "text": "Challenge 2: Is a point inside a polygon?\n\n\nGiven: an ordered sequence of 2D polygon vertices and a point with known coordinates.\nTask: develop an algorithm that determines whether the point is inside or outside the polygon.\nConstraints: use only the vertex coordinates; no visual inspection; must work for arbitrary simple polygons.\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
     "crumbs": [
       "Vecor Data Slides"
     ]
@@ -326,11 +336,21 @@
     ]
   },
   {
-    "objectID": "vector-data.html#today",
-    "href": "vector-data.html#today",
+    "objectID": "vector-data.html#important-vector-file-formats",
+    "href": "vector-data.html#important-vector-file-formats",
     "title": "Geocomputation with Vector Data",
-    "section": "Today",
-    "text": "Today\n\nSimple Features — the standard behind all vector GIS tools\nCoordinate Reference Systems — datums, projections, units, silent errors\nGDAL & file formats — the common backbone, format trade-offs\nBinary Predicates — spatial relationships and choosing the right one\nGeometry Operations — set algebra, type changes\nGroup Work — two algorithmic challenges",
+    "section": "Important Vector file formats",
+    "text": "Important Vector file formats\n\n\n\n\n\n\n\n\n\nFormat\nExtension\nStrengths\nLimitations\n\n\n\n\nShapefile\n.shp (+ 4 files)\nUniversal legacy support\n10-char field names; 2 GB limit; no nulls\n\n\nGeoJSON\n.geojson\nHuman-readable; single file; web-native\nLarge files; no spatial index\n\n\nGeoPackage\n.gpkg\nModern; single file; multiple layers; SQLite inside\nLess universal than Shapefile\n\n\nPostGIS\n(database)\nLive DB; concurrent access; fast spatial index\nRequires a server\n\n\nFlatGeobuf\n.fgb\nVery fast; streamable; built-in spatial index\nNewer, less tool support\n\n\nDuckDB\n.duckdb\nColumnar analytics; spatial extension; queries remote files\nNot a traditional GIS format",
+    "crumbs": [
+      "Vecor Data Slides"
+    ]
+  },
+  {
+    "objectID": "vector-data.html#named-predicates-1",
+    "href": "vector-data.html#named-predicates-1",
+    "title": "Geocomputation with Vector Data",
+    "section": "Named predicates",
+    "text": "Named predicates\n\n\n\n\n\n\n\n\n\nPredicate\n\nWhen TRUE\nTypical use case\n\n\n\n\nwithin\n\nAll of A is inside B\nPoint-in-polygon, containment\n\n\ncontains\n\nAll of B is inside A\nInverse of within\n\n\noverlaps\n\nInteriors intersect; neither contains the other\nPartial overlap of same-type features\n\n\ncrosses\n\nInterior of A intersects interior of B in lower dimension\nRoad through a zone",
     "crumbs": [
       "Vecor Data Slides"
     ]

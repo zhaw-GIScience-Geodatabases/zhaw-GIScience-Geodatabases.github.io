@@ -5,6 +5,9 @@ format:
     css: misc/style-slides.css
     code-line-numbers: false
     footer: "[Home](../index.html)"
+    include-in-header: misc/script.html
+title-slide-attributes:
+  data-background-image: images/interlaken.png
 execute:
   echo: true
   warning: false
@@ -273,7 +276,7 @@ hoheitsgebiet <- read_sf("data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR
 
 - GDAL supports [80+ vector formats](https://gdal.org/en/latest/drivers/vector/index.html); `sf` inherits all of them
 
-## Vector file formats
+## Important Vector file formats
 
 | Format | Extension | Strengths | Limitations |
 |---|---|---|---|
@@ -299,21 +302,25 @@ hoheitsgebiet <- read_sf("data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR
 ## Named predicates
 
 | Predicate | | When TRUE | Typical use case |
-|---|:---:|---|---|
-| `intersects` | ![](images/predicates/intersects.png){width=130px} | Any overlap exists (broadest) | Initial spatial filter |
-| `disjoint` | ![](images/predicates/disjoint.png){width=130px} | No overlap whatsoever | Exclusion / NOT queries |
-| `touches` | ![](images/predicates/touches.png){width=130px} | Boundaries meet; interiors do not | Adjacent parcels, shared borders |
-| `within` | ![](images/predicates/within.png){width=130px} | All of A is inside B | Point-in-polygon, containment |
+|--|:---:|-------|-------|
+| `intersects` | ![](images/predicates/intersects.png){width=100px} | Any overlap exists (broadest) | Initial spatial filter |
+| `disjoint` | ![](images/predicates/disjoint.png){width=100px} | No overlap whatsoever | Exclusion / NOT queries |
+| `touches` | ![](images/predicates/touches.png){width=100px} | Boundaries meet; interiors do not | Adjacent parcels, shared borders |
 
----
+:::{.notes}
+- `intersects` is almost always TRUE for non-trivial pairs — rarely the right predicate for a precise question
+:::
+
+## Named predicates
 
 | Predicate | | When TRUE | Typical use case |
-|---|:---:|---|---|
-| `contains` | ![](images/predicates/contains.png){width=130px} | All of B is inside A | Inverse of `within` |
-| `overlaps` | ![](images/predicates/overlaps.png){width=130px} | Interiors intersect; neither contains the other | Partial overlap of same-type features |
-| `crosses` | ![](images/predicates/crosses.png){width=130px} | Interior of A intersects interior of B in lower dimension | Road through a zone |
+|--|:---:|-------|-------|
+| `within` | ![](images/predicates/within.png){width=100px} | All of A is inside B | Point-in-polygon, containment |
+| `contains` | ![](images/predicates/contains.png){width=100px} | All of B is inside A | Inverse of `within` |
+| `overlaps` | ![](images/predicates/overlaps.png){width=100px} | Interiors intersect; neither contains the other | Partial overlap of same-type features |
+| `crosses` | ![](images/predicates/crosses.png){width=100px} | Interior of A intersects interior of B in lower dimension | Road through a zone |
 
-- `intersects` is almost always TRUE for non-trivial pairs — rarely the right predicate for a precise question
+
 
 ## Choosing the right predicate
 
@@ -344,21 +351,23 @@ nrow(wald_within)      # fewer: only forests completely inside
 #| echo: false
 #| label: fig-predicates
 #| fig-cap: "`st_intersects` (left) vs `st_within` (right) — same data, different predicate, different question answered"
-#| layout-ncol: 2
+#| fig-width: 10
+#| fig-height: 4
+library(patchwork)
 
-ggplot(luzern) +
+p1 <- ggplot(luzern) +
   geom_sf(fill = "gray90") +
   geom_sf(data = wald_intersects, fill = "darkgreen", color = NA) +
   labs(title = "st_intersects") +
-  theme_minimal() +
-  theme(axis.text = element_blank(), axis.ticks = element_blank())
+  theme_void() + theme(plot.title = element_text(hjust = 0.5))
 
-ggplot(luzern) +
+p2 <- ggplot(luzern) +
   geom_sf(fill = "gray90") +
   geom_sf(data = wald_within, fill = "darkgreen", color = NA) +
   labs(title = "st_within") +
-  theme_minimal() +
-  theme(axis.text = element_blank(), axis.ticks = element_blank())
+  theme_void() + theme(plot.title = element_text(hjust = 0.5))
+
+p1 + p2
 ```
 
 # Geometry Operations {.subtitle}
@@ -377,7 +386,9 @@ ggplot(luzern) +
 
 ## Binary set operations
 
-- Set algebra on geometries — same logic as SQL set operations:
+- Set algebra on geometries — same logic as SQL set operations
+- `st_union()` on a **single layer**: dissolve / aggregate — analogous to `GROUP BY` in SQL
+
 
 | Operation | Returns | Set notation |
 |---|---|---|
@@ -386,7 +397,6 @@ ggplot(luzern) +
 | `st_difference(A, B)` | Parts of A outside B | A \ B |
 | `st_sym_difference(A, B)` | Parts of A or B, but not both | A △ B |
 
-- `st_union()` on a **single layer**: dissolve / aggregate — analogous to `GROUP BY` in SQL
 
 ## Operations can change geometry type
 
@@ -421,7 +431,7 @@ ggplot(luzern) +
 
 
 
-# Group Work
+# Group Work {.subtitle}
 
 ## Write an algorithm
 
@@ -434,6 +444,8 @@ How do you make a Peanutbutter & Jelly Sandwitch (PB&J)
 
 
 ## Challenge 1: Bounding box of a point stream
+
+<span class="timer" data-minutes="10"></span>
 
 - A continuous stream of 2D coordinates arrives one point at a time.
 - **Task:** develop an algorithm for the smallest axis-aligned bounding box of all points received so far.
@@ -451,6 +463,8 @@ Do not use any external sources. Solve with your own ideas in groups
 
 
 ## Challenge 2: Is a point inside a polygon?
+
+<span class="timer" data-minutes="20"></span>
 
 - **Given:** an ordered sequence of 2D polygon vertices and a point with known coordinates.
 - **Task:** develop an algorithm that determines whether the point is inside or outside the polygon.
