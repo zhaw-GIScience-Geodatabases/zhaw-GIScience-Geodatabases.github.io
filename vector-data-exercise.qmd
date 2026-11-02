@@ -5,14 +5,13 @@ execute:
   eval: false
 ---
 
-[Introduction Vector Data](vector-data.qmd) (slides)
 
 
 ## Introduction
 
 In this exercise, you will apply spatial vector operations to answer real-world planning and environmental questions. You have access to topographic data from Swiss TLM3D and administrative boundaries. Your task is to use appropriate spatial analysis methods to answer the questions described in the task.
 
-Choose at least 2 Tasks ("Szenarios") and solve these!
+Choose at least 2 Tasks ("Scenario") and solve these!
 
 ```{r}
 library(sf)
@@ -41,7 +40,6 @@ The canton is considering establishing a nature protection zone for wetland ecos
   - Wetlands connected to water (highlighted differently)
   - Standing water bodies
 
-*Think about: Which spatial operations do you need? How do you define "connected"?*
 
 ```{r}
 # Load data
@@ -110,7 +108,6 @@ A hiking organization wants to understand forest accessibility in Luzern.
 - **Question 2.3:** Compare this with accessibility by major roads (Autobahn, Autostrasse, and streets ≥6m). How much forest area is within 200m of major roads? 
 - **Question 2.4:** Create a visualization that effectively communicates your findings.
 
-*Think about: How do you combine multiple road types? How do you avoid double-counting areas accessible by multiple paths?*
 
 ```{r}
 # Load road data
@@ -192,7 +189,6 @@ Climate researchers are interested in high-altitude features in Luzern.
   - Rocky areas near ice/snow
   - Glaciers and snow fields
 
-*Think about: Are glaciers and snow fields already part of rocky areas, or separate? How does this affect your analysis?*
 
 ```{r}
 # Question 3.1: All rocky areas
@@ -245,7 +241,6 @@ ggplot() +
 
 **Task:** Identify and map all suitable areas. Report the total area available and discuss the spatial distribution of suitable locations.
 
-*Think about: This requires combining multiple spatial operations. What is the logical sequence? Do you need union, intersection, or difference operations?*
 
 ```{r}
 # Step 1: Create suitable wetland zones (wetlands + 20m buffer)
