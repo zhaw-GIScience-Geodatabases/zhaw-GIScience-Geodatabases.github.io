@@ -104,6 +104,14 @@ Research Associate at the Research Group for Geoinformatics
 
 ::::
 
+## Today
+
+1. **Simple Features** — the standard behind all vector GIS tools
+2. **Coordinate Reference Systems** — datums, projections, units, silent errors
+3. **GDAL & file formats** — the common backbone, format trade-offs
+4. **Binary Predicates** — spatial relationships and choosing the right one
+5. **Geometry Operations** — set algebra, type changes
+6. **Group Work** — two algorithmic challenges
 
 # Simple Features {.subtitle}
 
