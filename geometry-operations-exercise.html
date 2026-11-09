@@ -33,6 +33,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./areal-interpolation.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -188,9 +190,7 @@ document.addEventListener('keydown', function(event) {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">
-      GIScience and Geodatabases
-      </li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./geometry-operations.html">Session 2: Vector Geometry</a></li><li class="breadcrumb-item"><a href="./geometry-operations-exercise.html">Exercise</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -265,6 +265,12 @@ document.addEventListener('keydown', function(event) {
  <span class="menu-text">Areal Interpolation</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./geometry-operations-exercise.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Exercise</span></a>
+  </div>
+</li>
       </ul>
   </li>
         <li class="sidebar-item">
@@ -282,7 +288,7 @@ document.addEventListener('keydown', function(event) {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./geometry-operations.html">Session 2: Vector Geometry</a></li><li class="breadcrumb-item"><a href="./geometry-operations-exercise.html">Exercise</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Vector Geometry Operations</h1>
 </div>
@@ -303,7 +309,7 @@ document.addEventListener('keydown', function(event) {
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Practice the geometry operations from today’s lecture using Swiss spatial data. Choose at least 2 scenarios.</p>
+<p>Practice the geometry operations from today’s lecture using Swiss spatial data.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="No AI!">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -336,29 +342,14 @@ document.addEventListener('keydown', function(event) {
 <li><strong>1.3:</strong> For the first five wetlands whose centroid is outside, compute <code>st_point_on_surface()</code> as well. Map these polygons with both point types (centroid in red, point-on-surface in blue). What do you notice about the polygon shapes?</li>
 </ul>
 </section>
-<section id="scenario-2-affine-transformations" class="level2">
-<h2 class="anchored" data-anchor-id="scenario-2-affine-transformations">Scenario 2: Affine Transformations</h2>
-<p>Apply shift, scale, and rotation to the Canton Luzern boundary.</p>
-<ul>
-<li><strong>2.1:</strong> Load the canton geometry. Drop Z coordinates with <code>st_zm()</code> and compute its centroid.</li>
-<li><strong>2.2:</strong> Create three transformed versions of the geometry:
-<ul>
-<li>Shifted 20 km to the east</li>
-<li>Scaled to 50% of its original size around the centroid</li>
-<li>Rotated 45° around the centroid (you will need to write a <code>rotation()</code> function)</li>
-</ul></li>
-<li><strong>2.3:</strong> Map all four versions (original + three transformations) side by side.</li>
-<li><strong>2.4</strong> <em>(Challenge)</em>: Compose two operations — shift 10 km east, then rotate 20° around the new centroid. Compare this with rotating first and then shifting. Are the results the same?</li>
-</ul>
-</section>
-<section id="scenario-3-simplification" class="level2">
-<h2 class="anchored" data-anchor-id="scenario-3-simplification">Scenario 3: Simplification</h2>
+<section id="scenario-2-simplification" class="level2">
+<h2 class="anchored" data-anchor-id="scenario-2-simplification">Scenario 2: Simplification</h2>
 <p>Compare how <code>st_simplify()</code> and <code>ms_simplify()</code> behave, and discover the topology problem.</p>
 <ul>
-<li><strong>3.1:</strong> Load forest polygons (“Wald”) within Canton Luzern. Apply <code>st_simplify()</code> with tolerances of 100 m and 1 000 m. How many vertices does each version have compared to the original?</li>
-<li><strong>3.2:</strong> Load five neighbouring European countries (Switzerland, Germany, France, Austria, Italy) using <code>rnaturalearth::ne_countries()</code>, transform to EPSG:3857. Apply <code>st_simplify()</code> with a tolerance of 50 000 m. Do gaps appear between countries?</li>
-<li><strong>3.3:</strong> Apply <code>rmapshaper::ms_simplify()</code> with <code>keep = 0.1</code> to the same dataset. How do the shared borders compare?</li>
-<li><strong>3.4:</strong> Map all three versions (original, <code>st_simplify</code>, <code>ms_simplify</code>) side by side.</li>
+<li><strong>2.1:</strong> Load forest polygons (“Wald”) within Canton Luzern. Apply <code>st_simplify()</code> with tolerances of 100 m and 1 000 m. How many vertices does each version have compared to the original?</li>
+<li><strong>2.2:</strong> Load five neighbouring European countries (Switzerland, Germany, France, Austria, Italy) using <code>rnaturalearth::ne_countries()</code>, transform to EPSG:3857. Apply <code>st_simplify()</code> with a tolerance of 50 000 m. Do gaps appear between countries?</li>
+<li><strong>2.3:</strong> Apply <code>rmapshaper::ms_simplify()</code> with <code>keep = 0.1</code> to the same dataset. How do the shared borders compare?</li>
+<li><strong>2.4:</strong> Map all three versions (original, <code>st_simplify</code>, <code>ms_simplify</code>) side by side.</li>
 </ul>
 
 
@@ -438,7 +429,7 @@ document.addEventListener('keydown', function(event) {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/zhaw-GIScience-Geodatabases\.github\.io\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -765,6 +756,18 @@ document.addEventListener('keydown', function(event) {
     }
   });
   </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./areal-interpolation.html" class="pagination-link" aria-label="Areal Interpolation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Areal Interpolation</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 

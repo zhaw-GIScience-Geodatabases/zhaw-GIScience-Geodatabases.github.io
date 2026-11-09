@@ -345,7 +345,7 @@
     "href": "index.html",
     "title": "Welcome",
     "section": "",
-    "text": "Welcome\nWelcome to the Part Geocomputation in the Course GIScience and Geodatabases. This course is taught in the Bachelor Degree Applied Digital Life Sciences at the Zurich University of Applied Sciences (ZHAW).\n\nSession 1: Vector Data\n\nGeocomputation with Vector Data\nExercise\n\nSession 2: Vector Geometry\n\nGeometry Operations\nSpherical Geometry in sf\nAreal Interpolation",
+    "text": "Welcome\nWelcome to the Part Geocomputation in the Course GIScience and Geodatabases. This course is taught in the Bachelor Degree Applied Digital Life Sciences at the Zurich University of Applied Sciences (ZHAW).\n\nSession 1: Vector Data\n\nGeocomputation with Vector Data\nExercise\n\nSession 2: Vector Geometry\n\nGeometry Operations \nAreal Interpolation",
     "crumbs": [
       "Welcome"
     ]
@@ -739,38 +739,47 @@
     "text": "References"
   },
   {
-    "objectID": "geometry-operations-exercise.html",
-    "href": "geometry-operations-exercise.html",
-    "title": "Vector Geometry Operations",
+    "objectID": "session2-exercises.html",
+    "href": "session2-exercises.html",
+    "title": "Session 2 Exercises",
     "section": "",
-    "text": "Practice the geometry operations from today’s lecture using Swiss spatial data. Choose at least 2 scenarios.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!\n\n\nData is available on Moodle, under Spatial Analysis I:\n\nswissBOUNDARIES3D.gpkg: Canton of Luzern boundary\nswiss_TLM3D.gpkg:\n\ntlm_bb — land cover polygons with attribute objektart (Wald, Feuchtgebiet, Stehende Gewaesser, etc.)\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95)."
+    "text": "Practice the geometry operations from today’s lecture using Swiss spatial data.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Exercise"
+    ]
   },
   {
-    "objectID": "geometry-operations-exercise.html#introduction",
-    "href": "geometry-operations-exercise.html#introduction",
-    "title": "Vector Geometry Operations",
+    "objectID": "session2-exercises.html#introduction",
+    "href": "session2-exercises.html#introduction",
+    "title": "Session 2 Exercises",
     "section": "",
-    "text": "Practice the geometry operations from today’s lecture using Swiss spatial data. Choose at least 2 scenarios.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!\n\n\nData is available on Moodle, under Spatial Analysis I:\n\nswissBOUNDARIES3D.gpkg: Canton of Luzern boundary\nswiss_TLM3D.gpkg:\n\ntlm_bb — land cover polygons with attribute objektart (Wald, Feuchtgebiet, Stehende Gewaesser, etc.)\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95)."
+    "text": "Practice the geometry operations from today’s lecture using Swiss spatial data.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Exercise"
+    ]
   },
   {
-    "objectID": "geometry-operations-exercise.html#scenario-1-centroids-and-point-placement",
-    "href": "geometry-operations-exercise.html#scenario-1-centroids-and-point-placement",
-    "title": "Vector Geometry Operations",
-    "section": "Scenario 1: Centroids and Point Placement",
-    "text": "Scenario 1: Centroids and Point Placement\nAnalyse land cover polygons in Canton Luzern to understand when centroids misbehave.\n\n1.1: Load all wetland polygons (“Feuchtgebiet”) within Canton Luzern. Compute their centroids using st_centroid(). How many wetland polygons are there?\n1.2: Use st_within() to check whether each centroid lies inside its source polygon. What proportion of centroids fall outside?\n1.3: For the first five wetlands whose centroid is outside, compute st_point_on_surface() as well. Map these polygons with both point types (centroid in red, point-on-surface in blue). What do you notice about the polygon shapes?"
+    "objectID": "session2-exercises.html#exercise-1-simplification",
+    "href": "session2-exercises.html#exercise-1-simplification",
+    "title": "Session 2 Exercises",
+    "section": "Exercise 1: Simplification",
+    "text": "Exercise 1: Simplification\nCompare how st_simplify() and ms_simplify() behave, and discover the topology problem.\nData (available on Moodle, under Spatial Analysis II):\n\nswissBOUNDARIES3D.gpkg — Canton of Luzern boundary\nswiss_TLM3D.gpkg, layer tlm_bb — land cover polygons with attribute objektart\n1.1 Load forest polygons (objektart == \"Wald\") within Canton Luzern. Apply st_simplify() with tolerances of 100 m and 1 000 m. How many vertices does each version have compared to the original?\n1.2 Load Switzerland and its four neighbours (Germany, France, Austria, Italy) using rnaturalearth::ne_countries(), transform to EPSG:3857. Apply st_simplify() with a tolerance of 50 000 m. Do gaps appear between countries?\n1.3 Apply rmapshaper::ms_simplify() with keep = 0.1 to the same dataset. How do the shared borders compare?\n1.4 Map all three versions side by side.\n\n\n\nOriginal:         828324 vertices\n\n\n100 m tolerance:  40056 vertices\n\n\n1 000 m tolerance: 27885 vertices",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Exercise"
+    ]
   },
   {
-    "objectID": "geometry-operations-exercise.html#scenario-2-affine-transformations",
-    "href": "geometry-operations-exercise.html#scenario-2-affine-transformations",
-    "title": "Vector Geometry Operations",
-    "section": "Scenario 2: Affine Transformations",
-    "text": "Scenario 2: Affine Transformations\nApply shift, scale, and rotation to the Canton Luzern boundary.\n\n2.1: Load the canton geometry. Drop Z coordinates with st_zm() and compute its centroid.\n2.2: Create three transformed versions of the geometry:\n\nShifted 20 km to the east\nScaled to 50% of its original size around the centroid\nRotated 45° around the centroid (you will need to write a rotation() function)\n\n2.3: Map all four versions (original + three transformations) side by side.\n2.4 (Challenge): Compose two operations — shift 10 km east, then rotate 20° around the new centroid. Compare this with rotating first and then shifting. Are the results the same?"
-  },
-  {
-    "objectID": "geometry-operations-exercise.html#scenario-3-simplification",
-    "href": "geometry-operations-exercise.html#scenario-3-simplification",
-    "title": "Vector Geometry Operations",
-    "section": "Scenario 3: Simplification",
-    "text": "Scenario 3: Simplification\nCompare how st_simplify() and ms_simplify() behave, and discover the topology problem.\n\n3.1: Load forest polygons (“Wald”) within Canton Luzern. Apply st_simplify() with tolerances of 100 m and 1 000 m. How many vertices does each version have compared to the original?\n3.2: Load five neighbouring European countries (Switzerland, Germany, France, Austria, Italy) using rnaturalearth::ne_countries(), transform to EPSG:3857. Apply st_simplify() with a tolerance of 50 000 m. Do gaps appear between countries?\n3.3: Apply rmapshaper::ms_simplify() with keep = 0.1 to the same dataset. How do the shared borders compare?\n3.4: Map all three versions (original, st_simplify, ms_simplify) side by side."
+    "objectID": "session2-exercises.html#exercise-2-gdp-by-biogeographic-region",
+    "href": "session2-exercises.html#exercise-2-gdp-by-biogeographic-region",
+    "title": "Session 2 Exercises",
+    "section": "Exercise 2: GDP by Biogeographic Region",
+    "text": "Exercise 2: GDP by Biogeographic Region\nSwitzerland reports economic output (GDP) by canton. But canton boundaries don’t match ecological or planning zones. How much of Switzerland’s GDP comes from the Alps vs. the Mittelland?\nIn this exercise you will redistribute cantonal GDP to Switzerland’s 6 biogeographic regions using areal interpolation.\nData (all in this project’s data/ folder):\n\nswissboundaries-cantons.gpkg — 26 cantons with name and einwohnerzahl\ngdp-canton-CH.csv — cantonal GDP 2011–2024 in CHF million (BFS, retrieved 2026-11-09)\nbiogeo.gpkg — 6 biogeographic regions with RegionNummer and region_de\n\n\nPart A: Load and prepare\n\n2.1 Load the canton geometries (layer tlm_kantonsgebiet).\n2.2 Read gdp-canton-CH.csv. Select only name and gdp_2024, then join to the canton geometries. Verify: are there any unmatched cantons?\n2.3 Which three cantons have the highest total GDP (gdp_2024)? Does the result surprise you?\n2.4 Is gdp_2024 an extensive or intensive variable? Declare it with st_agr().\n\n\n\nPart B: Set up target zones\n\n2.5 Load data/biogeo.gpkg. Inspect the result: how many features, which columns?\n2.6 Map cantons (fill by gdp_2024) with biogeographic region boundaries overlaid as a dashed outline.\n\n\n\n\n\n\n\n\n\n\n\n\nPart C: Interpolate\n\n2.7 Redistribute total GDP to biogeographic regions (extensive = TRUE). Verify mass is preserved: sum(result$gdp_2024) / sum(cantons$gdp_2024) should equal 1. Which region has the highest total GDP?\n2.8 Map the result.\n\n\n\n\n\n\n\n\n\n\n\n\nPart D: Reflect on the uniform assumption\n\n2.10 For which biogeographic region is the uniform distribution assumption most problematic — and why? Think about where economic activity actually concentrates within a canton.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Exercise"
+    ]
   }
 ]
