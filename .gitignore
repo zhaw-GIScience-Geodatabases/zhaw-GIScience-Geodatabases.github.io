@@ -9,6 +9,9 @@ data
 data-out
 _book
 _slides
+docs
+_freeze
 **/*.quarto_ipynb
 *_cache/
 *_files/
+*.log

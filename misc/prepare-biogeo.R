@@ -1,7 +1,14 @@
-# Dissolve 12 biogeographic sub-regions to 6 main regions and add German names.
-# Output: data/biogeo.gpkg
+# Prepare exercise data for session 2.
+# Outputs: data/biogeo.gpkg, data/swissboundaries-cantons.gpkg
 library(sf)
 library(dplyr)
+
+# ── Canton boundaries ─────────────────────────────────────────────────────────
+st_read("data/swissBOUNDARIES3D_1_5_LV95_LN02.gpkg",
+        layer = "tlm_kantonsgebiet", quiet = TRUE) |>
+  st_write("data/swissboundaries-cantons.gpkg", append = FALSE)
+
+# ── Biogeographic regions ─────────────────────────────────────────────────────
 
 biogeo <- st_read("data/BiogeographischeRegionen.gdb",
                   layer = "N2020_Revision_BiogeoRegion", quiet = TRUE) |>

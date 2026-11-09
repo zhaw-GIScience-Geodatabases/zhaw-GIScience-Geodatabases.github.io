@@ -1,1 +1,0 @@
-Sitemap: https://zhaw-GIScience-Geodatabases.github.io/sitemap.xml

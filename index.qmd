@@ -10,7 +10,7 @@ Welcome to the Part *Geocomputation* in the Course *GIScience and Geodatabases*.
 
 - Session 2: Vector Geometry
   - [Geometry Operations](geometry-operations.html)
-  - [Spherical Geometry in sf](spherical-geometry.html)
+  <!-- - [Spherical Geometry in sf](spherical-geometry.html) -->
   - [Areal Interpolation](areal-interpolation.html)
 
 <!-- - Raster Data

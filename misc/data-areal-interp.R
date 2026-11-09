@@ -9,10 +9,7 @@ library(sf)
 library(dplyr)
 
 # ── real data (used for core-challenge visualization) ─────────────────────────
-cantons <- st_read(
-  "data/swissBOUNDARIES3D_1_5_LV95_LN02.gpkg",
-  layer = "tlm_kantonsgebiet", quiet = TRUE
-)
+cantons <- st_read("data/swissboundaries-cantons.gpkg", quiet = TRUE)
 
 biogeo <- st_read("data/biogeo.gpkg", quiet = TRUE)
 

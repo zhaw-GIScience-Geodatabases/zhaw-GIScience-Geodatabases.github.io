@@ -9,8 +9,7 @@ project:
     - geometry-operations.qmd
     - spherical-geometry.qmd
     - areal-interpolation.qmd
-    - geometry-operations-exercise.qmd
-    # - worksheet-de9im.qmd  (used in a later session)
+    - session2-exercises.qmd
     # - raster-data.qmd
     # - raster-io.qmd
     # - raster-operations.qmd
@@ -41,8 +40,8 @@ website:
           - text: Areal Interpolation
             href: areal-interpolation.qmd
             target: _blank
-          # - text: Exercise
-          #   href: geometry-operations-exercise.qmd
+          - text: Exercise
+            href: session2-exercises.qmd
       # - section: "Raster Data"
       #   contents:
       #     - raster-data.qmd
