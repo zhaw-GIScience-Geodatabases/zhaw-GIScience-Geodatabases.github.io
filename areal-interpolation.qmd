@@ -27,10 +27,11 @@ source("misc/data-areal-interp.R")   # loads src and tgt
 
 ## Today
 
-1. **Support** — what does a number attached to a polygon really mean?
-2. **Extensive vs. intensive** — what happens to the value when you split a geometry?
-3. **Areal interpolation** — how to redistribute values across incompatible zones
-4. **Discussion** — when does the uniform assumption fail, and what can you do?
+1. **The problem** — data in the wrong zones
+2. **Support** — what does a value attached to a polygon mean?
+3. **Extensive vs. intensive** — what happens when you split a geometry?
+4. **Areal interpolation in R** — `st_interpolate_aw()` and `st_agr()`
+5. **Limitations** — when the uniform assumption fails; dasymetric mapping
 
 # The Problem {.subtitle}
 
@@ -206,6 +207,25 @@ p0 + p1
 
 ---
 
+## Declaring attribute support: `st_agr()`
+
+```{r}
+st_agr(src)                          # NA = undeclared
+```
+
+```{r}
+st_agr(src) <- c(population = "aggregate",   # block, summable  → extensive = TRUE
+                 income_avg = "constant")     # spatially constant → extensive = FALSE
+st_agr(src)
+```
+
+- `"aggregate"` — block support, summable total: use `extensive = TRUE`
+- `"constant"` — spatially constant or rate: use `extensive = FALSE`
+
+Setting this suppresses the warning and lets sf propagate attribute semantics correctly through operations like `st_intersection()`.
+
+---
+
 ```{r}
 # extensive = FALSE  →  area-weighted average (rates, densities)
 inc_by_target <- st_interpolate_aw(src["income_avg"], tgt, extensive = FALSE)
@@ -255,17 +275,14 @@ The uniform distribution assumption is wrong whenever the variable is **spatiall
 
 ## Dasymetric mapping
 
-Improve accuracy by using **ancillary data** that captures spatial heterogeneity within the source zone.
-
-Classic example — population redistribution:
-
-1. Overlay source zones with land use / building footprint data
-2. Assign population only to residential areas
-3. Intersect with target zones and sum
-
-The more precise the ancillary layer, the more accurate the result.
-
-In R: pass the ancillary layer as `weights =` to `st_interpolate_aw()`.
+- Improve accuracy by using **ancillary data** that captures spatial heterogeneity within the source zone.
+- Classic example — population redistribution:
+  1. Overlay source zones with land use / building footprint data
+  2. Assign population only to residential areas
+  3. Intersect with target zones and sum
+- The more precise the ancillary layer, the more accurate the result.
+- In R: pass the ancillary layer as `weights =` to `st_interpolate_aw()`.
+- Example from [r-spatial.github.io/sf](https://r-spatial.github.io/sf/reference/interpolate_aw.html)
 
 :::{.notes}
 Dasymetric mapping is the standard improvement over naive areal weighting. It's especially important when source zones are large relative to the variation in the variable. The key limitation: you need a good ancillary layer, which itself may be outdated or imprecise.
@@ -310,6 +327,8 @@ bir1 <- st_interpolate_aw(nc2["BIR74"], to = grd.addr, extensive = TRUE,
                            weights = "ones")
 sum(bir1$BIR74) / sum(nc2$BIR74)   # mass preserved → 1
 ```
+
+---
 
 ```{r}
 #| echo: false

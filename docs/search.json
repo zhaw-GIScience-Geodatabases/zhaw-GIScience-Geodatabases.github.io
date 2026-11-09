@@ -10,11 +10,143 @@
     ]
   },
   {
+    "objectID": "areal-interpolation.html#today",
+    "href": "areal-interpolation.html#today",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Today",
+    "text": "Today\n\nThe problem — data in the wrong zones\nSupport — what does a value attached to a polygon mean?\nExtensive vs. intensive — what happens when you split a geometry?\nAreal interpolation in R — st_interpolate_aw() and st_agr()\nLimitations — when the uniform assumption fails; dasymetric mapping",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#data-in-the-wrong-zones",
+    "href": "areal-interpolation.html#data-in-the-wrong-zones",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Data in the wrong zones",
+    "text": "Data in the wrong zones\nYou have data — but the zones don’t match what you need:\n\nPopulation by canton, but you need it by biogeographical region\nIncome by census tract, but you need it by school district\n\nThe source zones and target zones overlap in arbitrary ways. You cannot simply reassign values — you have to redistribute them.\n\nAreal interpolation is the second largest source of error in spatial data science.\n\nEdzer Pebesma - Areal interpolation methods - useR! 2026\n\nStudents often assume this is a rare edge case. It is not. Any time you combine data from different administrative sources — census, tax, health, transport — you face this problem. The error compounds silently: results look reasonable but are systematically wrong.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#the-core-challenge",
+    "href": "areal-interpolation.html#the-core-challenge",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "The core challenge",
+    "text": "The core challenge\n\n\nWalk through the problem: target zone X overlaps with all of A and half of B. You cannot just assign A’s population to X — X also covers part of B. You need to split B’s population between X and Y based on how much of B falls in each target zone.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#q1-what-does-the-value-refer-to",
+    "href": "areal-interpolation.html#q1-what-does-the-value-refer-to",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Q1: What does the value refer to?",
+    "text": "Q1: What does the value refer to?\nBefore you can redistribute a variable, you need to know what it represents.\n\nPoint support — the value refers to each individual location: E.g. Land cover, soil type\nBlock support — the value refers to the whole geometry as a unit: E.g. Population count, average income\n\n\nPoint-support variables can be sampled and re-aggregated without conceptual difficulty. Block-support variables cannot — they are aggregates, and their spatial distribution within the polygon is unknown. Areal interpolation only applies to block-support variables.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#why-support-matters",
+    "href": "areal-interpolation.html#why-support-matters",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Why support matters",
+    "text": "Why support matters\n\nFor point-support variables: you can query any sub-region directly. A raster crop, a spatial filter, a point-in-polygon lookup — all valid.\nFor block-support variables: the value only makes sense for the whole geometry. Splitting it requires an assumption about how the variable is distributed within the polygon.\n\nThe simplest assumption: uniform distribution — the variable is spread evenly across the area.\nThis assumption is almost never true",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#q2-what-happens-when-you-cut-a-polygon-in-half",
+    "href": "areal-interpolation.html#q2-what-happens-when-you-cut-a-polygon-in-half",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Q2: What happens when you cut a polygon in half?",
+    "text": "Q2: What happens when you cut a polygon in half?\nQuestion: does the value sum across sub-regions, or does it stay constant?\n\n\n\nVariable\nCut in half →\nType\n\n\n\n\nPopulation count (1 000)\n~500 each\nExtensive\n\n\nPopulation density (50/km²)\nstill 50/km² each\nIntensive\n\n\nTotal household income (€200M)\n~€100M each\nExtensive\n\n\nAverage household income (€60k)\nstill €60k each\nIntensive\n\n\nNumber of schools (12)\n~6 each\nExtensive\n\n\nSchool density (2/km²)\nstill 2/km²\nIntensive\n\n\n\n\nExtensive = summable = total. Intensive = per-unit = rate or density or average. The confusion between the two is a classic error in spatial analysis — e.g. summing population densities instead of averaging them, or averaging population counts instead of summing them.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#redistribution-formulas",
+    "href": "areal-interpolation.html#redistribution-formulas",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Redistribution formulas",
+    "text": "Redistribution formulas\n\n\nExtensive (counts, totals — the sum must be preserved):\n\\[v_j = \\sum_i v_i \\cdot \\frac{\\text{area}(A_i \\cap B_j)}{\\text{area}(A_i)}\\]\nEach source value is split proportionally to the area of intersection.\n\nIntensive (rates, densities, averages — no sum to preserve):\n\\[v_j = \\frac{\\displaystyle\\sum_i v_i \\cdot \\text{area}(A_i \\cap B_j)}{\\displaystyle\\sum_i \\text{area}(A_i \\cap B_j)}\\]\nEach source value is weighted by the intersection area, then averaged.\n\n\nHow to read the formulas — use the toy example (A/B/C → X/Y):\n\n\\(i\\) indexes source zones (A, B, C); \\(j\\) indexes target zones (X, Y)\n\\(v_i\\) is the value in source zone \\(i\\) (e.g. 900 people in B)\n\\(A_i \\cap B_j\\) is the intersection of source zone \\(i\\) with target zone \\(j\\) (e.g. the left half of B that falls in X)\n\\(\\text{area}(A_i \\cap B_j) / \\text{area}(A_i)\\) is the area fraction — what share of source zone \\(i\\) overlaps target zone \\(j\\). B∩X = 50%, so 0.5 × 900 = 450.\n\nExtensive: sum contributions from all source zones touching \\(j\\), each scaled by area fraction. For X: 100%×600 + 50%×900 = 1 050.\nIntensive: area-weighted average — weight each source value by how much of the target it covers. For Y: B covers 1 unit, C covers 2 units → (60×1 + 70×2)/3 = 66.7 k.\nKey contrast: extensive preserves the total (1 800 in, 1 800 out). Intensive preserves the scale of the variable (still CHF/year, not CHF·km²/year).",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#st_interpolate_aw",
+    "href": "areal-interpolation.html#st_interpolate_aw",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "st_interpolate_aw()",
+    "text": "st_interpolate_aw()\n\n# extensive = TRUE  →  sum-preserving (counts, totals)\npop_by_target &lt;- st_interpolate_aw(src[\"population\"], tgt, extensive = TRUE)\n\nWarning in st_interpolate_aw.sf(src[\"population\"], tgt, extensive = TRUE):\nst_interpolate_aw assumes attributes are constant or uniform over areas of x\n\n\n\n\n\nNotice the warning: assumes attributes are constant or uniform over areas of x\nThis is the uniform distribution assumption — built into the method.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#when-the-uniform-assumption-fails",
+    "href": "areal-interpolation.html#when-the-uniform-assumption-fails",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "When the uniform assumption fails",
+    "text": "When the uniform assumption fails\nThe uniform distribution assumption is wrong whenever the variable is spatially heterogeneous within the source zone.\nExamples:\n\nPopulation in a municipality that is 80% forest → people cluster in villages, not forest\nIncome data for a large canton → urban and rural areas have very different incomes\nLarge source zones intersecting many small target zones → fine-grained heterogeneity is lost",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#dasymetric-mapping",
+    "href": "areal-interpolation.html#dasymetric-mapping",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Dasymetric mapping",
+    "text": "Dasymetric mapping\n\nImprove accuracy by using ancillary data that captures spatial heterogeneity within the source zone.\nClassic example — population redistribution:\n\nOverlay source zones with land use / building footprint data\nAssign population only to residential areas\nIntersect with target zones and sum\n\nThe more precise the ancillary layer, the more accurate the result.\nIn R: pass the ancillary layer as weights = to st_interpolate_aw().\nExample from r-spatial.github.io/sf\n\n\nDasymetric mapping is the standard improvement over naive areal weighting. It’s especially important when source zones are large relative to the variation in the variable. The key limitation: you need a good ancillary layer, which itself may be outdated or imprecise.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#intensive-vs-extensive-side-by-side",
+    "href": "areal-interpolation.html#intensive-vs-extensive-side-by-side",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Intensive vs extensive — side by side",
+    "text": "Intensive vs extensive — side by side\n\nnc &lt;- st_read(system.file(\"shape/nc.shp\", package = \"sf\"), quiet = TRUE)\ng  &lt;- st_make_grid(nc, n = c(10, 5))\n\na1 &lt;- st_interpolate_aw(nc[\"BIR74\"], to = g, extensive = FALSE)\na2 &lt;- st_interpolate_aw(nc[\"BIR74\"], to = g, extensive = TRUE)\nsum(a2$BIR74) / sum(nc$BIR74)   # mass preserved → 1\n\n[1] 0.9999998\n\n\n\n\nIntensive and extensive give visually different results even on the same data. The extensive result preserves the total count (ratio → 1). The intensive result does not — it spreads values as if they were uniform rates, so the sum drifts. This is the core reason the distinction matters.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#dasymetric-mapping-in-r",
+    "href": "areal-interpolation.html#dasymetric-mapping-in-r",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Dasymetric mapping in R",
+    "text": "Dasymetric mapping in R\n\ngrd.addr &lt;- read_sf(system.file(\"gpkg/grd_addr.gpkg\", package = \"sf\"))\nnc2 &lt;- st_transform(nc, st_crs(grd.addr))\nst_agr(grd.addr) &lt;- c(ones = \"constant\")\nst_agr(nc2)      &lt;- c(BIR74 = \"constant\")\n\nbir0 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE)\nbir1 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE,\n                           weights = \"ones\")\nsum(bir1$BIR74) / sum(nc2$BIR74)   # mass preserved → 1\n\n[1] 1",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
     "objectID": "geometry-operations.html#today",
     "href": "geometry-operations.html#today",
     "title": "Vector Geometry Operations",
     "section": "Today",
-    "text": "Today\n\nCentroids — center of mass, and when it lies outside\nAffine Transformations — shift, scale, rotate\nSimplification — removing vertices, preserving shape\nGroup Work — algorithmic challenge",
+    "text": "Today\n\nCentroids — center of mass, and when it lies outside the polygon\nAffine transformations — shift, scale, rotate with sf arithmetic\nSimplification — Douglas-Peucker, topology problems, ms_simplify()\nChallenge — design a line simplification algorithm",
     "crumbs": [
       "Session 2: Vector Geometry",
       "Geometry Operations"
@@ -32,11 +164,11 @@
     ]
   },
   {
-    "objectID": "geometry-operations.html#the-doughnut-problem",
-    "href": "geometry-operations.html#the-doughnut-problem",
+    "objectID": "geometry-operations.html#section",
+    "href": "geometry-operations.html#section",
     "title": "Vector Geometry Operations",
-    "section": "The doughnut problem",
-    "text": "The doughnut problem\n\nFor concave or C-shaped geometries, the centroid can fall outside the polygon\nst_point_on_surface() always returns a point inside",
+    "section": "",
+    "text": "For concave or C-shaped geometries, the centroid can fall outside the polygon\nst_point_on_surface() always returns a point inside\nTypical uses:\n\nst_centroid(): Distance metrics, spatial analytics\nst_point_on_surface(): Map labeling, feature sampling",
     "crumbs": [
       "Session 2: Vector Geometry",
       "Geometry Operations"
@@ -87,6 +219,17 @@
     ]
   },
   {
+    "objectID": "geometry-operations.html#challenge-line-simplification-algorithm",
+    "href": "geometry-operations.html#challenge-line-simplification-algorithm",
+    "title": "Vector Geometry Operations",
+    "section": "Challenge: Line simplification Algorithm",
+    "text": "Challenge: Line simplification Algorithm\n\n\nGiven: a polyline V₁, V₂, …, Vₙ\nTask: develop an algorithm that removes “unnecessary” vertices — those that add no meaningful shape information at scale ε\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
     "objectID": "geometry-operations.html#douglas-peucker",
     "href": "geometry-operations.html#douglas-peucker",
     "title": "Vector Geometry Operations",
@@ -120,22 +263,11 @@
     ]
   },
   {
-    "objectID": "geometry-operations.html#challenge-the-douglas-peucker-algorithm",
-    "href": "geometry-operations.html#challenge-the-douglas-peucker-algorithm",
+    "objectID": "geometry-operations.html#summary",
+    "href": "geometry-operations.html#summary",
     "title": "Vector Geometry Operations",
-    "section": "Challenge: The Douglas-Peucker Algorithm",
-    "text": "Challenge: The Douglas-Peucker Algorithm\n\n\nGiven: a polyline V₁, V₂, …, Vₙ\nTask: develop an algorithm that removes “unnecessary” vertices — those that add no meaningful shape information at scale ε\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups\n\n\n\n\n\n\n\n\nStep 1: draw baseline from first to last point",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Geometry Operations"
-    ]
-  },
-  {
-    "objectID": "geometry-operations.html#refs",
-    "href": "geometry-operations.html#refs",
-    "title": "Vector Geometry Operations",
-    "section": "References",
-    "text": "References",
+    "section": "Summary",
+    "text": "Summary\n\nst_centroid() returns the geometric centre of mass — useful for distance calculations and analytics, but it can fall outside the shape for concave or C-shaped geometries. Use st_point_on_surface() when you need a point guaranteed to lie inside.\nAffine transformations (shift, scale, rotate) preserve shape and angles. All three follow the same pattern in sf: shift to the origin, apply the transformation, shift back. sf lets you do this with ordinary arithmetic directly on sfc objects. Transformations are not commutative — order matters.\nst_simplify() reduces vertex count using the Douglas-Peucker algorithm: it recursively removes vertices that deviate less than tolerance ε from the local baseline. It operates feature by feature, so shared boundaries between adjacent polygons can develop gaps and overlaps.\nms_simplify() (rmapshaper) uses the Visvalingam algorithm and processes the entire layer at once, keeping shared edges consistent. Prefer it whenever topology matters.",
     "crumbs": [
       "Session 2: Vector Geometry",
       "Geometry Operations"
@@ -509,352 +641,91 @@
     "href": "spherical-geometry.html#today",
     "title": "Spherical Geometry in sf",
     "section": "Today",
-    "text": "Today\n\nS² and R² — two models of space, one hidden default\nWhen flat breaks — antimeridian rendering and predicate failures\nA polygon has two sides — the core challenge of spherical geometry\nSemi-open boundaries — why adjacent polygons share more than a border\nDiscussion — when does it matter in practice?",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
+    "text": "Today\n\nS² and R² — two models of space, one hidden default\nWhen flat breaks — antimeridian rendering and predicate failures\nA polygon has two sides — the core challenge of spherical geometry\nSemi-open boundaries — why adjacent polygons share more than a border\nDiscussion — when does it matter in practice?"
   },
   {
     "objectID": "spherical-geometry.html#two-models-of-space",
     "href": "spherical-geometry.html#two-models-of-space",
     "title": "Spherical Geometry in sf",
     "section": "Two models of space",
-    "text": "Two models of space\n\n\nR² (flat)\n\nPoints are (x, y) on an infinite plane\nUsed by GEOS — the geometry engine behind QGIS, PostGIS, sf historically\nAssumes straight lines, Euclidean distances\nAppropriate for projected CRS\n\n\nS² (sphere)\n\nPoints are (lon, lat) on a unit sphere\nUsed by s2 — Google’s C++ spherical geometry library, wrapped by the s2 R package\nLines follow great circles; distances are geodesic\nAppropriate for geographic CRS\nPowers Google Maps, Earth Engine, and BigQuery GIS",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#the-hidden-switch",
-    "href": "spherical-geometry.html#the-hidden-switch",
-    "title": "Spherical Geometry in sf",
-    "section": "The hidden switch",
-    "text": "The hidden switch\n\nsf_use_s2()        # check current engine\n\n[1] TRUE\n\n\n\nsf_use_s2(FALSE)   # switch to GEOS (flat, R²)\nsf_use_s2(TRUE)    # switch back to s2 (spherical, S²)\n\n\nSame function call; different geometry engine; potentially very different results\nThe switch affects: st_area(), st_length(), st_distance(), st_buffer(), all predicates\n\n\nThis is the key lever. When students see unexpected results with geographic data, checking sf_use_s2() is a good first step. Most of the time s2 gives the right answer; occasionally an operation isn’t yet implemented and you need to fall back to GEOS.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#when-flat-breaks-the-antimeridian",
-    "href": "spherical-geometry.html#when-flat-breaks-the-antimeridian",
-    "title": "Spherical Geometry in sf",
-    "section": "When flat breaks: the antimeridian",
-    "text": "When flat breaks: the antimeridian\nSame two endpoints — completely different rendering:",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#two-regions-from-one-ring",
-    "href": "spherical-geometry.html#two-regions-from-one-ring",
-    "title": "Spherical Geometry in sf",
-    "section": "Two regions from one ring",
-    "text": "Two regions from one ring\nIn R²: a polygon ring encloses a bounded area. The outside extends to infinity — obviously “outside.”\nIn S²: a ring on a sphere divides it into exactly two finite regions. There is no infinity. Which side is “inside” depends entirely on ring direction.\n\n# Same 4 corners — different winding order\nsq_ccw &lt;- st_sfc(st_polygon(list(matrix(          # CCW → small region\n  c(-10,-10, 10,-10, 10,10, -10,10, -10,-10),\n  ncol = 2, byrow = TRUE))), crs = 4326)\n\nsq_cw  &lt;- st_sfc(st_polygon(list(matrix(          # CW  → large region\n  c(-10,-10, -10,10, 10,10, 10,-10, -10,-10),\n  ncol = 2, byrow = TRUE))), crs = 4326)\n\n\nunits::set_units(st_area(sq_ccw), \"km^2\")   # small square\n\n4969697 [km^2]\n\nunits::set_units(st_area(sq_cw),  \"km^2\")   # rest of Earth\n\n4969697 [km^2]",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#ring-direction",
-    "href": "spherical-geometry.html#ring-direction",
-    "title": "Spherical Geometry in sf",
-    "section": "Ring direction",
-    "text": "Ring direction\n\nIn S²: interior is the region to the left when walking the boundary\nCCW ring (counter-clockwise) → interior is the small side — same as R²\nCW ring (clockwise) → interior is the large side — the “rest of the globe”\n\n\n\n\nRing\nR² behaviour\nS² behaviour\n\n\n\n\nCCW exterior\nStandard polygon\nSmall-side interior\n\n\nCW exterior\nInvalid / hole\nLarge-side interior\n\n\n\n\nst_as_s2(x, oriented = FALSE) auto-corrects ring direction, assuming the intended interior is less than half the sphere",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#stop-and-think",
-    "href": "spherical-geometry.html#stop-and-think",
-    "title": "Spherical Geometry in sf",
-    "section": "Stop and think",
-    "text": "Stop and think\n\nYou are building a global land cover database. One of the classes is ocean.\n\nHow would you represent the ocean as a geometry in a GIS?\n\nDiscuss in pairs. Consider:\n\nWhat are its boundaries?\nCan you define it as a simple polygon in R²?\nWhat about in S²?",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#the-shared-edge-problem",
-    "href": "spherical-geometry.html#the-shared-edge-problem",
-    "title": "Spherical Geometry in sf",
-    "section": "The shared edge problem",
-    "text": "The shared edge problem\nAdjacent polygons share an edge. Under S² (or GEOS with model = \"closed\"):\n\nA point on the shared edge intersects both polygons\nFor spatial joins or point-in-polygon counts: double-counting\n\n\n# Default: closed model — adjacent counties intersect each other\nst_intersects(nc[1:3, ], nc[1:3, ], sparse = FALSE)\n\n      [,1] [,2]  [,3]\n[1,]  TRUE TRUE FALSE\n[2,]  TRUE TRUE  TRUE\n[3,] FALSE TRUE  TRUE\n\n\n\n# Semi-open: each county only intersects itself\nst_intersects(nc[1:3, ], nc[1:3, ], sparse = FALSE, model = \"semi-open\")\n\n      [,1]  [,2]  [,3]\n[1,]  TRUE FALSE FALSE\n[2,] FALSE  TRUE FALSE\n[3,] FALSE FALSE  TRUE",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#how-different-are-measurements",
-    "href": "spherical-geometry.html#how-different-are-measurements",
-    "title": "Spherical Geometry in sf",
-    "section": "How different are measurements?",
-    "text": "How different are measurements?\nFor typical geographic analyses: negligible.\n\n\n\nMeasure\nRelative difference (s2 vs flat)\nAbsolute example\n\n\n\n\nArea\n±0.007%\n~7 km² per 100 000 km²\n\n\nLength\n±0.013%\n~13 m per 100 km\n\n\nDistance\nup to ~0.5%\n~1–2 km over 500 km\n\n\n\nFor continental or global scale: not negligible. The antimeridian is the clearest failure case.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#when-to-use-each-engine",
-    "href": "spherical-geometry.html#when-to-use-each-engine",
-    "title": "Spherical Geometry in sf",
-    "section": "When to use each engine",
-    "text": "When to use each engine\n\nsf_use_s2(TRUE)   # default — always correct for geographic CRS\nsf_use_s2(FALSE)  # fall back to GEOS when:\n                  #  • working with projected CRS (s2 adds no benefit)\n                  #  • an operation is not yet in s2 (e.g. st_voronoi())\n                  #  • debugging: compare results between engines\n\nRule of thumb:\n\nGeographic CRS (degrees) → leave s2 on\nProjected CRS (metres) → irrelevant which engine; GEOS is used anyway\nOperation fails or warns → check if the operation is implemented in s2; fall back if needed",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#discussion-challenge",
-    "href": "spherical-geometry.html#discussion-challenge",
-    "title": "Spherical Geometry in sf",
-    "section": "Discussion challenge",
-    "text": "Discussion challenge\n\nYour colleague downloads Swiss municipality boundaries in EPSG:4326 and runs:\n\nmunicipalities |&gt;\n  st_join(cantons, join = st_intersects) |&gt;\n  group_by(canton_id) |&gt;\n  summarise(total_pop = sum(pop))\n\nSome municipalities on cantonal borders appear in two cantons and their population is counted twice.\n\nWhat is causing this?\nHow do you fix it?\nAre there cases where model = \"closed\" is actually the right choice?\n\n\n\n\n\n\n\n\nDiscuss in groups\n\n\nNo external sources — reason from what you know about s2 boundary models",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "spherical-geometry.html#refs",
-    "href": "spherical-geometry.html#refs",
-    "title": "Spherical Geometry in sf",
-    "section": "References",
-    "text": "References",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
-  },
-  {
-    "objectID": "geometry-operations.html#challenge-line-simplification-algorithm",
-    "href": "geometry-operations.html#challenge-line-simplification-algorithm",
-    "title": "Vector Geometry Operations",
-    "section": "Challenge: Line simplification Algorithm",
-    "text": "Challenge: Line simplification Algorithm\n\n\nGiven: a polyline V₁, V₂, …, Vₙ\nTask: develop an algorithm that removes “unnecessary” vertices — those that add no meaningful shape information at scale ε\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Geometry Operations"
-    ]
-  },
-  {
-    "objectID": "geometry-operations.html#zusammenfassung",
-    "href": "geometry-operations.html#zusammenfassung",
-    "title": "Vector Geometry Operations",
-    "section": "Zusammenfassung",
-    "text": "Zusammenfassung\n\n\n\n\n\n\n\n\nOperation\nFunktion\nWichtigste Eigenschaft\n\n\n\n\nSchwerpunkt\nst_centroid()\nKann ausserhalb der Geometrie liegen\n\n\nPunkt auf Fläche\nst_point_on_surface()\nLiegt garantiert innerhalb\n\n\nVerschieben\nsfc + c(dx, dy)\nForm und Orientierung bleiben erhalten\n\n\nSkalieren\n(sfc - center) * f + center\nErst zentrieren, dann skalieren\n\n\nRotieren\n(sfc - center) * R(θ) + center\nGleiches Muster wie Skalierung\n\n\nVereinfachen\nst_simplify()\nDouglas-Peucker, feature-weise\n\n\nTopologierhaltend\nms_simplify()\nVisvalingam, ganze Schicht auf einmal",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Geometry Operations"
-    ]
+    "text": "Two models of space\n\n\nR² (flat)\n\nPoints are (x, y) on an infinite plane\nUsed by GEOS — the geometry engine behind QGIS, PostGIS, sf historically\nAssumes straight lines, Euclidean distances\nAppropriate for projected CRS\n\n\nS² (sphere)\n\nPoints are (lon, lat) on a unit sphere\nUsed by s2 — Google’s C++ spherical geometry library, wrapped by the s2 R package\nLines follow great circles; distances are geodesic\nAppropriate for geographic CRS\nPowers Google Maps, Earth Engine, and BigQuery GIS"
   },
   {
     "objectID": "spherical-geometry.html#the-switch",
     "href": "spherical-geometry.html#the-switch",
     "title": "Spherical Geometry in sf",
     "section": "The switch",
-    "text": "The switch\n\nSince sf version 1.0 (2021), geographic coordinates automatically use s2 instead of GEOS.\nSame function call; different geometry engine; potentially very different results\nThe switch affects: st_area(), st_length(), st_distance(), st_buffer(), all predicates\n\n\nsf_use_s2()        # check current engine\n\n[1] TRUE\n\n\n\nsf_use_s2(FALSE)   # switch to GEOS (flat, R²)\nsf_use_s2(TRUE)    # switch back to s2 (spherical, S²)\n\n\nThis is the key lever. When students see unexpected results with geographic data, checking sf_use_s2() is a good first step. Most of the time s2 gives the right answer; occasionally an operation isn’t yet implemented and you need to fall back to GEOS.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
+    "text": "The switch\n\nSince sf version 1.0 (2021), geographic coordinates automatically use s2 instead of GEOS.\nSame function call; different geometry engine; potentially very different results\nThe switch affects: st_area(), st_length(), st_distance(), st_buffer(), all predicates\n\n\nsf_use_s2()        # check current engine\n\n[1] TRUE\n\n\n\nsf_use_s2(FALSE)   # switch to GEOS (flat, R²)\nsf_use_s2(TRUE)    # switch back to s2 (spherical, S²)\n\n\nThis is the key lever. When students see unexpected results with geographic data, checking sf_use_s2() is a good first step. Most of the time s2 gives the right answer; occasionally an operation isn’t yet implemented and you need to fall back to GEOS."
+  },
+  {
+    "objectID": "spherical-geometry.html#when-flat-breaks-the-antimeridian",
+    "href": "spherical-geometry.html#when-flat-breaks-the-antimeridian",
+    "title": "Spherical Geometry in sf",
+    "section": "When flat breaks: the antimeridian",
+    "text": "When flat breaks: the antimeridian\nSame two endpoints — completely different rendering:"
   },
   {
     "objectID": "spherical-geometry.html#when-flat-breaks-predicates",
     "href": "spherical-geometry.html#when-flat-breaks-predicates",
     "title": "Spherical Geometry in sf",
     "section": "When flat breaks: predicates",
-    "text": "When flat breaks: predicates\nThe same polygon, the same point — different answer:\n\nsf_use_s2(FALSE)\nst_contains(pol, pole)   # R²: pole is outside\n\nSparse geometry binary predicate list of length 1, where the predicate\nwas `contains'\n 1: (empty)\n\n\n\nsf_use_s2(TRUE)\nst_contains(pol, pole)   # S²: pole is inside\n\nSparse geometry binary predicate list of length 1, where the predicate\nwas `contains'\n 1: 1",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Spherical Geometry"
-    ]
+    "text": "When flat breaks: predicates\nThe same polygon, the same point — different answer:\n\nsf_use_s2(FALSE)\nst_contains(pol, pole)   # R²: pole is outside\n\nSparse geometry binary predicate list of length 1, where the predicate\nwas `contains'\n 1: (empty)\n\n\n\nsf_use_s2(TRUE)\nst_contains(pol, pole)   # S²: pole is inside\n\nSparse geometry binary predicate list of length 1, where the predicate\nwas `contains'\n 1: 1"
   },
   {
-    "objectID": "geometry-operations.html#section",
-    "href": "geometry-operations.html#section",
-    "title": "Vector Geometry Operations",
-    "section": "",
-    "text": "For concave or C-shaped geometries, the centroid can fall outside the polygon\nst_point_on_surface() always returns a point inside\nTypical uses:\n\nst_centroid(): Distance metrics, spatial analytics\nst_point_on_surface(): Map labeling, feature sampling",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Geometry Operations"
-    ]
+    "objectID": "spherical-geometry.html#two-regions-from-one-ring",
+    "href": "spherical-geometry.html#two-regions-from-one-ring",
+    "title": "Spherical Geometry in sf",
+    "section": "Two regions from one ring",
+    "text": "Two regions from one ring\nIn R²: a polygon ring encloses a bounded area. The outside extends to infinity — obviously “outside.”\nIn S²: a ring on a sphere divides it into exactly two finite regions. There is no infinity. Which side is “inside” depends entirely on ring direction.\n\n# Same 4 corners — different winding order\nsq_ccw &lt;- st_sfc(st_polygon(list(matrix(          # CCW → small region\n  c(-10,-10, 10,-10, 10,10, -10,10, -10,-10),\n  ncol = 2, byrow = TRUE))), crs = 4326)\n\nsq_cw  &lt;- st_sfc(st_polygon(list(matrix(          # CW  → large region\n  c(-10,-10, -10,10, 10,10, 10,-10, -10,-10),\n  ncol = 2, byrow = TRUE))), crs = 4326)\n\n\nunits::set_units(st_area(sq_ccw), \"km^2\")   # small square\n\n4969697 [km^2]\n\nunits::set_units(st_area(sq_cw),  \"km^2\")   # rest of Earth\n\n4969697 [km^2]"
   },
   {
-    "objectID": "geometry-operations.html#summary",
-    "href": "geometry-operations.html#summary",
-    "title": "Vector Geometry Operations",
-    "section": "Summary",
-    "text": "Summary\n\nst_centroid() returns the geometric centre of mass — useful for distance calculations and analytics, but it can fall outside the shape for concave or C-shaped geometries. Use st_point_on_surface() when you need a point guaranteed to lie inside.\nAffine transformations (shift, scale, rotate) preserve shape and angles. All three follow the same pattern in sf: shift to the origin, apply the transformation, shift back. sf lets you do this with ordinary arithmetic directly on sfc objects. Transformations are not commutative — order matters.\nst_simplify() reduces vertex count using the Douglas-Peucker algorithm: it recursively removes vertices that deviate less than tolerance ε from the local baseline. It operates feature by feature, so shared boundaries between adjacent polygons can develop gaps and overlaps.\nms_simplify() (rmapshaper) uses the Visvalingam algorithm and processes the entire layer at once, keeping shared edges consistent. Prefer it whenever topology matters.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Geometry Operations"
-    ]
+    "objectID": "spherical-geometry.html#ring-direction",
+    "href": "spherical-geometry.html#ring-direction",
+    "title": "Spherical Geometry in sf",
+    "section": "Ring direction",
+    "text": "Ring direction\n\nIn S²: interior is the region to the left when walking the boundary\nCCW ring (counter-clockwise) → interior is the small side — same as R²\nCW ring (clockwise) → interior is the large side — the “rest of the globe”\n\n\n\n\nRing\nR² behaviour\nS² behaviour\n\n\n\n\nCCW exterior\nStandard polygon\nSmall-side interior\n\n\nCW exterior\nInvalid / hole\nLarge-side interior\n\n\n\n\nst_as_s2(x, oriented = FALSE) auto-corrects ring direction, assuming the intended interior is less than half the sphere"
   },
   {
-    "objectID": "areal-interpolation.html#today",
-    "href": "areal-interpolation.html#today",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Today",
-    "text": "Today\n\nSupport — what does a number attached to a polygon really mean?\nExtensive vs. intensive — what happens to the value when you split a geometry?\nAreal interpolation — how to redistribute values across incompatible zones\nDiscussion — when does the uniform assumption fail, and what can you do?",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
+    "objectID": "spherical-geometry.html#stop-and-think",
+    "href": "spherical-geometry.html#stop-and-think",
+    "title": "Spherical Geometry in sf",
+    "section": "Stop and think",
+    "text": "Stop and think\n\nYou are building a global land cover database. One of the classes is ocean.\n\nHow would you represent the ocean as a geometry in a GIS?\n\nDiscuss in pairs. Consider:\n\nWhat are its boundaries?\nCan you define it as a simple polygon in R²?\nWhat about in S²?"
   },
   {
-    "objectID": "areal-interpolation.html#data-in-the-wrong-zones",
-    "href": "areal-interpolation.html#data-in-the-wrong-zones",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Data in the wrong zones",
-    "text": "Data in the wrong zones\nYou have data — but the zones don’t match what you need:\n\nPopulation by canton, but you need it by biogeographical region\nIncome by census tract, but you need it by school district\n\nThe source zones and target zones overlap in arbitrary ways. You cannot simply reassign values — you have to redistribute them.\n\nAreal interpolation is the second largest source of error in spatial data science.\n\nEdzer Pebesma - Areal interpolation methods - useR! 2026\n\nStudents often assume this is a rare edge case. It is not. Any time you combine data from different administrative sources — census, tax, health, transport — you face this problem. The error compounds silently: results look reasonable but are systematically wrong.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
+    "objectID": "spherical-geometry.html#the-shared-edge-problem",
+    "href": "spherical-geometry.html#the-shared-edge-problem",
+    "title": "Spherical Geometry in sf",
+    "section": "The shared edge problem",
+    "text": "The shared edge problem\nAdjacent polygons share an edge. Under S² (or GEOS with model = \"closed\"):\n\nA point on the shared edge intersects both polygons\nFor spatial joins or point-in-polygon counts: double-counting\n\n\n# Default: closed model — adjacent counties intersect each other\nst_intersects(nc[1:3, ], nc[1:3, ], sparse = FALSE)\n\n      [,1] [,2]  [,3]\n[1,]  TRUE TRUE FALSE\n[2,]  TRUE TRUE  TRUE\n[3,] FALSE TRUE  TRUE\n\n\n\n# Semi-open: each county only intersects itself\nst_intersects(nc[1:3, ], nc[1:3, ], sparse = FALSE, model = \"semi-open\")\n\n      [,1]  [,2]  [,3]\n[1,]  TRUE FALSE FALSE\n[2,] FALSE  TRUE FALSE\n[3,] FALSE FALSE  TRUE"
   },
   {
-    "objectID": "areal-interpolation.html#the-core-challenge",
-    "href": "areal-interpolation.html#the-core-challenge",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "The core challenge",
-    "text": "The core challenge\n\n\nWalk through the problem: target zone X overlaps with all of A and half of B. You cannot just assign A’s population to X — X also covers part of B. You need to split B’s population between X and Y based on how much of B falls in each target zone.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
+    "objectID": "spherical-geometry.html#how-different-are-measurements",
+    "href": "spherical-geometry.html#how-different-are-measurements",
+    "title": "Spherical Geometry in sf",
+    "section": "How different are measurements?",
+    "text": "How different are measurements?\nFor typical geographic analyses: negligible.\n\n\n\nMeasure\nRelative difference (s2 vs flat)\nAbsolute example\n\n\n\n\nArea\n±0.007%\n~7 km² per 100 000 km²\n\n\nLength\n±0.013%\n~13 m per 100 km\n\n\nDistance\nup to ~0.5%\n~1–2 km over 500 km\n\n\n\nFor continental or global scale: not negligible. The antimeridian is the clearest failure case."
   },
   {
-    "objectID": "areal-interpolation.html#q1-what-does-the-value-refer-to",
-    "href": "areal-interpolation.html#q1-what-does-the-value-refer-to",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Q1: What does the value refer to?",
-    "text": "Q1: What does the value refer to?\nBefore you can redistribute a variable, you need to know what it represents.\n\nPoint support — the value refers to each individual location: E.g. Land cover, soil type\nBlock support — the value refers to the whole geometry as a unit: E.g. Population count, average income\n\n\nPoint-support variables can be sampled and re-aggregated without conceptual difficulty. Block-support variables cannot — they are aggregates, and their spatial distribution within the polygon is unknown. Areal interpolation only applies to block-support variables.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
+    "objectID": "spherical-geometry.html#when-to-use-each-engine",
+    "href": "spherical-geometry.html#when-to-use-each-engine",
+    "title": "Spherical Geometry in sf",
+    "section": "When to use each engine",
+    "text": "When to use each engine\n\nsf_use_s2(TRUE)   # default — always correct for geographic CRS\nsf_use_s2(FALSE)  # fall back to GEOS when:\n                  #  • working with projected CRS (s2 adds no benefit)\n                  #  • an operation is not yet in s2 (e.g. st_voronoi())\n                  #  • debugging: compare results between engines\n\nRule of thumb:\n\nGeographic CRS (degrees) → leave s2 on\nProjected CRS (metres) → irrelevant which engine; GEOS is used anyway\nOperation fails or warns → check if the operation is implemented in s2; fall back if needed"
   },
   {
-    "objectID": "areal-interpolation.html#why-support-matters",
-    "href": "areal-interpolation.html#why-support-matters",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Why support matters",
-    "text": "Why support matters\n\nFor point-support variables: you can query any sub-region directly. A raster crop, a spatial filter, a point-in-polygon lookup — all valid.\nFor block-support variables: the value only makes sense for the whole geometry. Splitting it requires an assumption about how the variable is distributed within the polygon.\n\nThe simplest assumption: uniform distribution — the variable is spread evenly across the area.\nThis assumption is almost never true",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#q2-what-happens-when-you-cut-a-polygon-in-half",
-    "href": "areal-interpolation.html#q2-what-happens-when-you-cut-a-polygon-in-half",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Q2: What happens when you cut a polygon in half?",
-    "text": "Q2: What happens when you cut a polygon in half?\nQuestion: does the value sum across sub-regions, or does it stay constant?\n\n\n\nVariable\nCut in half →\nType\n\n\n\n\nPopulation count (1 000)\n~500 each\nExtensive\n\n\nPopulation density (50/km²)\nstill 50/km² each\nIntensive\n\n\nTotal household income (€200M)\n~€100M each\nExtensive\n\n\nAverage household income (€60k)\nstill €60k each\nIntensive\n\n\nNumber of schools (12)\n~6 each\nExtensive\n\n\nSchool density (2/km²)\nstill 2/km²\nIntensive\n\n\n\n\nExtensive = summable = total. Intensive = per-unit = rate or density or average. The confusion between the two is a classic error in spatial analysis — e.g. summing population densities instead of averaging them, or averaging population counts instead of summing them.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#redistribution-formulas",
-    "href": "areal-interpolation.html#redistribution-formulas",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Redistribution formulas",
-    "text": "Redistribution formulas\n\n\nExtensive (counts, totals — the sum must be preserved):\n\\[v_j = \\sum_i v_i \\cdot \\frac{\\text{area}(A_i \\cap B_j)}{\\text{area}(A_i)}\\]\nEach source value is split proportionally to the area of intersection.\n\nIntensive (rates, densities, averages — no sum to preserve):\n\\[v_j = \\frac{\\displaystyle\\sum_i v_i \\cdot \\text{area}(A_i \\cap B_j)}{\\displaystyle\\sum_i \\text{area}(A_i \\cap B_j)}\\]\nEach source value is weighted by the intersection area, then averaged.\n\n\nHow to read the formulas — use the toy example (A/B/C → X/Y):\n\n\\(i\\) indexes source zones (A, B, C); \\(j\\) indexes target zones (X, Y)\n\\(v_i\\) is the value in source zone \\(i\\) (e.g. 900 people in B)\n\\(A_i \\cap B_j\\) is the intersection of source zone \\(i\\) with target zone \\(j\\) (e.g. the left half of B that falls in X)\n\\(\\text{area}(A_i \\cap B_j) / \\text{area}(A_i)\\) is the area fraction — what share of source zone \\(i\\) overlaps target zone \\(j\\). B∩X = 50%, so 0.5 × 900 = 450.\n\nExtensive: sum contributions from all source zones touching \\(j\\), each scaled by area fraction. For X: 100%×600 + 50%×900 = 1 050.\nIntensive: area-weighted average — weight each source value by how much of the target it covers. For Y: B covers 1 unit, C covers 2 units → (60×1 + 70×2)/3 = 66.7 k.\nKey contrast: extensive preserves the total (1 800 in, 1 800 out). Intensive preserves the scale of the variable (still CHF/year, not CHF·km²/year).",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#st_interpolate_aw",
-    "href": "areal-interpolation.html#st_interpolate_aw",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "st_interpolate_aw()",
-    "text": "st_interpolate_aw()\n\n# extensive = TRUE  →  sum-preserving (counts, totals)\npop_by_target &lt;- st_interpolate_aw(src[\"population\"], tgt, extensive = TRUE)\n\nWarning in st_interpolate_aw.sf(src[\"population\"], tgt, extensive = TRUE):\nst_interpolate_aw assumes attributes are constant or uniform over areas of x\n\n\n\n\n\nNotice the warning: assumes attributes are constant or uniform over areas of x\nThis is the uniform distribution assumption — built into the method.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#when-the-uniform-assumption-fails",
-    "href": "areal-interpolation.html#when-the-uniform-assumption-fails",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "When the uniform assumption fails",
-    "text": "When the uniform assumption fails\nThe uniform distribution assumption is wrong whenever the variable is spatially heterogeneous within the source zone.\nExamples:\n\nPopulation in a municipality that is 80% forest → people cluster in villages, not forest\nIncome data for a large canton → urban and rural areas have very different incomes\nLarge source zones intersecting many small target zones → fine-grained heterogeneity is lost",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#dasymetric-mapping",
-    "href": "areal-interpolation.html#dasymetric-mapping",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Dasymetric mapping",
-    "text": "Dasymetric mapping\nImprove accuracy by using ancillary data that captures spatial heterogeneity within the source zone.\nClassic example — population redistribution:\n\nOverlay source zones with land use / building footprint data\nAssign population only to residential areas\nIntersect with target zones and sum\n\nThe more precise the ancillary layer, the more accurate the result.\nIn R: pass the ancillary layer as weights = to st_interpolate_aw().\n\nDasymetric mapping is the standard improvement over naive areal weighting. It’s especially important when source zones are large relative to the variation in the variable. The key limitation: you need a good ancillary layer, which itself may be outdated or imprecise.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#discussion-challenge",
-    "href": "areal-interpolation.html#discussion-challenge",
-    "title": "Spatial Aggregation & Areal Interpolation",
+    "objectID": "spherical-geometry.html#discussion-challenge",
+    "href": "spherical-geometry.html#discussion-challenge",
+    "title": "Spherical Geometry in sf",
     "section": "Discussion challenge",
-    "text": "Discussion challenge\n\nYou are building a spatial analysis of health outcomes by school district. Your data comes from two sources:\n\nHealth registry: hospital admissions per 100 000 inhabitants, by municipality\nCensus: total population count, by census block\n\nThe school district boundaries don’t align with either.\nDiscuss in groups:\n\nWhich variable is extensive, which is intensive — and what are the implications for aggregation?\nWhat assumption does st_interpolate_aw() make, and when does it break here?\nHow would you check whether the result is reliable?\n\n\n\n\n\n\n\n\nThink before you code\n\n\nNo external sources — reason from the concepts in this session.\n\n\n\n\n\nHospital admissions per 100k is intensive (a rate). Population count is extensive. To get admissions per 100k at the school district level, you’d need to: (1) interpolate population count extensively to school districts, (2) interpolate the raw admission count extensively to school districts, (3) compute the rate. You cannot interpolate the rate directly. This is a common error. The uniform assumption breaks if health outcomes cluster geographically (urban vs. rural, deprived areas).",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
+    "text": "Discussion challenge\n\nYour colleague downloads Swiss municipality boundaries in EPSG:4326 and runs:\n\nmunicipalities |&gt;\n  st_join(cantons, join = st_intersects) |&gt;\n  group_by(canton_id) |&gt;\n  summarise(total_pop = sum(pop))\n\nSome municipalities on cantonal borders appear in two cantons and their population is counted twice.\n\nWhat is causing this?\nHow do you fix it?\nAre there cases where model = \"closed\" is actually the right choice?\n\n\n\n\n\n\n\n\nDiscuss in groups\n\n\nNo external sources — reason from what you know about s2 boundary models"
   },
   {
-    "objectID": "areal-interpolation.html#refs",
-    "href": "areal-interpolation.html#refs",
-    "title": "Spatial Aggregation & Areal Interpolation",
+    "objectID": "spherical-geometry.html#refs",
+    "href": "spherical-geometry.html#refs",
+    "title": "Spherical Geometry in sf",
     "section": "References",
-    "text": "References",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#intensive-vs-extensive-side-by-side",
-    "href": "areal-interpolation.html#intensive-vs-extensive-side-by-side",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Intensive vs extensive — side by side",
-    "text": "Intensive vs extensive — side by side\n\nnc &lt;- st_read(system.file(\"shape/nc.shp\", package = \"sf\"), quiet = TRUE)\ng  &lt;- st_make_grid(nc, n = c(10, 5))\n\na1 &lt;- st_interpolate_aw(nc[\"BIR74\"], to = g, extensive = FALSE)\na2 &lt;- st_interpolate_aw(nc[\"BIR74\"], to = g, extensive = TRUE)\nsum(a2$BIR74) / sum(nc$BIR74)   # mass preserved → 1\n\n[1] 0.9999998\n\n\n\n\nIntensive and extensive give visually different results even on the same data. The extensive result preserves the total count (ratio → 1). The intensive result does not — it spreads values as if they were uniform rates, so the sum drifts. This is the core reason the distinction matters.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
-  },
-  {
-    "objectID": "areal-interpolation.html#dasymetric-mapping-in-r",
-    "href": "areal-interpolation.html#dasymetric-mapping-in-r",
-    "title": "Spatial Aggregation & Areal Interpolation",
-    "section": "Dasymetric mapping in R",
-    "text": "Dasymetric mapping in R\n\ngrd.addr &lt;- read_sf(system.file(\"gpkg/grd_addr.gpkg\", package = \"sf\"))\nnc2 &lt;- st_transform(nc, st_crs(grd.addr))\nst_agr(grd.addr) &lt;- c(ones = \"constant\")\nst_agr(nc2)      &lt;- c(BIR74 = \"constant\")\n\nbir0 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE)\nbir1 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE,\n                           weights = \"ones\")\nsum(bir1$BIR74) / sum(nc2$BIR74)   # mass preserved → 1\n\n[1] 1\n\n\n\n\n\n\n\n\n\n\n\n\n\ngrd.addr contains ones = number of postal addresses per 10 km grid cell — a proxy for where people actually live. weights = \"ones\" tells st_interpolate_aw() to weight intersections by this ancillary variable instead of by raw area. The dasymetric result concentrates births in populated cells.\nMass preservation: sum(bir1$BIR74) / sum(nc2$BIR74) → 1. The pycnophylactic property holds regardless of the ancillary layer.\nRoundtrip verification: interpolate the grid back to county boundaries and compare with the original — the scatter plot should hug the 1:1 line.",
-    "crumbs": [
-      "Session 2: Vector Geometry",
-      "Areal Interpolation"
-    ]
+    "text": "References"
   },
   {
     "objectID": "geometry-operations-exercise.html",
@@ -890,5 +761,16 @@
     "title": "Vector Geometry Operations",
     "section": "Scenario 3: Simplification",
     "text": "Scenario 3: Simplification\nCompare how st_simplify() and ms_simplify() behave, and discover the topology problem.\n\n3.1: Load forest polygons (“Wald”) within Canton Luzern. Apply st_simplify() with tolerances of 100 m and 1 000 m. How many vertices does each version have compared to the original?\n3.2: Load five neighbouring European countries (Switzerland, Germany, France, Austria, Italy) using rnaturalearth::ne_countries(), transform to EPSG:3857. Apply st_simplify() with a tolerance of 50 000 m. Do gaps appear between countries?\n3.3: Apply rmapshaper::ms_simplify() with keep = 0.1 to the same dataset. How do the shared borders compare?\n3.4: Map all three versions (original, st_simplify, ms_simplify) side by side."
+  },
+  {
+    "objectID": "areal-interpolation.html#declaring-attribute-support-st_agr",
+    "href": "areal-interpolation.html#declaring-attribute-support-st_agr",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Declaring attribute support: st_agr()",
+    "text": "Declaring attribute support: st_agr()\n\nst_agr(src)                          # NA = undeclared\n\n      zone population income_avg \n      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; \nLevels: constant aggregate identity\n\n\n\nst_agr(src) &lt;- c(population = \"aggregate\",   # block, summable  → extensive = TRUE\n                 income_avg = \"constant\")     # spatially constant → extensive = FALSE\nst_agr(src)\n\n      &lt;NA&gt; population income_avg \n      &lt;NA&gt;  aggregate   constant \nLevels: constant aggregate identity\n\n\n\n\"aggregate\" — block support, summable total: use extensive = TRUE\n\"constant\" — spatially constant or rate: use extensive = FALSE\n\nSetting this suppresses the warning and lets sf propagate attribute semantics correctly through operations like st_intersection().",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
   }
 ]

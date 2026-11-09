@@ -31,10 +31,10 @@ library(patchwork)
 
 ## Today
 
-1. **Centroids** — center of mass, and when it lies outside
-2. **Affine Transformations** — shift, scale, rotate
-3. **Simplification** — removing vertices, preserving shape
-4. **Group Work** — algorithmic challenge
+1. **Centroids** — center of mass, and when it lies outside the polygon
+2. **Affine transformations** — shift, scale, rotate with sf arithmetic
+3. **Simplification** — Douglas-Peucker, topology problems, `ms_simplify()`
+4. **Challenge** — design a line simplification algorithm
 
 # Centroids {.subtitle}
 
