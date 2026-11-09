@@ -39,10 +39,6 @@ Compare how `st_simplify()` and `ms_simplify()` behave, and discover the topolog
 - **1.4** Map all three versions side by side.
 
 ```{r}
-#| echo: true
-#| eval: true
-#| code-fold: true
-#| code-summary: "Solution"
 library(rnaturalearth)
 library(rmapshaper)
 
@@ -112,17 +108,13 @@ library(scales)
 
 - **2.1** Load the canton geometries (layer `tlm_kantonsgebiet`). Drop the Z dimension with `st_zm()`.
 
-- **2.2** Read `gdp-canton-CH.csv`. The first column (`...1`) contains canton names — rename it to `name` and rename `2024p` to `gdp_2024`. Select only `name` and `gdp_2024`, then join to the canton geometries. Verify: are there any unmatched cantons?
+- **2.2** Read `gdp-canton-CH.csv`. Select only `name` and `gdp_2024`, then join to the canton geometries. Verify: are there any unmatched cantons?
 
-- **2.3** Compute `gdp_per_capita = gdp_2024 * 1e6 / einwohnerzahl` (GDP is in CHF million; per-capita is in CHF). Which three cantons have the highest GDP per capita? Does the result surprise you?
+- **2.3** Which three cantons have the highest total GDP (`gdp_2024`)? Does the result surprise you?
 
-- **2.4** Is `gdp_2024` an extensive or intensive variable? What about `gdp_per_capita`? Declare both with `st_agr()`.
+- **2.4** Is `gdp_2024` an extensive or intensive variable? Declare it with `st_agr()`.
 
 ```{r}
-#| echo: true
-#| eval: true
-#| code-fold: true
-#| code-summary: "Solution"
 cantons <- st_read("data/swissBOUNDARIES3D_1_5_LV95_LN02.gpkg",
                    layer = "tlm_kantonsgebiet", quiet = TRUE) |> st_zm()
 
@@ -130,22 +122,18 @@ gdp <- read_csv("data/gdp-canton-CH.csv", show_col_types = FALSE) |>
   select(name, gdp_2024)
 
 cantons <- cantons |>
-  left_join(gdp, by = "name") |>
-  mutate(gdp_per_capita = gdp_2024 * 1e6 / einwohnerzahl)
+  left_join(gdp, by = "name")
 
 sum(is.na(cantons$gdp_2024))   # 0 — all 26 cantons matched
 
 cantons |> st_drop_geometry() |>
-  select(name, gdp_per_capita) |>
-  arrange(desc(gdp_per_capita)) |>
+  select(name, gdp_2024) |>
+  arrange(desc(gdp_2024)) |>
   head(3)
-# Zug (316k CHF): holding companies, low population, enormous GDP
-# Basel-Stadt (299k CHF): Roche + Novartis headquarters
-# Genève (165k CHF): finance + international organisations
+# Zürich, Genève, Vaud — largest economies by total output
 
 # gdp_2024: extensive — total GDP splits proportionally with area
-# gdp_per_capita: intensive — a rate, stays constant when you split
-st_agr(cantons) <- c(gdp_2024 = "aggregate", gdp_per_capita = "constant")
+st_agr(cantons) <- c(gdp_2024 = "aggregate")
 ```
 
 ### Part B: Set up target zones
@@ -155,10 +143,6 @@ st_agr(cantons) <- c(gdp_2024 = "aggregate", gdp_per_capita = "constant")
 - **2.6** Map cantons (fill by `gdp_2024`) with biogeographic region boundaries overlaid as a dashed outline.
 
 ```{r}
-#| echo: true
-#| eval: true
-#| code-fold: true
-#| code-summary: "Solution"
 biogeo_raw <- st_read("data/BiogeographischeRegionen.gdb",
                       layer = "N2020_Revision_BiogeoRegion", quiet = TRUE)
 
@@ -191,15 +175,10 @@ ggplot(cantons) +
 
 - **2.7** Redistribute total GDP to biogeographic regions (`extensive = TRUE`). Verify mass is preserved: `sum(result$gdp_2024) / sum(cantons$gdp_2024)` should equal 1. Which region has the highest total GDP?
 
-- **2.8** Interpolate GDP per capita (`extensive = FALSE`). Which region has the highest average GDP per capita?
-
-- **2.9** Map both results side by side.
+- **2.8** Map the result.
 
 ```{r}
-#| echo: true
-#| eval: true
-#| code-fold: true
-#| code-summary: "Solution"
+#| output: false
 gdp_bio <- st_interpolate_aw(cantons["gdp_2024"], biogeo, extensive = TRUE)
 gdp_bio$region_de <- biogeo$region_de
 
@@ -210,68 +189,26 @@ gdp_bio |> st_drop_geometry() |>
   arrange(desc(gdp_2024)) |>
   select(region_de, gdp_mrd)
 # Mittelland dominates — Zürich, Bern, Basel all fall here
+```
 
-gpc_bio <- st_interpolate_aw(cantons["gdp_per_capita"], biogeo, extensive = FALSE)
-gpc_bio$region_de <- biogeo$region_de
-
-gpc_bio |> st_drop_geometry() |>
-  arrange(desc(gdp_per_capita)) |>
-  mutate(kCHF = round(gdp_per_capita / 1000, 1)) |>
-  select(region_de, kCHF)
-# Jura tops the ranking (~90k): Neuchâtel (143k CHF/cap, pharma + watchmaking)
-# lies almost entirely within the Jura biogeographic region and pulls the average up.
-
-p1 <- ggplot(gdp_bio) +
+```{r}
+ggplot(gdp_bio) +
   geom_sf(aes(fill = gdp_2024 / 1000)) +
   geom_sf_label(aes(label = paste0(region_de, "\n",
                                    round(gdp_2024 / 1000, 0), " Mrd")),
                 size = 2.3, label.padding = unit(0.15, "lines")) +
   scale_fill_distiller(palette = "YlOrRd", direction = 1,
                        name = "GDP (CHF Mrd)") +
-  theme_void() + labs(title = "Total GDP")
-
-p2 <- ggplot(gpc_bio) +
-  geom_sf(aes(fill = gdp_per_capita / 1000)) +
-  geom_sf_label(aes(label = paste0(region_de, "\n",
-                                   round(gdp_per_capita / 1000, 0), "k")),
-                size = 2.3, label.padding = unit(0.15, "lines")) +
-  scale_fill_distiller(palette = "YlOrRd", direction = 1,
-                       name = "GDP/capita\n(kCHF)") +
-  theme_void() + labs(title = "GDP per capita")
-
-p1 + p2
+  theme_void()
 ```
 
 ### Part D: Reflect on the uniform assumption
 
 - **2.10** For which biogeographic region is the uniform distribution assumption most problematic — and why? Think about where economic activity actually concentrates within a canton.
 
-:::{.callout-note collapse="true" title="Answer"}
+<!-- :::{.callout-note collapse="true" title="Answer"}
 The **Mittelland** is most problematic. Zürich, Basel-Stadt, Bern, and Geneva are all small cantons with enormous GDP. Within the larger cantons that span the Mittelland (e.g. Bern), economic activity is concentrated in the city — not spread uniformly across the rural areas that also fall in the same canton. The areal weight overestimates the rural contribution and underestimates the urban core.
 
 The Alpine regions (W./Ö. Zentralalpen, Alpensüdflanke) are less problematic: GDP is genuinely low and roughly proportional to the small inhabited areas.
-:::
+::: -->
 
-- **2.11** *(Challenge)* You cannot derive per-capita GDP for each region directly from the intensive result — you need the target-zone population. Interpolate `einwohnerzahl` extensively, then compute `gdp_region / pop_region`. Compare with the directly interpolated per-capita values from 2.8. Why do they differ?
-
-```{r}
-#| echo: true
-#| eval: true
-#| code-fold: true
-#| code-summary: "Solution"
-st_agr(cantons) <- c(einwohnerzahl = "aggregate",
-                     gdp_2024      = "aggregate",
-                     gdp_per_capita = "constant")
-
-pop_bio <- st_interpolate_aw(cantons["einwohnerzahl"], biogeo, extensive = TRUE)
-
-tibble(
-  region_de           = biogeo$region_de,
-  gpc_intensive       = round(gpc_bio$gdp_per_capita / 1000, 1),  # kCHF
-  gpc_derived         = round(gdp_bio$gdp_2024 * 1e6 /
-                                pop_bio$einwohnerzahl / 1000, 1)   # kCHF
-)
-# They differ: the intensive interpolation weights source values by area,
-# while the derived version correctly weights GDP and population separately
-# then divides — giving a population-weighted average instead of an area-weighted one.
-```

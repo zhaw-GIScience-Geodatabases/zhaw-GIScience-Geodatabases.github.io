@@ -1,13 +1,41 @@
 
+## Lessons Learned HS26
+
+### General
+
+- **Dropping raster data was the right call.** Most students come from IPRS and have already covered the raster model, map algebra, and `terra` basics (see Context below). Keeping it would mean repeating content they already know for the sake of one student.
+  - **Action**: Communicate this to Pascal so he can adjust the course schedule accordingly.
+  - **Action**: Add a link to the IPRS course (or its materials) so students not enrolled in IPRS can cover the raster content themselves.
+
+### Session 1 — Vector Data (2 × 90 min)
+
+- Worked out well overall.
+- The slide content did not fully fill two lessons — pacing was faster than expected.
+- The two challenges (bounding box, point-in-polygon) were well received.
+  - **Idea**: Add a gamification element — e.g. teams, scoring, live leaderboard, or a time challenge.
+
+### Session 2 — Vector Geometry (2 × 90 min)
+
+- **Geometry operations** felt dry. Needs more concrete, motivating examples to make the content stick.
+  - **Affine transformations**: kept in the lecture because the main thing this section teaches is *"geometries are coordinate arrays and you can do math on them"* — a useful mental model. But the real-world use cases are thin (CRS changes → `st_transform()`, setbacks → `st_buffer()`, georeferencing → QGIS). Dropped from the exercise for this reason; does not need a dedicated scenario.
+- **Areal interpolation** was interesting but requires more preparation and confidence on the content. More concrete real-world examples (beyond the toy A/B/C dataset) would help.
+- **Pacing issue**: The two topics (geometry operations + areal interpolation) only filled ~1 lesson even at a relaxed pace. The session needs more content to fill the second slot.
+  - **Idea**: Add **Spherical Geometry** as a third topic for Session 2.
+
+---
+
 ## Todo
 
-2025-11-10:
-- The raster part is not implemented in slides yet. Fix this
-- The tasks produce no questions. Does it make sense to complete the tasks during class?
+### Session 2 — Areal Interpolation Exercise
 
-2026-10-08: Reduce overlap with IPRS (see details below)
+- **Extensive-only is a simplification.** The current exercise only practises extensive interpolation (`gdp_2024`). The extensive/intensive distinction is introduced in the lecture but never exercised. Consider:
+  - **Option 2**: Add a task "interpolate `gdp_2024` and `einwohnerzahl` both extensively, then derive `gdp_region / pop_region`." This teaches the correct pattern for ratio variables and is self-contained.
+  - **Option 3**: Keep a "wrong then right" pair — first interpolate `gdp_per_capita` intensively, then show why `gdp / pop` from two extensive interpolations gives a different (more correct) result. Rich but complex.
+  - Either option works best if the **theory slide** (areal-interpolation.qmd) first alludes to the trap: *"Intensive interpolation of a ratio (e.g. income/person) gives an area-weighted mean of ratios — not the true per-capita of the target zone. For ratios, interpolate numerator and denominator separately."*
 
-### Context
+- **Dasymetric mapping extension**: use municipality-level `einwohnerzahl` (from `swissBOUNDARIES3D`) or building footprint data as an ancillary layer in `st_interpolate_aw(..., weights = ...)` to improve GDP redistribution. Natural follow-up once students have grasped the uniform-distribution limitation in 2.10.
+
+## Context
 
 IPRS (Image Processing for Remote Sensing) runs **before** GISc in the same semester —
 its last session (of 4) falls on the same day as GISc's first session. In HS26, 5 of
@@ -21,66 +49,7 @@ sections, they have already covered:
 
 Only **1 GISc student** has not taken IPRS and needs these foundations.
 
-### What to change per file
 
-**`raster-data.qmd`**
-- Cut or collapse the raster data model intro (cell offsets, values, color figure) —
-  identical to IPRS `lesson1-3-imagery.qmd`. Replace with a one-slide recap + reference
-  to IPRS materials for the 1 non-IPRS student.
-- Keep: continuous vs. discrete distinction (worth a quick reminder in the GISc context).
-
-**`raster-io.qmd`**
-- Cut the `rast()` / `writeRaster()` basics — covered in IPRS.
-- Keep and expand: file format overview (GeoTIFF, COG, JP2, NetCDF, HDF5) — IPRS only
-  touches this briefly. This is where GISc can go deeper.
-
-**`raster-operations.qmd`**
-- Cut: global / zonal / local intro and the Luxembourg elevation example — word-for-word
-  identical to IPRS `lesson2-1-operations.qmd`.
-- Keep and expand: **focal operations** — IPRS uses focal for feature engineering in
-  classification, so GISc can go deeper on kernel design, `fillvalue`, edge effects, etc.
-- Consider: replace Luxembourg example with a Swiss dataset to differentiate from IPRS.
-
-**`raster-vector-operations.qmd`**
-- Cut: `extract()` basics — covered in IPRS `lesson4-2-supervised-learning.qmd`.
-- Keep and expand: vector-to-raster conversion (`rasterize()`), zonal stats with vector
-  polygons — IPRS does not cover these directions.
-
-### What GISc should own (not in IPRS)
-- Full vector model: simple features, vector I/O, spatial operations — no overlap
-- Spatial databases / PostGIS angle (the "Geodatabases" part of the course title)
-- Deeper file format knowledge (COG, NetCDF, HDF5)
-- Vector-raster integration in both directions (`rasterize()`, `as.polygons()`)
-
-
-## Slide ideas: L2
-
-### Redistricting (spatial aggregation / disaggregation)
-
-Redistricting / areal interpolation is the **second largest SDS challenge** (source of error) in spatial data science.
-
-**Q1: Does a variable associated with a geometry refer to each point or to the set?**
-
-- *Point support*: variable refers to each individual location — land cover, lithology, soil type
-- *Block support*: variable refers to the whole geometry as a unit — population, population density, average temperature
-
-**Q2: For block-support variables, is the variable spatially extensive or intensive?**
-
-- *Spatially extensive* (e.g. population count): splits proportionally to source area → redistribute proportional to intersection area
-- *Spatially intensive* (e.g. population density, average temperature): does not sum — weight by target area fraction instead
-
-What happens to the variable if we split a geometry in two? This is the key diagnostic question.
-
-If data sources do not encode support/extensiveness metadata, how can we prevent user error?
-
-**Advanced:** add higher-resolution ancillary layers → dasymetric mapping; regression methods applied to smooth noise.
-
-Reference: V. H. Do, C. Thomas-Agnan, A. Vanhems — "Spatial reallocation of areal data – another look at basic methods"; `sf::interpolate_aw()` for areal-weighted interpolation in R.
-
-**Sources:**
-- Slides: https://docs.google.com/presentation/d/1gUY2_mDMJGLwFuckZfoPIwlL1qad7EthqoLgSbeFA7U/edit?slide=id.g3eba87cbd6e_0_1031#slide=id.g3eba87cbd6e_0_1031
-- Talk: https://www.youtube.com/watch?v=G3GibZThUGY
-- Screenshots: `images/Screenshot From 2026-11-06 10-48-49.png`, `10-49-59.png`, `10-50-06.png`, `10-50-12.png`
 
 ---
 

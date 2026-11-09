@@ -23,41 +23,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -373,70 +338,15 @@ document.addEventListener('keydown', function(event) {
 <li><p><strong>1.4</strong> Map all three versions side by side.</p></li>
 </ul>
 <div class="cell">
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rnaturalearth)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmapshaper)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>luzern <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/Spatial_Analysis_II/swissBOUNDARIES3D.gpkg"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>tlm_bb <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="st">"data/Spatial_Analysis_II/swiss_TLM3D.gpkg"</span>, <span class="st">"tlm_bb"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>tlm_bb <span class="ot">&lt;-</span> <span class="fu">st_set_crs</span>(tlm_bb, <span class="dv">2056</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1.1: Vertex counts at different tolerances</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>forests <span class="ot">&lt;-</span> tlm_bb <span class="sc">|&gt;</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(objektart <span class="sc">==</span> <span class="st">"Wald"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_filter</span>(luzern)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>f_100  <span class="ot">&lt;-</span> <span class="fu">st_simplify</span>(forests, <span class="at">dTolerance =</span> <span class="dv">100</span>,  <span class="at">preserveTopology =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">st_cast</span>(<span class="st">"MULTIPOLYGON"</span>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>f_1000 <span class="ot">&lt;-</span> <span class="fu">st_simplify</span>(forests, <span class="at">dTolerance =</span> <span class="dv">1000</span>, <span class="at">preserveTopology =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">st_cast</span>(<span class="st">"MULTIPOLYGON"</span>)</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Original:        "</span>, <span class="fu">nrow</span>(<span class="fu">st_coordinates</span>(forests)), <span class="st">"vertices</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Original:         828324 vertices</code></pre>
 </div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"100 m tolerance: "</span>, <span class="fu">nrow</span>(<span class="fu">st_coordinates</span>(f_100)),   <span class="st">"vertices</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>100 m tolerance:  40056 vertices</code></pre>
 </div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"1 000 m tolerance:"</span>, <span class="fu">nrow</span>(<span class="fu">st_coordinates</span>(f_1000)), <span class="st">"vertices</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>1 000 m tolerance: 27885 vertices</code></pre>
 </div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1.2 &amp; 1.3: Shared-border comparison</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>neighbors <span class="ot">&lt;-</span> <span class="fu">ne_countries</span>(<span class="at">continent =</span> <span class="st">"Europe"</span>, <span class="at">returnclass =</span> <span class="st">"sf"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(name <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Switzerland"</span>, <span class="st">"Germany"</span>, <span class="st">"France"</span>, <span class="st">"Austria"</span>, <span class="st">"Italy"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="dv">3857</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name) <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_cast</span>(<span class="st">"POLYGON"</span>)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>neighbors <span class="ot">&lt;-</span> neighbors <span class="sc">|&gt;</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area =</span> <span class="fu">as.numeric</span>(<span class="fu">st_area</span>(geometry))) <span class="sc">|&gt;</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(name) <span class="sc">|&gt;</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(area, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>n_simp <span class="ot">&lt;-</span> <span class="fu">st_simplify</span>(neighbors, <span class="at">dTolerance =</span> <span class="dv">50000</span>)</span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>n_ms   <span class="ot">&lt;-</span> <span class="fu">ms_simplify</span>(neighbors, <span class="at">keep =</span> <span class="fl">0.1</span>)</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 1.4: Side-by-side</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(neighbors) <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Original"</span>)</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(n_simp) <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"st_simplify"</span>, <span class="at">subtitle =</span> <span class="st">"gaps visible"</span>)</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(n_ms) <span class="sc">+</span> <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> name), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ms_simplify"</span>, <span class="at">subtitle =</span> <span class="st">"topology preserved"</span>)</span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> p3</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -461,51 +371,20 @@ document.addEventListener('keydown', function(event) {
 <h3 class="anchored" data-anchor-id="part-a-load-and-prepare">Part A: Load and prepare</h3>
 <ul>
 <li><p><strong>2.1</strong> Load the canton geometries (layer <code>tlm_kantonsgebiet</code>). Drop the Z dimension with <code>st_zm()</code>.</p></li>
-<li><p><strong>2.2</strong> Read <code>gdp-canton-CH.csv</code>. The first column (<code>...1</code>) contains canton names — rename it to <code>name</code> and rename <code>2024p</code> to <code>gdp_2024</code>. Select only <code>name</code> and <code>gdp_2024</code>, then join to the canton geometries. Verify: are there any unmatched cantons?</p></li>
-<li><p><strong>2.3</strong> Compute <code>gdp_per_capita = gdp_2024 * 1e6 / einwohnerzahl</code> (GDP is in CHF million; per-capita is in CHF). Which three cantons have the highest GDP per capita? Does the result surprise you?</p></li>
-<li><p><strong>2.4</strong> Is <code>gdp_2024</code> an extensive or intensive variable? What about <code>gdp_per_capita</code>? Declare both with <code>st_agr()</code>.</p></li>
+<li><p><strong>2.2</strong> Read <code>gdp-canton-CH.csv</code>. Select only <code>name</code> and <code>gdp_2024</code>, then join to the canton geometries. Verify: are there any unmatched cantons?</p></li>
+<li><p><strong>2.3</strong> Which three cantons have the highest total GDP (<code>gdp_2024</code>)? Does the result surprise you?</p></li>
+<li><p><strong>2.4</strong> Is <code>gdp_2024</code> an extensive or intensive variable? Declare it with <code>st_agr()</code>.</p></li>
 </ul>
 <div class="cell">
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cantons <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/swissBOUNDARIES3D_1_5_LV95_LN02.gpkg"</span>,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">layer =</span> <span class="st">"tlm_kantonsgebiet"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">st_zm</span>()</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>gdp <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/gdp-canton-CH.csv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name, gdp_2024)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>cantons <span class="ot">&lt;-</span> cantons <span class="sc">|&gt;</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(gdp, <span class="at">by =</span> <span class="st">"name"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gdp_per_capita =</span> gdp_2024 <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">/</span> einwohnerzahl)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(cantons<span class="sc">$</span>gdp_2024))   <span class="co"># 0 — all 26 cantons matched</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cantons <span class="sc">|&gt;</span> <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(name, gdp_per_capita) <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(gdp_per_capita)) <span class="sc">|&gt;</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>         name gdp_per_capita
-1         Zug       316669.0
-2 Basel-Stadt       299428.0
-3      Genève       164601.2</code></pre>
+<pre><code>    name gdp_2024
+1 Zürich   167013
+2 Genève    87420
+3   Bern    82010</code></pre>
 </div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Zug (316k CHF): holding companies, low population, enormous GDP</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Basel-Stadt (299k CHF): Roche + Novartis headquarters</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Genève (165k CHF): finance + international organisations</span></span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># gdp_2024: extensive — total GDP splits proportionally with area</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># gdp_per_capita: intensive — a rate, stays constant when you split</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(cantons) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">gdp_2024 =</span> <span class="st">"aggregate"</span>, <span class="at">gdp_per_capita =</span> <span class="st">"constant"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 </div>
 </section>
 <section id="part-b-set-up-target-zones" class="level3">
@@ -515,35 +394,6 @@ document.addEventListener('keydown', function(event) {
 <li><p><strong>2.6</strong> Map cantons (fill by <code>gdp_2024</code>) with biogeographic region boundaries overlaid as a dashed outline.</p></li>
 </ul>
 <div class="cell">
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>biogeo_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/BiogeographischeRegionen.gdb"</span>,</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">layer =</span> <span class="st">"N2020_Revision_BiogeoRegion"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>region_names <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">RegionNummer =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">region_de    =</span> <span class="fu">c</span>(<span class="st">"Jura"</span>, <span class="st">"Mittelland"</span>, <span class="st">"Alpennordflanke"</span>,</span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"W. Zentralalpen"</span>, <span class="st">"Ö. Zentralalpen"</span>, <span class="st">"Alpensüdflanke"</span>)</span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>biogeo <span class="ot">&lt;-</span> biogeo_raw <span class="sc">|&gt;</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(RegionNummer) <span class="sc">|&gt;</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(region_names, <span class="at">by =</span> <span class="st">"RegionNummer"</span>)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cantons) <span class="sc">+</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> gdp_2024), <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> biogeo, <span class="at">fill =</span> <span class="cn">NA</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>,</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>          <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_label</span>(<span class="at">data =</span> biogeo, <span class="fu">aes</span>(<span class="at">label =</span> region_de), <span class="at">size =</span> <span class="fl">2.5</span>,</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">label.padding =</span> <span class="fu">unit</span>(<span class="fl">0.15</span>, <span class="st">"lines"</span>)) <span class="sc">+</span></span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"YlOrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>,</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                       <span class="at">name =</span> <span class="st">"GDP 2024</span><span class="sc">\n</span><span class="st">(CHF Mio)"</span>,</span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>                       <span class="at">labels =</span> <span class="fu">label_number</span>(<span class="at">big.mark =</span> <span class="st">"'"</span>)) <span class="sc">+</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span></span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Source: GDP by canton"</span>,</span>
-<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Target: 6 biogeographic regions (dashed)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -557,86 +407,13 @@ document.addEventListener('keydown', function(event) {
 <h3 class="anchored" data-anchor-id="part-c-interpolate">Part C: Interpolate</h3>
 <ul>
 <li><p><strong>2.7</strong> Redistribute total GDP to biogeographic regions (<code>extensive = TRUE</code>). Verify mass is preserved: <code>sum(result$gdp_2024) / sum(cantons$gdp_2024)</code> should equal 1. Which region has the highest total GDP?</p></li>
-<li><p><strong>2.8</strong> Interpolate GDP per capita (<code>extensive = FALSE</code>). Which region has the highest average GDP per capita?</p></li>
-<li><p><strong>2.9</strong> Map both results side by side.</p></li>
+<li><p><strong>2.8</strong> Map the result.</p></li>
 </ul>
 <div class="cell">
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>gdp_bio <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(cantons[<span class="st">"gdp_2024"</span>], biogeo, <span class="at">extensive =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>gdp_bio<span class="sc">$</span>region_de <span class="ot">&lt;-</span> biogeo<span class="sc">$</span>region_de</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mass preserved:"</span>, <span class="fu">sum</span>(gdp_bio<span class="sc">$</span>gdp_2024) <span class="sc">/</span> <span class="fu">sum</span>(cantons<span class="sc">$</span>gdp_2024), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mass preserved: 0.9999953 </code></pre>
-</div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gdp_bio <span class="sc">|&gt;</span> <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gdp_mrd =</span> <span class="fu">round</span>(gdp_2024 <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(gdp_2024)) <span class="sc">|&gt;</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(region_de, gdp_mrd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>        region_de gdp_mrd
-2      Mittelland   536.1
-3 Alpennordflanke   155.7
-1            Jura   101.6
-6  Alpensüdflanke    30.4
-4 W. Zentralalpen    19.7
-5 Ö. Zentralalpen    17.4</code></pre>
-</div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Mittelland dominates — Zürich, Bern, Basel all fall here</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>gpc_bio <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(cantons[<span class="st">"gdp_per_capita"</span>], biogeo, <span class="at">extensive =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>gpc_bio<span class="sc">$</span>region_de <span class="ot">&lt;-</span> biogeo<span class="sc">$</span>region_de</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>gpc_bio <span class="sc">|&gt;</span> <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(gdp_per_capita)) <span class="sc">|&gt;</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">kCHF =</span> <span class="fu">round</span>(gdp_per_capita <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(region_de, kCHF)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>        region_de kCHF
-1            Jura 89.8
-2      Mittelland 87.1
-6  Alpensüdflanke 76.1
-3 Alpennordflanke 74.2
-5 Ö. Zentralalpen 73.8
-4 W. Zentralalpen 58.9</code></pre>
-</div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Jura tops the ranking (~90k): Neuchâtel (143k CHF/cap, pharma + watchmaking)</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co"># lies almost entirely within the Jura biogeographic region and pulls the average up.</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(gdp_bio) <span class="sc">+</span></span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> gdp_2024 <span class="sc">/</span> <span class="dv">1000</span>)) <span class="sc">+</span></span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(region_de, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>                                   <span class="fu">round</span>(gdp_2024 <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">0</span>), <span class="st">" Mrd"</span>)),</span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">size =</span> <span class="fl">2.3</span>, <span class="at">label.padding =</span> <span class="fu">unit</span>(<span class="fl">0.15</span>, <span class="st">"lines"</span>)) <span class="sc">+</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"YlOrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>,</span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">name =</span> <span class="st">"GDP (CHF Mrd)"</span>) <span class="sc">+</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Total GDP"</span>)</span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(gpc_bio) <span class="sc">+</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="fu">aes</span>(<span class="at">fill =</span> gdp_per_capita <span class="sc">/</span> <span class="dv">1000</span>)) <span class="sc">+</span></span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf_label</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(region_de, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>                                   <span class="fu">round</span>(gdp_per_capita <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">0</span>), <span class="st">"k"</span>)),</span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">size =</span> <span class="fl">2.3</span>, <span class="at">label.padding =</span> <span class="fu">unit</span>(<span class="fl">0.15</span>, <span class="st">"lines"</span>)) <span class="sc">+</span></span>
-<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_distiller</span>(<span class="at">palette =</span> <span class="st">"YlOrRd"</span>, <span class="at">direction =</span> <span class="dv">1</span>,</span>
-<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>                       <span class="at">name =</span> <span class="st">"GDP/capita</span><span class="sc">\n</span><span class="st">(kCHF)"</span>) <span class="sc">+</span></span>
-<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_void</span>() <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"GDP per capita"</span>)</span>
-<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="session2-exercises_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="session2-exercises_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -647,60 +424,11 @@ document.addEventListener('keydown', function(event) {
 <ul>
 <li><strong>2.10</strong> For which biogeographic region is the uniform distribution assumption most problematic — and why? Think about where economic activity actually concentrates within a canton.</li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled" title="Answer">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Answer
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>The <strong>Mittelland</strong> is most problematic. Zürich, Basel-Stadt, Bern, and Geneva are all small cantons with enormous GDP. Within the larger cantons that span the Mittelland (e.g.&nbsp;Bern), economic activity is concentrated in the city — not spread uniformly across the rural areas that also fall in the same canton. The areal weight overestimates the rural contribution and underestimates the urban core.</p>
-<p>The Alpine regions (W./Ö. Zentralalpen, Alpensüdflanke) are less problematic: GDP is genuinely low and roughly proportional to the small inhabited areas.</p>
-</div>
-</div>
-</div>
-<ul>
-<li><strong>2.11</strong> <em>(Challenge)</em> You cannot derive per-capita GDP for each region directly from the intensive result — you need the target-zone population. Interpolate <code>einwohnerzahl</code> extensively, then compute <code>gdp_region / pop_region</code>. Compare with the directly interpolated per-capita values from 2.8. Why do they differ?</li>
-</ul>
-<div class="cell">
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(cantons) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">einwohnerzahl =</span> <span class="st">"aggregate"</span>,</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">gdp_2024      =</span> <span class="st">"aggregate"</span>,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">gdp_per_capita =</span> <span class="st">"constant"</span>)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>pop_bio <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(cantons[<span class="st">"einwohnerzahl"</span>], biogeo, <span class="at">extensive =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">region_de           =</span> biogeo<span class="sc">$</span>region_de,</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">gpc_intensive       =</span> <span class="fu">round</span>(gpc_bio<span class="sc">$</span>gdp_per_capita <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">1</span>),  <span class="co"># kCHF</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">gpc_derived         =</span> <span class="fu">round</span>(gdp_bio<span class="sc">$</span>gdp_2024 <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">/</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                                pop_bio<span class="sc">$</span>einwohnerzahl <span class="sc">/</span> <span class="dv">1000</span>, <span class="dv">1</span>)   <span class="co"># kCHF</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 3
-  region_de       gpc_intensive gpc_derived
-  &lt;chr&gt;                   &lt;dbl&gt;       &lt;dbl&gt;
-1 Jura                     89.8        89.3
-2 Mittelland               87.1       107. 
-3 Alpennordflanke          74.2        79.8
-4 W. Zentralalpen          58.9        58.9
-5 Ö. Zentralalpen          73.8        72.7
-6 Alpensüdflanke           76.1        76.9</code></pre>
-</div>
-<details class="code-fold">
-<summary>Solution</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># They differ: the intensive interpolation weights source values by area,</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># while the derived version correctly weights GDP and population separately</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># then divides — giving a population-weighted average instead of an area-weighted one.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
+<!-- :::{.callout-note collapse="true" title="Answer"}
+The **Mittelland** is most problematic. Zürich, Basel-Stadt, Bern, and Geneva are all small cantons with enormous GDP. Within the larger cantons that span the Mittelland (e.g. Bern), economic activity is concentrated in the city — not spread uniformly across the rural areas that also fall in the same canton. The areal weight overestimates the rural contribution and underestimates the urban core.
+
+The Alpine regions (W./Ö. Zentralalpen, Alpensüdflanke) are less problematic: GDP is genuinely low and roughly proportional to the small inhabited areas.
+::: -->
 
 
 </section>
