@@ -14,19 +14,7 @@ cantons <- st_read(
   layer = "tlm_kantonsgebiet", quiet = TRUE
 )
 
-biogeo_raw <- st_read(
-  "data/BiogeographischeRegionen.gdb",
-  layer = "N2020_Revision_BiogeoRegion", quiet = TRUE
-)
-region_names <- data.frame(
-  RegionNummer = 1:6,
-  region_de    = c("Jura", "Mittelland", "Alpennordflanke",
-                   "W. Zentralalpen", "Ö. Zentralalpen", "Alpensüdflanke")
-)
-biogeo <- biogeo_raw |>
-  group_by(RegionNummer) |>
-  summarise(.groups = "drop") |>
-  left_join(region_names, by = "RegionNummer")
+biogeo <- st_read("data/biogeo.gpkg", quiet = TRUE)
 
 # ── toy data (used for st_interpolate_aw() examples) ─────────────────────────
 src <- st_sf(

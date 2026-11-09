@@ -97,7 +97,7 @@ In this exercise you will redistribute cantonal GDP to Switzerland's 6 biogeogra
 
 - `swissBOUNDARIES3D_1_5_LV95_LN02.gpkg`, layer `tlm_kantonsgebiet` — 26 cantons with `name` and `einwohnerzahl`
 - `gdp-canton-CH.csv` — cantonal GDP 2011–2024 in CHF million ([BFS](https://statistik.admin.ch/de/asset/283904), retrieved 2026-11-09)
-- `BiogeographischeRegionen.gdb`, layer `N2020_Revision_BiogeoRegion` — 12 sub-regions to dissolve to 6
+- `biogeo.gpkg` — 6 biogeographic regions with `RegionNummer` and `region_de`
 
 ```{r}
 library(readr)
@@ -106,7 +106,7 @@ library(scales)
 
 ### Part A: Load and prepare
 
-- **2.1** Load the canton geometries (layer `tlm_kantonsgebiet`). Drop the Z dimension with `st_zm()`.
+- **2.1** Load the canton geometries (layer `tlm_kantonsgebiet`).
 
 - **2.2** Read `gdp-canton-CH.csv`. Select only `name` and `gdp_2024`, then join to the canton geometries. Verify: are there any unmatched cantons?
 
@@ -116,7 +116,7 @@ library(scales)
 
 ```{r}
 cantons <- st_read("data/swissBOUNDARIES3D_1_5_LV95_LN02.gpkg",
-                   layer = "tlm_kantonsgebiet", quiet = TRUE) |> st_zm()
+                   layer = "tlm_kantonsgebiet", quiet = TRUE)
 
 gdp <- read_csv("data/gdp-canton-CH.csv", show_col_types = FALSE) |>
   select(name, gdp_2024)
@@ -138,24 +138,12 @@ st_agr(cantons) <- c(gdp_2024 = "aggregate")
 
 ### Part B: Set up target zones
 
-- **2.5** Load the biogeographic regions. Dissolve the 12 sub-regions to 6 main regions with `group_by(RegionNummer) |> summarise()`. Add German names: Jura, Mittelland, Alpennordflanke, W. Zentralalpen, Ö. Zentralalpen, Alpensüdflanke.
+- **2.5** Load `data/biogeo.gpkg`. Inspect the result: how many features, which columns?
 
 - **2.6** Map cantons (fill by `gdp_2024`) with biogeographic region boundaries overlaid as a dashed outline.
 
 ```{r}
-biogeo_raw <- st_read("data/BiogeographischeRegionen.gdb",
-                      layer = "N2020_Revision_BiogeoRegion", quiet = TRUE)
-
-region_names <- tibble(
-  RegionNummer = 1:6,
-  region_de    = c("Jura", "Mittelland", "Alpennordflanke",
-                   "W. Zentralalpen", "Ö. Zentralalpen", "Alpensüdflanke")
-)
-
-biogeo <- biogeo_raw |>
-  group_by(RegionNummer) |>
-  summarise(.groups = "drop") |>
-  left_join(region_names, by = "RegionNummer")
+biogeo <- st_read("data/biogeo.gpkg", quiet = TRUE)
 
 ggplot(cantons) +
   geom_sf(aes(fill = gdp_2024), color = "white", linewidth = 0.3) +

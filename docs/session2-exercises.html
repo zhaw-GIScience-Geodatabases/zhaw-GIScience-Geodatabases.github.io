@@ -365,12 +365,12 @@ document.addEventListener('keydown', function(event) {
 <ul>
 <li><code>swissBOUNDARIES3D_1_5_LV95_LN02.gpkg</code>, layer <code>tlm_kantonsgebiet</code> — 26 cantons with <code>name</code> and <code>einwohnerzahl</code></li>
 <li><code>gdp-canton-CH.csv</code> — cantonal GDP 2011–2024 in CHF million (<a href="https://statistik.admin.ch/de/asset/283904">BFS</a>, retrieved 2026-11-09)</li>
-<li><code>BiogeographischeRegionen.gdb</code>, layer <code>N2020_Revision_BiogeoRegion</code> — 12 sub-regions to dissolve to 6</li>
+<li><code>biogeo.gpkg</code> — 6 biogeographic regions with <code>RegionNummer</code> and <code>region_de</code></li>
 </ul>
 <section id="part-a-load-and-prepare" class="level3">
 <h3 class="anchored" data-anchor-id="part-a-load-and-prepare">Part A: Load and prepare</h3>
 <ul>
-<li><p><strong>2.1</strong> Load the canton geometries (layer <code>tlm_kantonsgebiet</code>). Drop the Z dimension with <code>st_zm()</code>.</p></li>
+<li><p><strong>2.1</strong> Load the canton geometries (layer <code>tlm_kantonsgebiet</code>).</p></li>
 <li><p><strong>2.2</strong> Read <code>gdp-canton-CH.csv</code>. Select only <code>name</code> and <code>gdp_2024</code>, then join to the canton geometries. Verify: are there any unmatched cantons?</p></li>
 <li><p><strong>2.3</strong> Which three cantons have the highest total GDP (<code>gdp_2024</code>)? Does the result surprise you?</p></li>
 <li><p><strong>2.4</strong> Is <code>gdp_2024</code> an extensive or intensive variable? Declare it with <code>st_agr()</code>.</p></li>
@@ -390,7 +390,7 @@ document.addEventListener('keydown', function(event) {
 <section id="part-b-set-up-target-zones" class="level3">
 <h3 class="anchored" data-anchor-id="part-b-set-up-target-zones">Part B: Set up target zones</h3>
 <ul>
-<li><p><strong>2.5</strong> Load the biogeographic regions. Dissolve the 12 sub-regions to 6 main regions with <code>group_by(RegionNummer) |&gt; summarise()</code>. Add German names: Jura, Mittelland, Alpennordflanke, W. Zentralalpen, Ö. Zentralalpen, Alpensüdflanke.</p></li>
+<li><p><strong>2.5</strong> Load <code>data/biogeo.gpkg</code>. Inspect the result: how many features, which columns?</p></li>
 <li><p><strong>2.6</strong> Map cantons (fill by <code>gdp_2024</code>) with biogeographic region boundaries overlaid as a dashed outline.</p></li>
 </ul>
 <div class="cell">
