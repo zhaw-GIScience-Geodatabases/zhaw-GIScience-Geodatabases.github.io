@@ -4,11 +4,16 @@
 
 Welcome to the Part *Geocomputation* in the Course *GIScience and Geodatabases*. This course is taught in the Bachelor Degree [Applied Digital Life Sciences](https://www.zhaw.ch/de/lsfm/studium/bachelor/applied-digital-life-sciences) at the Zurich University of Applied Sciences (ZHAW). 
 
-<!-- - Part 1: Vector Data
-  - [Geocomputation with Vector Data](vector-data.html) -->
+- Session 1: Vector Data
+  - [Geocomputation with Vector Data](vector-data.html)
+  - [Exercise](vector-data-exercise.html)
 
+- Session 2: Vector Geometry
+  - [Geometry Operations](geometry-operations.html)
+  - [Spherical Geometry in sf](spherical-geometry.html)
+  - [Areal Interpolation](areal-interpolation.html)
 
-<!-- - Part 2: Raster Data
+<!-- - Raster Data
   - [Raster Data](raster-data.html)
   - [Raster I/O](raster-io.html)
   - [Raster Operations](raster-operations.html)

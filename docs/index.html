@@ -105,11 +105,11 @@ document.addEventListener('DOMContentLoaded', function () {
   const el = document.createElement('div');
   el.id = 'slide-timer';
   el.style.cssText = `
-    position: fixed; bottom: 20px; right: 20px;
-    font-size: 2.2em; font-weight: bold; font-family: monospace;
+    position: fixed; top: 20px; left: 20px;
+    font-size: 3em; font-weight: bold; font-family: monospace;
     color: white; background: rgba(0,0,0,0.55);
     padding: 0.15em 0.4em; border-radius: 8px;
-    cursor: pointer; display: none; z-index: 9999;
+    cursor: pointer; display: none; z-index: 100000;
     user-select: none;
   `;
   document.body.appendChild(el);
@@ -137,10 +137,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  function onSlideChange() {
+  function onSlideChange(event) {
     clearInterval(interval); running = false;
-    const slide = document.querySelector('.reveal .slides section.present');
-    const mins = slide ? parseInt(slide.getAttribute('data-timer')) : NaN;
+    const slide = event ? event.currentSlide : Reveal.getCurrentSlide();
+    const timerSpan = slide ? slide.querySelector('.timer[data-minutes]') : null;
+    const mins = timerSpan ? parseInt(timerSpan.getAttribute('data-minutes')) : NaN;
     if (!isNaN(mins) && mins > 0) {
       total = remaining = mins * 60;
       el.textContent = fmt(remaining);
@@ -153,10 +154,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  if (typeof Reveal !== 'undefined') {
-    Reveal.on('slidechanged', onSlideChange);
-    Reveal.on('ready', onSlideChange);
+  function initTimer() {
+    if (typeof Reveal !== 'undefined' && Reveal.isReady()) {
+      Reveal.on('slidechanged', onSlideChange);
+      onSlideChange();
+    } else {
+      setTimeout(initTimer, 200);
+    }
   }
+  initTimer();
 });
 
 // Presenter mode toggle (Ctrl+Y)
@@ -214,18 +220,58 @@ document.addEventListener('keydown', function(event) {
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: Vector Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./vector-data.html" class="sidebar-item-text sidebar-link" target="_blank">
- <span class="menu-text">Vecor Data Slides</span></a>
+ <span class="menu-text">Slides</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./vector-data-exercise.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Vecor Data Exercise</span></a>
+ <span class="menu-text">Exercise</span></a>
   </div>
 </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: Vector Geometry</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./geometry-operations.html" class="sidebar-item-text sidebar-link" target="_blank">
+ <span class="menu-text">Geometry Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spherical-geometry.html" class="sidebar-item-text sidebar-link" target="_blank">
+ <span class="menu-text">Spherical Geometry</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./areal-interpolation.html" class="sidebar-item-text sidebar-link" target="_blank">
+ <span class="menu-text">Areal Interpolation</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
@@ -247,9 +293,20 @@ document.addEventListener('keydown', function(event) {
 <section id="welcome" class="level1 unnumbered unlisted smaller">
 <h1 class="unnumbered unlisted smaller">Welcome</h1>
 <p>Welcome to the Part <em>Geocomputation</em> in the Course <em>GIScience and Geodatabases</em>. This course is taught in the Bachelor Degree <a href="https://www.zhaw.ch/de/lsfm/studium/bachelor/applied-digital-life-sciences">Applied Digital Life Sciences</a> at the Zurich University of Applied Sciences (ZHAW).</p>
-<!-- - Part 1: Vector Data
-  - [Geocomputation with Vector Data](vector-data.html) -->
-<!-- - Part 2: Raster Data
+<ul>
+<li>Session 1: Vector Data
+<ul>
+<li><a href="vector-data.html">Geocomputation with Vector Data</a></li>
+<li><a href="vector-data-exercise.html">Exercise</a></li>
+</ul></li>
+<li>Session 2: Vector Geometry
+<ul>
+<li><a href="geometry-operations.html">Geometry Operations</a></li>
+<li><a href="spherical-geometry.html">Spherical Geometry in sf</a></li>
+<li><a href="areal-interpolation.html">Areal Interpolation</a></li>
+</ul></li>
+</ul>
+<!-- - Raster Data
   - [Raster Data](raster-data.html)
   - [Raster I/O](raster-io.html)
   - [Raster Operations](raster-operations.html)
@@ -663,8 +720,8 @@ document.addEventListener('keydown', function(event) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./vector-data.html" class="pagination-link" aria-label="Vecor Data Slides">
-        <span class="nav-page-text">Vecor Data Slides</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./vector-data.html" class="pagination-link" aria-label="Slides">
+        <span class="nav-page-text">Slides</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

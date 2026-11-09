@@ -53,7 +53,38 @@ Only **1 GISc student** has not taken IPRS and needs these foundations.
 - Vector-raster integration in both directions (`rasterize()`, `as.polygons()`)
 
 
-## Render / Publish 
+## Slide ideas: L2
+
+### Redistricting (spatial aggregation / disaggregation)
+
+Redistricting / areal interpolation is the **second largest SDS challenge** (source of error) in spatial data science.
+
+**Q1: Does a variable associated with a geometry refer to each point or to the set?**
+
+- *Point support*: variable refers to each individual location — land cover, lithology, soil type
+- *Block support*: variable refers to the whole geometry as a unit — population, population density, average temperature
+
+**Q2: For block-support variables, is the variable spatially extensive or intensive?**
+
+- *Spatially extensive* (e.g. population count): splits proportionally to source area → redistribute proportional to intersection area
+- *Spatially intensive* (e.g. population density, average temperature): does not sum — weight by target area fraction instead
+
+What happens to the variable if we split a geometry in two? This is the key diagnostic question.
+
+If data sources do not encode support/extensiveness metadata, how can we prevent user error?
+
+**Advanced:** add higher-resolution ancillary layers → dasymetric mapping; regression methods applied to smooth noise.
+
+Reference: V. H. Do, C. Thomas-Agnan, A. Vanhems — "Spatial reallocation of areal data – another look at basic methods"; `sf::interpolate_aw()` for areal-weighted interpolation in R.
+
+**Sources:**
+- Slides: https://docs.google.com/presentation/d/1gUY2_mDMJGLwFuckZfoPIwlL1qad7EthqoLgSbeFA7U/edit?slide=id.g3eba87cbd6e_0_1031#slide=id.g3eba87cbd6e_0_1031
+- Talk: https://www.youtube.com/watch?v=G3GibZThUGY
+- Screenshots: `images/Screenshot From 2026-11-06 10-48-49.png`, `10-49-59.png`, `10-50-06.png`, `10-50-12.png`
+
+---
+
+## Render / Publish
 
 **Render**: We have two version of the output: *profile: book* and no profile. Always render
 `book` first, then no profile. If done vice versa, the `slides` folder in `_book` 

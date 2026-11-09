@@ -33,7 +33,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./geometry-operations.html" rel="next">
 <link href="./vector-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -101,6 +101,71 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
+// Slide timer (data-timer="N" on slide, click to start/pause, resets on slide change)
+document.addEventListener('DOMContentLoaded', function () {
+  const el = document.createElement('div');
+  el.id = 'slide-timer';
+  el.style.cssText = `
+    position: fixed; top: 20px; left: 20px;
+    font-size: 3em; font-weight: bold; font-family: monospace;
+    color: white; background: rgba(0,0,0,0.55);
+    padding: 0.15em 0.4em; border-radius: 8px;
+    cursor: pointer; display: none; z-index: 100000;
+    user-select: none;
+  `;
+  document.body.appendChild(el);
+
+  let total = 0, remaining = 0, interval = null, running = false;
+
+  function fmt(s) {
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function tick() {
+    remaining--;
+    el.textContent = fmt(remaining);
+    el.style.color = remaining < 60 ? '#ff4444' : 'white';
+    if (remaining <= 0) { clearInterval(interval); running = false; el.style.color = '#ff4444'; }
+  }
+
+  el.addEventListener('click', function () {
+    if (running) {
+      clearInterval(interval); running = false;
+      el.style.opacity = '0.5';
+    } else if (remaining > 0) {
+      interval = setInterval(tick, 1000); running = true;
+      el.style.opacity = '1';
+    }
+  });
+
+  function onSlideChange(event) {
+    clearInterval(interval); running = false;
+    const slide = event ? event.currentSlide : Reveal.getCurrentSlide();
+    const timerSpan = slide ? slide.querySelector('.timer[data-minutes]') : null;
+    const mins = timerSpan ? parseInt(timerSpan.getAttribute('data-minutes')) : NaN;
+    if (!isNaN(mins) && mins > 0) {
+      total = remaining = mins * 60;
+      el.textContent = fmt(remaining);
+      el.style.color = 'white';
+      el.style.opacity = '0.7';
+      el.title = 'Click to start';
+      el.style.display = 'block';
+    } else {
+      el.style.display = 'none';
+    }
+  }
+
+  function initTimer() {
+    if (typeof Reveal !== 'undefined' && Reveal.isReady()) {
+      Reveal.on('slidechanged', onSlideChange);
+      onSlideChange();
+    } else {
+      setTimeout(initTimer, 200);
+    }
+  }
+  initTimer();
+});
+
 // Presenter mode toggle (Ctrl+Y)
 document.addEventListener('keydown', function(event) {
   if (event.ctrlKey && event.keyCode === 89) {
@@ -125,7 +190,7 @@ document.addEventListener('keydown', function(event) {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./vector-data-exercise.html">Vecor Data Exercise</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./vector-data.html">Session 1: Vector Data</a></li><li class="breadcrumb-item"><a href="./vector-data-exercise.html">Exercise</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -156,18 +221,52 @@ document.addEventListener('keydown', function(event) {
  <span class="menu-text">Welcome</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 1: Vector Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./vector-data.html" class="sidebar-item-text sidebar-link" target="_blank">
- <span class="menu-text">Vecor Data Slides</span></a>
+ <span class="menu-text">Slides</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./vector-data-exercise.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Vecor Data Exercise</span></a>
+ <span class="menu-text">Exercise</span></a>
   </div>
 </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Session 2: Vector Geometry</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./geometry-operations.html" class="sidebar-item-text sidebar-link" target="_blank">
+ <span class="menu-text">Geometry Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./spherical-geometry.html" class="sidebar-item-text sidebar-link" target="_blank">
+ <span class="menu-text">Spherical Geometry</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
@@ -183,7 +282,7 @@ document.addEventListener('keydown', function(event) {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./vector-data.html">Session 1: Vector Data</a></li><li class="breadcrumb-item"><a href="./vector-data-exercise.html">Exercise</a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title">Vector Data</h1>
 </div>
@@ -348,7 +447,7 @@ document.addEventListener('keydown', function(event) {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/zhaw-GIScience-Geodatabases\.github\.io\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -677,13 +776,13 @@ document.addEventListener('keydown', function(event) {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./vector-data.html" class="pagination-link" aria-label="Vecor Data Slides">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Vecor Data Slides</span>
+      <a href="./vector-data.html" class="pagination-link" aria-label="Slides">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Slides</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text">References</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./geometry-operations.html" class="pagination-link" aria-label="Geometry Operations">
+        <span class="nav-page-text">Geometry Operations</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

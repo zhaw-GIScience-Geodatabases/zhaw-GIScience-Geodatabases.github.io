@@ -6,6 +6,10 @@ project:
     - vector-data.qmd
     - vector-data-solution.qmd
     - vector-data-exercise.qmd
+    - geometry-operations.qmd
+    - spherical-geometry.qmd
+    - areal-interpolation.qmd
+    - geometry-operations-exercise.qmd
     # - worksheet-de9im.qmd  (used in a later session)
     # - raster-data.qmd
     # - raster-io.qmd
@@ -19,11 +23,26 @@ website:
   sidebar:
     contents:
       - index.qmd
-      - text: Vecor Data Slides
-        href: vector-data.qmd
-        target: _blank
-      - text: Vecor Data Exercise
-        href: vector-data-exercise.qmd
+      - section: "Session 1: Vector Data"
+        contents:
+          - text: Slides
+            href: vector-data.qmd
+            target: _blank
+          - text: Exercise
+            href: vector-data-exercise.qmd
+      - section: "Session 2: Vector Geometry"
+        contents:
+          - text: Geometry Operations
+            href: geometry-operations.qmd
+            target: _blank
+          # - text: Spherical Geometry
+          #   href: spherical-geometry.qmd
+            # target: _blank
+          - text: Areal Interpolation
+            href: areal-interpolation.qmd
+            target: _blank
+          # - text: Exercise
+          #   href: geometry-operations-exercise.qmd
       # - section: "Raster Data"
       #   contents:
       #     - raster-data.qmd
