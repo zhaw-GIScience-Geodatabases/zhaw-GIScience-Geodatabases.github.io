@@ -14,7 +14,7 @@
     "href": "areal-interpolation.html#today",
     "title": "Spatial Aggregation & Areal Interpolation",
     "section": "Today",
-    "text": "Today\n\nSupport — what does a number attached to a polygon really mean?\nExtensive vs. intensive — what happens to the value when you split a geometry?\nAreal interpolation — how to redistribute values across incompatible zones\nDiscussion — when does the uniform assumption fail, and what can you do?",
+    "text": "Today\n\nThe problem — data in the wrong zones\nSupport — what does a value attached to a polygon mean?\nExtensive vs. intensive — what happens when you split a geometry?\nAreal interpolation in R — st_interpolate_aw() and st_agr()\nLimitations — when the uniform assumption fails; dasymetric mapping",
     "crumbs": [
       "Session 2: Vector Geometry",
       "Areal Interpolation"
@@ -98,6 +98,17 @@
     ]
   },
   {
+    "objectID": "areal-interpolation.html#declaring-attribute-support-st_agr",
+    "href": "areal-interpolation.html#declaring-attribute-support-st_agr",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Declaring attribute support: st_agr()",
+    "text": "Declaring attribute support: st_agr()\n\nst_agr(src)                          # NA = undeclared\n\n      zone population income_avg \n      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; \nLevels: constant aggregate identity\n\n\n\nst_agr(src) &lt;- c(population = \"aggregate\",   # block, summable  → extensive = TRUE\n                 income_avg = \"constant\")     # spatially constant → extensive = FALSE\nst_agr(src)\n\n      &lt;NA&gt; population income_avg \n      &lt;NA&gt;  aggregate   constant \nLevels: constant aggregate identity\n\n\n\n\"aggregate\" — block support, summable total: use extensive = TRUE\n\"constant\" — spatially constant or rate: use extensive = FALSE\n\nSetting this suppresses the warning and lets sf propagate attribute semantics correctly through operations like st_intersection().",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
     "objectID": "areal-interpolation.html#when-the-uniform-assumption-fails",
     "href": "areal-interpolation.html#when-the-uniform-assumption-fails",
     "title": "Spatial Aggregation & Areal Interpolation",
@@ -113,7 +124,7 @@
     "href": "areal-interpolation.html#dasymetric-mapping",
     "title": "Spatial Aggregation & Areal Interpolation",
     "section": "Dasymetric mapping",
-    "text": "Dasymetric mapping\nImprove accuracy by using ancillary data that captures spatial heterogeneity within the source zone.\nClassic example — population redistribution:\n\nOverlay source zones with land use / building footprint data\nAssign population only to residential areas\nIntersect with target zones and sum\n\nThe more precise the ancillary layer, the more accurate the result.\nIn R: pass the ancillary layer as weights = to st_interpolate_aw().\n\nDasymetric mapping is the standard improvement over naive areal weighting. It’s especially important when source zones are large relative to the variation in the variable. The key limitation: you need a good ancillary layer, which itself may be outdated or imprecise.",
+    "text": "Dasymetric mapping\n\nImprove accuracy by using ancillary data that captures spatial heterogeneity within the source zone.\nClassic example — population redistribution:\n\nOverlay source zones with land use / building footprint data\nAssign population only to residential areas\nIntersect with target zones and sum\n\nThe more precise the ancillary layer, the more accurate the result.\nIn R: pass the ancillary layer as weights = to st_interpolate_aw().\nExample from r-spatial.github.io/sf\n\n\nDasymetric mapping is the standard improvement over naive areal weighting. It’s especially important when source zones are large relative to the variation in the variable. The key limitation: you need a good ancillary layer, which itself may be outdated or imprecise.",
     "crumbs": [
       "Session 2: Vector Geometry",
       "Areal Interpolation"
@@ -135,7 +146,7 @@
     "href": "areal-interpolation.html#dasymetric-mapping-in-r",
     "title": "Spatial Aggregation & Areal Interpolation",
     "section": "Dasymetric mapping in R",
-    "text": "Dasymetric mapping in R\n\ngrd.addr &lt;- read_sf(system.file(\"gpkg/grd_addr.gpkg\", package = \"sf\"))\nnc2 &lt;- st_transform(nc, st_crs(grd.addr))\nst_agr(grd.addr) &lt;- c(ones = \"constant\")\nst_agr(nc2)      &lt;- c(BIR74 = \"constant\")\n\nbir0 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE)\nbir1 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE,\n                           weights = \"ones\")\nsum(bir1$BIR74) / sum(nc2$BIR74)   # mass preserved → 1\n\n[1] 1\n\n\n\n\n\n\n\n\n\n\n\n\n\ngrd.addr contains ones = number of postal addresses per 10 km grid cell — a proxy for where people actually live. weights = \"ones\" tells st_interpolate_aw() to weight intersections by this ancillary variable instead of by raw area. The dasymetric result concentrates births in populated cells.\nMass preservation: sum(bir1$BIR74) / sum(nc2$BIR74) → 1. The pycnophylactic property holds regardless of the ancillary layer.\nRoundtrip verification: interpolate the grid back to county boundaries and compare with the original — the scatter plot should hug the 1:1 line.",
+    "text": "Dasymetric mapping in R\n\ngrd.addr &lt;- read_sf(system.file(\"gpkg/grd_addr.gpkg\", package = \"sf\"))\nnc2 &lt;- st_transform(nc, st_crs(grd.addr))\nst_agr(grd.addr) &lt;- c(ones = \"constant\")\nst_agr(nc2)      &lt;- c(BIR74 = \"constant\")\n\nbir0 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE)\nbir1 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE,\n                           weights = \"ones\")\nsum(bir1$BIR74) / sum(nc2$BIR74)   # mass preserved → 1\n\n[1] 1",
     "crumbs": [
       "Session 2: Vector Geometry",
       "Areal Interpolation"
@@ -146,7 +157,7 @@
     "href": "geometry-operations.html#today",
     "title": "Vector Geometry Operations",
     "section": "Today",
-    "text": "Today\n\nCentroids — center of mass, and when it lies outside\nAffine Transformations — shift, scale, rotate\nSimplification — removing vertices, preserving shape\nGroup Work — algorithmic challenge",
+    "text": "Today\n\nCentroids — center of mass, and when it lies outside the polygon\nAffine transformations — shift, scale, rotate with sf arithmetic\nSimplification — Douglas-Peucker, topology problems, ms_simplify()\nChallenge — design a line simplification algorithm",
     "crumbs": [
       "Session 2: Vector Geometry",
       "Geometry Operations"

@@ -310,10 +310,11 @@
 <section id="today" class="slide level2">
 <h2>Today</h2>
 <ol type="1">
-<li><strong>Support</strong> — what does a number attached to a polygon really mean?</li>
-<li><strong>Extensive vs.&nbsp;intensive</strong> — what happens to the value when you split a geometry?</li>
-<li><strong>Areal interpolation</strong> — how to redistribute values across incompatible zones</li>
-<li><strong>Discussion</strong> — when does the uniform assumption fail, and what can you do?</li>
+<li><strong>The problem</strong> — data in the wrong zones</li>
+<li><strong>Support</strong> — what does a value attached to a polygon mean?</li>
+<li><strong>Extensive vs.&nbsp;intensive</strong> — what happens when you split a geometry?</li>
+<li><strong>Areal interpolation in R</strong> — <code>st_interpolate_aw()</code> and <code>st_agr()</code></li>
+<li><strong>Limitations</strong> — when the uniform assumption fails; dasymetric mapping</li>
 </ol>
 </section>
 <section>
@@ -532,19 +533,45 @@ st_interpolate_aw assumes attributes are constant or uniform over areas of x</co
           display:block!important;
       }</style></aside>
 </section>
+<section id="declaring-attribute-support-st_agr" class="slide level2">
+<h2>Declaring attribute support: <code>st_agr()</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(src)                          <span class="co"># NA = undeclared</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      zone population income_avg 
+      &lt;NA&gt;       &lt;NA&gt;       &lt;NA&gt; 
+Levels: constant aggregate identity</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(src) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">population =</span> <span class="st">"aggregate"</span>,   <span class="co"># block, summable  → extensive = TRUE</span></span>
+<span id="cb5-2"><a aria-hidden="true" tabindex="-1"></a>                 <span class="at">income_avg =</span> <span class="st">"constant"</span>)     <span class="co"># spatially constant → extensive = FALSE</span></span>
+<span id="cb5-3"><a aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(src)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      &lt;NA&gt; population income_avg 
+      &lt;NA&gt;  aggregate   constant 
+Levels: constant aggregate identity</code></pre>
+</div>
+</div>
+<ul>
+<li><code>"aggregate"</code> — block support, summable total: use <code>extensive = TRUE</code></li>
+<li><code>"constant"</code> — spatially constant or rate: use <code>extensive = FALSE</code></li>
+</ul>
+<p>Setting this suppresses the warning and lets sf propagate attribute semantics correctly through operations like <code>st_intersection()</code>.</p>
+</section>
 <section class="slide level2">
 
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a aria-hidden="true" tabindex="-1"></a><span class="co"># extensive = FALSE  →  area-weighted average (rates, densities)</span></span>
-<span id="cb3-2"><a aria-hidden="true" tabindex="-1"></a>inc_by_target <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(src[<span class="st">"income_avg"</span>], tgt, <span class="at">extensive =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-3"><a aria-hidden="true" tabindex="-1"></a>inc_by_target<span class="sc">$</span>zone <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>)</span>
-<span id="cb3-4"><a aria-hidden="true" tabindex="-1"></a>inc_by_target<span class="sc">$</span>income_avg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-hidden="true" tabindex="-1"></a><span class="co"># extensive = FALSE  →  area-weighted average (rates, densities)</span></span>
+<span id="cb7-2"><a aria-hidden="true" tabindex="-1"></a>inc_by_target <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(src[<span class="st">"income_avg"</span>], tgt, <span class="at">extensive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-3"><a aria-hidden="true" tabindex="-1"></a>inc_by_target<span class="sc">$</span>zone <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Y"</span>)</span>
+<span id="cb7-4"><a aria-hidden="true" tabindex="-1"></a>inc_by_target<span class="sc">$</span>income_avg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 73.33333 66.66667</code></pre>
 </div>
 </div>
 
-<img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-6-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>The function is honest: it warns you that it’s making an assumption you may not have thought about. Many students suppress warnings. This is a case where the warning is the most important part of the output.</p>
 <p>Population totals: A=600, B=900, C=300. X covers all of A (600) plus half of B (450) = 1050. Y covers half of B (450) plus all of C (300) = 750. Sum = 1800. Preserved ✓</p>
 <p>Income averages: X covers A (80, weight 2) and half of B (60, weight 1) → (160+60)/3 = 73.3. Y covers half of B (60, weight 1) and C (70, weight 2) → (60+140)/3 = 66.7.</p>
@@ -577,15 +604,18 @@ st_interpolate_aw assumes attributes are constant or uniform over areas of x</co
 </section>
 <section id="dasymetric-mapping" class="slide level2">
 <h2>Dasymetric mapping</h2>
-<p>Improve accuracy by using <strong>ancillary data</strong> that captures spatial heterogeneity within the source zone.</p>
-<p>Classic example — population redistribution:</p>
+<ul>
+<li>Improve accuracy by using <strong>ancillary data</strong> that captures spatial heterogeneity within the source zone.</li>
+<li>Classic example — population redistribution:
 <ol type="1">
 <li>Overlay source zones with land use / building footprint data</li>
 <li>Assign population only to residential areas</li>
 <li>Intersect with target zones and sum</li>
-</ol>
-<p>The more precise the ancillary layer, the more accurate the result.</p>
-<p>In R: pass the ancillary layer as <code>weights =</code> to <code>st_interpolate_aw()</code>.</p>
+</ol></li>
+<li>The more precise the ancillary layer, the more accurate the result.</li>
+<li>In R: pass the ancillary layer as <code>weights =</code> to <code>st_interpolate_aw()</code>.</li>
+<li>Example from <a href="https://r-spatial.github.io/sf/reference/interpolate_aw.html">r-spatial.github.io/sf</a></li>
+</ul>
 <aside class="notes">
 <p>Dasymetric mapping is the standard improvement over naive areal weighting. It’s especially important when source zones are large relative to the variation in the variable. The key limitation: you need a good ancillary layer, which itself may be outdated or imprecise.</p>
 <style type="text/css">
@@ -603,18 +633,18 @@ st_interpolate_aw assumes attributes are constant or uniform over areas of x</co
 <section id="intensive-vs-extensive-side-by-side" class="slide level2">
 <h2>Intensive vs extensive — side by side</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">system.file</span>(<span class="st">"shape/nc.shp"</span>, <span class="at">package =</span> <span class="st">"sf"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-2"><a aria-hidden="true" tabindex="-1"></a>g  <span class="ot">&lt;-</span> <span class="fu">st_make_grid</span>(nc, <span class="at">n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
-<span id="cb5-3"><a aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a aria-hidden="true" tabindex="-1"></a>a1 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc[<span class="st">"BIR74"</span>], <span class="at">to =</span> g, <span class="at">extensive =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-5"><a aria-hidden="true" tabindex="-1"></a>a2 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc[<span class="st">"BIR74"</span>], <span class="at">to =</span> g, <span class="at">extensive =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-6"><a aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(a2<span class="sc">$</span>BIR74) <span class="sc">/</span> <span class="fu">sum</span>(nc<span class="sc">$</span>BIR74)   <span class="co"># mass preserved → 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a aria-hidden="true" tabindex="-1"></a>nc <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">system.file</span>(<span class="st">"shape/nc.shp"</span>, <span class="at">package =</span> <span class="st">"sf"</span>), <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-2"><a aria-hidden="true" tabindex="-1"></a>g  <span class="ot">&lt;-</span> <span class="fu">st_make_grid</span>(nc, <span class="at">n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span>))</span>
+<span id="cb9-3"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a aria-hidden="true" tabindex="-1"></a>a1 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc[<span class="st">"BIR74"</span>], <span class="at">to =</span> g, <span class="at">extensive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb9-5"><a aria-hidden="true" tabindex="-1"></a>a2 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc[<span class="st">"BIR74"</span>], <span class="at">to =</span> g, <span class="at">extensive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-6"><a aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(a2<span class="sc">$</span>BIR74) <span class="sc">/</span> <span class="fu">sum</span>(nc<span class="sc">$</span>BIR74)   <span class="co"># mass preserved → 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.9999998</code></pre>
 </div>
 </div>
 
-<img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-8-1.png" width="960" class="r-stretch"><aside class="notes">
+<img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-10-1.png" width="960" class="r-stretch"><aside class="notes">
 <p>Intensive and extensive give visually different results even on the same data. The extensive result preserves the total count (ratio → 1). The intensive result does not — it spreads values as if they were uniform rates, so the sum drifts. This is the core reason the distinction matters.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -631,26 +661,29 @@ st_interpolate_aw assumes attributes are constant or uniform over areas of x</co
 <section id="dasymetric-mapping-in-r" class="slide level2">
 <h2>Dasymetric mapping in R</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a aria-hidden="true" tabindex="-1"></a>grd.addr <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="fu">system.file</span>(<span class="st">"gpkg/grd_addr.gpkg"</span>, <span class="at">package =</span> <span class="st">"sf"</span>))</span>
-<span id="cb7-2"><a aria-hidden="true" tabindex="-1"></a>nc2 <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(nc, <span class="fu">st_crs</span>(grd.addr))</span>
-<span id="cb7-3"><a aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(grd.addr) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">ones =</span> <span class="st">"constant"</span>)</span>
-<span id="cb7-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(nc2)      <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">BIR74 =</span> <span class="st">"constant"</span>)</span>
-<span id="cb7-5"><a aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a aria-hidden="true" tabindex="-1"></a>bir0 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc2[<span class="st">"BIR74"</span>], <span class="at">to =</span> grd.addr, <span class="at">extensive =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb7-7"><a aria-hidden="true" tabindex="-1"></a>bir1 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc2[<span class="st">"BIR74"</span>], <span class="at">to =</span> grd.addr, <span class="at">extensive =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb7-8"><a aria-hidden="true" tabindex="-1"></a>                           <span class="at">weights =</span> <span class="st">"ones"</span>)</span>
-<span id="cb7-9"><a aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(bir1<span class="sc">$</span>BIR74) <span class="sc">/</span> <span class="fu">sum</span>(nc2<span class="sc">$</span>BIR74)   <span class="co"># mass preserved → 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a aria-hidden="true" tabindex="-1"></a>grd.addr <span class="ot">&lt;-</span> <span class="fu">read_sf</span>(<span class="fu">system.file</span>(<span class="st">"gpkg/grd_addr.gpkg"</span>, <span class="at">package =</span> <span class="st">"sf"</span>))</span>
+<span id="cb11-2"><a aria-hidden="true" tabindex="-1"></a>nc2 <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(nc, <span class="fu">st_crs</span>(grd.addr))</span>
+<span id="cb11-3"><a aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(grd.addr) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">ones =</span> <span class="st">"constant"</span>)</span>
+<span id="cb11-4"><a aria-hidden="true" tabindex="-1"></a><span class="fu">st_agr</span>(nc2)      <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">BIR74 =</span> <span class="st">"constant"</span>)</span>
+<span id="cb11-5"><a aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a aria-hidden="true" tabindex="-1"></a>bir0 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc2[<span class="st">"BIR74"</span>], <span class="at">to =</span> grd.addr, <span class="at">extensive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb11-7"><a aria-hidden="true" tabindex="-1"></a>bir1 <span class="ot">&lt;-</span> <span class="fu">st_interpolate_aw</span>(nc2[<span class="st">"BIR74"</span>], <span class="at">to =</span> grd.addr, <span class="at">extensive =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-8"><a aria-hidden="true" tabindex="-1"></a>                           <span class="at">weights =</span> <span class="st">"ones"</span>)</span>
+<span id="cb11-9"><a aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(bir1<span class="sc">$</span>BIR74) <span class="sc">/</span> <span class="fu">sum</span>(nc2<span class="sc">$</span>BIR74)   <span class="co"># mass preserved → 1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
 </div>
+</section>
+<section class="slide level2">
+
 <div class="cell quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+<p><img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-12-1.png" width="960"></p>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-10-2.png" width="960"></p>
+<p><img data-src="areal-interpolation_files/figure-revealjs/unnamed-chunk-12-2.png" width="960"></p>
 </div>
 </div>
 </div>
