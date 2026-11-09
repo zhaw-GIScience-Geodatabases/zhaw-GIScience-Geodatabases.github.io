@@ -10,6 +10,270 @@
     ]
   },
   {
+    "objectID": "areal-interpolation.html#today",
+    "href": "areal-interpolation.html#today",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Today",
+    "text": "Today\n\nSupport — what does a number attached to a polygon really mean?\nExtensive vs. intensive — what happens to the value when you split a geometry?\nAreal interpolation — how to redistribute values across incompatible zones\nDiscussion — when does the uniform assumption fail, and what can you do?",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#data-in-the-wrong-zones",
+    "href": "areal-interpolation.html#data-in-the-wrong-zones",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Data in the wrong zones",
+    "text": "Data in the wrong zones\nYou have data — but the zones don’t match what you need:\n\nPopulation by canton, but you need it by biogeographical region\nIncome by census tract, but you need it by school district\n\nThe source zones and target zones overlap in arbitrary ways. You cannot simply reassign values — you have to redistribute them.\n\nAreal interpolation is the second largest source of error in spatial data science.\n\nEdzer Pebesma - Areal interpolation methods - useR! 2026\n\nStudents often assume this is a rare edge case. It is not. Any time you combine data from different administrative sources — census, tax, health, transport — you face this problem. The error compounds silently: results look reasonable but are systematically wrong.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#the-core-challenge",
+    "href": "areal-interpolation.html#the-core-challenge",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "The core challenge",
+    "text": "The core challenge\n\n\nWalk through the problem: target zone X overlaps with all of A and half of B. You cannot just assign A’s population to X — X also covers part of B. You need to split B’s population between X and Y based on how much of B falls in each target zone.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#q1-what-does-the-value-refer-to",
+    "href": "areal-interpolation.html#q1-what-does-the-value-refer-to",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Q1: What does the value refer to?",
+    "text": "Q1: What does the value refer to?\nBefore you can redistribute a variable, you need to know what it represents.\n\nPoint support — the value refers to each individual location: E.g. Land cover, soil type\nBlock support — the value refers to the whole geometry as a unit: E.g. Population count, average income\n\n\nPoint-support variables can be sampled and re-aggregated without conceptual difficulty. Block-support variables cannot — they are aggregates, and their spatial distribution within the polygon is unknown. Areal interpolation only applies to block-support variables.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#why-support-matters",
+    "href": "areal-interpolation.html#why-support-matters",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Why support matters",
+    "text": "Why support matters\n\nFor point-support variables: you can query any sub-region directly. A raster crop, a spatial filter, a point-in-polygon lookup — all valid.\nFor block-support variables: the value only makes sense for the whole geometry. Splitting it requires an assumption about how the variable is distributed within the polygon.\n\nThe simplest assumption: uniform distribution — the variable is spread evenly across the area.\nThis assumption is almost never true",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#q2-what-happens-when-you-cut-a-polygon-in-half",
+    "href": "areal-interpolation.html#q2-what-happens-when-you-cut-a-polygon-in-half",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Q2: What happens when you cut a polygon in half?",
+    "text": "Q2: What happens when you cut a polygon in half?\nQuestion: does the value sum across sub-regions, or does it stay constant?\n\n\n\nVariable\nCut in half →\nType\n\n\n\n\nPopulation count (1 000)\n~500 each\nExtensive\n\n\nPopulation density (50/km²)\nstill 50/km² each\nIntensive\n\n\nTotal household income (€200M)\n~€100M each\nExtensive\n\n\nAverage household income (€60k)\nstill €60k each\nIntensive\n\n\nNumber of schools (12)\n~6 each\nExtensive\n\n\nSchool density (2/km²)\nstill 2/km²\nIntensive\n\n\n\n\nExtensive = summable = total. Intensive = per-unit = rate or density or average. The confusion between the two is a classic error in spatial analysis — e.g. summing population densities instead of averaging them, or averaging population counts instead of summing them.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#redistribution-formulas",
+    "href": "areal-interpolation.html#redistribution-formulas",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Redistribution formulas",
+    "text": "Redistribution formulas\n\n\nExtensive (counts, totals — the sum must be preserved):\n\\[v_j = \\sum_i v_i \\cdot \\frac{\\text{area}(A_i \\cap B_j)}{\\text{area}(A_i)}\\]\nEach source value is split proportionally to the area of intersection.\n\nIntensive (rates, densities, averages — no sum to preserve):\n\\[v_j = \\frac{\\displaystyle\\sum_i v_i \\cdot \\text{area}(A_i \\cap B_j)}{\\displaystyle\\sum_i \\text{area}(A_i \\cap B_j)}\\]\nEach source value is weighted by the intersection area, then averaged.\n\n\nHow to read the formulas — use the toy example (A/B/C → X/Y):\n\n\\(i\\) indexes source zones (A, B, C); \\(j\\) indexes target zones (X, Y)\n\\(v_i\\) is the value in source zone \\(i\\) (e.g. 900 people in B)\n\\(A_i \\cap B_j\\) is the intersection of source zone \\(i\\) with target zone \\(j\\) (e.g. the left half of B that falls in X)\n\\(\\text{area}(A_i \\cap B_j) / \\text{area}(A_i)\\) is the area fraction — what share of source zone \\(i\\) overlaps target zone \\(j\\). B∩X = 50%, so 0.5 × 900 = 450.\n\nExtensive: sum contributions from all source zones touching \\(j\\), each scaled by area fraction. For X: 100%×600 + 50%×900 = 1 050.\nIntensive: area-weighted average — weight each source value by how much of the target it covers. For Y: B covers 1 unit, C covers 2 units → (60×1 + 70×2)/3 = 66.7 k.\nKey contrast: extensive preserves the total (1 800 in, 1 800 out). Intensive preserves the scale of the variable (still CHF/year, not CHF·km²/year).",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#st_interpolate_aw",
+    "href": "areal-interpolation.html#st_interpolate_aw",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "st_interpolate_aw()",
+    "text": "st_interpolate_aw()\n\n# extensive = TRUE  →  sum-preserving (counts, totals)\npop_by_target &lt;- st_interpolate_aw(src[\"population\"], tgt, extensive = TRUE)\n\nWarning in st_interpolate_aw.sf(src[\"population\"], tgt, extensive = TRUE):\nst_interpolate_aw assumes attributes are constant or uniform over areas of x\n\n\n\n\n\nNotice the warning: assumes attributes are constant or uniform over areas of x\nThis is the uniform distribution assumption — built into the method.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#when-the-uniform-assumption-fails",
+    "href": "areal-interpolation.html#when-the-uniform-assumption-fails",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "When the uniform assumption fails",
+    "text": "When the uniform assumption fails\nThe uniform distribution assumption is wrong whenever the variable is spatially heterogeneous within the source zone.\nExamples:\n\nPopulation in a municipality that is 80% forest → people cluster in villages, not forest\nIncome data for a large canton → urban and rural areas have very different incomes\nLarge source zones intersecting many small target zones → fine-grained heterogeneity is lost",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#dasymetric-mapping",
+    "href": "areal-interpolation.html#dasymetric-mapping",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Dasymetric mapping",
+    "text": "Dasymetric mapping\nImprove accuracy by using ancillary data that captures spatial heterogeneity within the source zone.\nClassic example — population redistribution:\n\nOverlay source zones with land use / building footprint data\nAssign population only to residential areas\nIntersect with target zones and sum\n\nThe more precise the ancillary layer, the more accurate the result.\nIn R: pass the ancillary layer as weights = to st_interpolate_aw().\n\nDasymetric mapping is the standard improvement over naive areal weighting. It’s especially important when source zones are large relative to the variation in the variable. The key limitation: you need a good ancillary layer, which itself may be outdated or imprecise.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#intensive-vs-extensive-side-by-side",
+    "href": "areal-interpolation.html#intensive-vs-extensive-side-by-side",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Intensive vs extensive — side by side",
+    "text": "Intensive vs extensive — side by side\n\nnc &lt;- st_read(system.file(\"shape/nc.shp\", package = \"sf\"), quiet = TRUE)\ng  &lt;- st_make_grid(nc, n = c(10, 5))\n\na1 &lt;- st_interpolate_aw(nc[\"BIR74\"], to = g, extensive = FALSE)\na2 &lt;- st_interpolate_aw(nc[\"BIR74\"], to = g, extensive = TRUE)\nsum(a2$BIR74) / sum(nc$BIR74)   # mass preserved → 1\n\n[1] 0.9999998\n\n\n\n\nIntensive and extensive give visually different results even on the same data. The extensive result preserves the total count (ratio → 1). The intensive result does not — it spreads values as if they were uniform rates, so the sum drifts. This is the core reason the distinction matters.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "areal-interpolation.html#dasymetric-mapping-in-r",
+    "href": "areal-interpolation.html#dasymetric-mapping-in-r",
+    "title": "Spatial Aggregation & Areal Interpolation",
+    "section": "Dasymetric mapping in R",
+    "text": "Dasymetric mapping in R\n\ngrd.addr &lt;- read_sf(system.file(\"gpkg/grd_addr.gpkg\", package = \"sf\"))\nnc2 &lt;- st_transform(nc, st_crs(grd.addr))\nst_agr(grd.addr) &lt;- c(ones = \"constant\")\nst_agr(nc2)      &lt;- c(BIR74 = \"constant\")\n\nbir0 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE)\nbir1 &lt;- st_interpolate_aw(nc2[\"BIR74\"], to = grd.addr, extensive = TRUE,\n                           weights = \"ones\")\nsum(bir1$BIR74) / sum(nc2$BIR74)   # mass preserved → 1\n\n[1] 1\n\n\n\n\n\n\n\n\n\n\n\n\n\ngrd.addr contains ones = number of postal addresses per 10 km grid cell — a proxy for where people actually live. weights = \"ones\" tells st_interpolate_aw() to weight intersections by this ancillary variable instead of by raw area. The dasymetric result concentrates births in populated cells.\nMass preservation: sum(bir1$BIR74) / sum(nc2$BIR74) → 1. The pycnophylactic property holds regardless of the ancillary layer.\nRoundtrip verification: interpolate the grid back to county boundaries and compare with the original — the scatter plot should hug the 1:1 line.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Areal Interpolation"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#today",
+    "href": "geometry-operations.html#today",
+    "title": "Vector Geometry Operations",
+    "section": "Today",
+    "text": "Today\n\nCentroids — center of mass, and when it lies outside\nAffine Transformations — shift, scale, rotate\nSimplification — removing vertices, preserving shape\nGroup Work — algorithmic challenge",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#center-of-mass",
+    "href": "geometry-operations.html#center-of-mass",
+    "title": "Vector Geometry Operations",
+    "section": "Center of mass",
+    "text": "Center of mass\n\nst_centroid() returns the center of mass — the balance point of the shape\nUsed for: distance calculations, representative points, labeling\n\n\nluzern_centroid &lt;- st_centroid(luzern)",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#section",
+    "href": "geometry-operations.html#section",
+    "title": "Vector Geometry Operations",
+    "section": "",
+    "text": "For concave or C-shaped geometries, the centroid can fall outside the polygon\nst_point_on_surface() always returns a point inside\nTypical uses:\n\nst_centroid(): Distance metrics, spatial analytics\nst_point_on_surface(): Map labeling, feature sampling",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#three-elementary-operations",
+    "href": "geometry-operations.html#three-elementary-operations",
+    "title": "Vector Geometry Operations",
+    "section": "Three elementary operations",
+    "text": "Three elementary operations\n\nAffine transformations preserve lines and parallelism — angles and lengths may change\nIn sf: applied directly to sfc objects using arithmetic operators\n\n\n\n\nOperation\nsf syntax\nEffect\n\n\n\n\nShift\nsfc + c(dx, dy)\nMove without changing shape\n\n\nScale\n(sfc - p) * factor + p\nGrow or shrink around a point p\n\n\nRotate\n(sfc - p) * R(θ) + center\nRotate around a point p\n\n\n\n\nThe pattern (sfc - center) * operation + center appears in both scale and rotate: subtract center to bring the geometry to the origin, apply the transformation, then shift back. This is the key insight students should take away.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#shift-and-scale",
+    "href": "geometry-operations.html#shift-and-scale",
+    "title": "Vector Geometry Operations",
+    "section": "Shift and Scale",
+    "text": "Shift and Scale\n\n# Shift: move 10 km east\nluzern_shifted &lt;- luzern_sfc + c(10000, 0)\n\n# Scale: shrink to 75% around centroid\nluzern_scaled  &lt;- (luzern_sfc - luzern_center) * 0.75 + luzern_center",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#rotation",
+    "href": "geometry-operations.html#rotation",
+    "title": "Vector Geometry Operations",
+    "section": "Rotation",
+    "text": "Rotation\n\nShift to origin → rotate → shift back — otherwise the geometry rotates around (0, 0)\n\\(R(\\theta) = \\begin{bmatrix} \\cos\\theta & -\\sin\\theta \\\\ \\sin\\theta & \\cos\\theta \\end{bmatrix}\\)\n\n\nrotation &lt;- function(deg) {\n  r &lt;- deg * pi / 180          # convert degrees to radians\n  matrix(                      # \n    c(cos(r), -sin(r),          #   [ cos(r), -sin(r) ]\n     sin(r), cos(r)),           #   [ sin(r),  cos(r) ]\n    nrow = 2, ncol = 2, byrow = TRUE\n  )\n}",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#why-simplify",
+    "href": "geometry-operations.html#why-simplify",
+    "title": "Vector Geometry Operations",
+    "section": "Why simplify?",
+    "text": "Why simplify?\n\nReal datasets carry more vertices than any display scale needs\nExcess vertices: slow rendering, large files, no visual benefit",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#challenge-line-simplification-algorithm",
+    "href": "geometry-operations.html#challenge-line-simplification-algorithm",
+    "title": "Vector Geometry Operations",
+    "section": "Challenge: Line simplification Algorithm",
+    "text": "Challenge: Line simplification Algorithm\n\n\nGiven: a polyline V₁, V₂, …, Vₙ\nTask: develop an algorithm that removes “unnecessary” vertices — those that add no meaningful shape information at scale ε\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#douglas-peucker",
+    "href": "geometry-operations.html#douglas-peucker",
+    "title": "Vector Geometry Operations",
+    "section": "Douglas-Peucker",
+    "text": "Douglas-Peucker\n\nst_simplify() uses the Douglas-Peucker algorithm\nCore idea: a point is unnecessary if it lies close to the line between its neighbours\nTolerance ε controls how much deviation is acceptable\n\n\n\n\n\n\nStep 1: draw baseline from first to last point\n\n\n\n\n\n\n\nStep 2: find the farthest point — distance d = 3 &gt; ε → keep it\n\n\n\n\n\n\n\nStep 3: recurse on both halves independently\n\n\n\n\n\n\n\nStep 4: continue recursion — more points kept or discarded\n\n\n\n\n\n\n\nStep 5: result — only the essential vertices remain (blue)",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#the-topology-problem",
+    "href": "geometry-operations.html#the-topology-problem",
+    "title": "Vector Geometry Operations",
+    "section": "The topology problem",
+    "text": "The topology problem\n\nst_simplify() processes each feature independently\nShared boundaries are simplified separately → gaps and overlaps appear",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#topology-preserving-simplification",
+    "href": "geometry-operations.html#topology-preserving-simplification",
+    "title": "Vector Geometry Operations",
+    "section": "Topology-preserving simplification",
+    "text": "Topology-preserving simplification\n\nrmapshaper::ms_simplify() simplifies the whole layer at once — shared boundaries stay consistent\nUses the Visvalingam algorithm: iteratively removes the vertex that creates the smallest triangle area\n\n\nlibrary(rmapshaper)\n# We specify the proportion of points to keep\nn_ms &lt;- ms_simplify(neighbors, keep = 0.5)",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
+    "objectID": "geometry-operations.html#summary",
+    "href": "geometry-operations.html#summary",
+    "title": "Vector Geometry Operations",
+    "section": "Summary",
+    "text": "Summary\n\nst_centroid() returns the geometric centre of mass — useful for distance calculations and analytics, but it can fall outside the shape for concave or C-shaped geometries. Use st_point_on_surface() when you need a point guaranteed to lie inside.\nAffine transformations (shift, scale, rotate) preserve shape and angles. All three follow the same pattern in sf: shift to the origin, apply the transformation, shift back. sf lets you do this with ordinary arithmetic directly on sfc objects. Transformations are not commutative — order matters.\nst_simplify() reduces vertex count using the Douglas-Peucker algorithm: it recursively removes vertices that deviate less than tolerance ε from the local baseline. It operates feature by feature, so shared boundaries between adjacent polygons can develop gaps and overlaps.\nms_simplify() (rmapshaper) uses the Visvalingam algorithm and processes the entire layer at once, keeping shared edges consistent. Prefer it whenever topology matters.",
+    "crumbs": [
+      "Session 2: Vector Geometry",
+      "Geometry Operations"
+    ]
+  },
+  {
     "objectID": "vector-data-solution.html#a-bounding-box-is-four-numbers",
     "href": "vector-data-solution.html#a-bounding-box-is-four-numbers",
     "title": "Solutions: Algorithmic Challenges",
@@ -70,7 +334,7 @@
     "href": "index.html",
     "title": "Welcome",
     "section": "",
-    "text": "Welcome\nWelcome to the Part Geocomputation in the Course GIScience and Geodatabases. This course is taught in the Bachelor Degree Applied Digital Life Sciences at the Zurich University of Applied Sciences (ZHAW).",
+    "text": "Welcome\nWelcome to the Part Geocomputation in the Course GIScience and Geodatabases. This course is taught in the Bachelor Degree Applied Digital Life Sciences at the Zurich University of Applied Sciences (ZHAW).\n\nSession 1: Vector Data\n\nGeocomputation with Vector Data\nExercise\n\nSession 2: Vector Geometry\n\nGeometry Operations\nSpherical Geometry in sf\nAreal Interpolation",
     "crumbs": [
       "Welcome"
     ]
@@ -82,7 +346,8 @@
     "section": "Today",
     "text": "Today\n\nSimple Features — the standard behind all vector GIS tools\nCoordinate Reference Systems — datums, projections, units, silent errors\nGDAL & file formats — the common backbone, format trade-offs\nBinary Predicates — spatial relationships and choosing the right one\nGeometry Operations — set algebra, type changes\nGroup Work — two algorithmic challenges",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -92,7 +357,8 @@
     "section": "Why a standard?",
     "text": "Why a standard?\n\nVector data is used in PostGIS, QGIS, R, Python, ArcGIS, GDAL, …\nSimple Features (ISO 19125-1:2004) is the OGC standard all major spatial tools implement\nIt defines: geometry types, encoding, and spatial relationships",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -102,7 +368,8 @@
     "section": "What is a feature?",
     "text": "What is a feature?\n\nA simple feature is defined […] to have both spatial and non-spatial attributes. Spatial attributes are geometry valued, and simple features are based on 2D geometry with linear interpolation between vertices.\n\n— ISO 19125",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -112,7 +379,8 @@
     "section": "Geometry types",
     "text": "Geometry types\n\n18 types defined in the standard; 7 cover the vast majority of real-world data:\n\n\n\n\n\nTable 1: Source: Pebesma (2018)\n\n\n\n\n\n\n\n\n\n\n\nType\nDescription\nDimensions\n\n\n\n\nPOINT\nzero-dimensional geometry containing a single point\n0\n\n\nLINESTRING\nsequence of points connected by straight, non-self-intersecting line pieces\n1\n\n\nPOLYGON\nsequence of points forming a closed, non-self-intersecting ring (with optional holes)\n2\n\n\nMULTIPOINT\nset of points\n0\n\n\nMULTILINESTRING\nset of linestrings\n1\n\n\nMULTIPOLYGON\nset of polygons\n2\n\n\nGEOMETRYCOLLECTION\nset of geometries of any of the above types\nNA",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -122,7 +390,8 @@
     "section": "The Earth is not flat",
     "text": "The Earth is not flat\n\nThe Earth is approximated as an ellipsoid: slightly flattened at the poles, bulging at the equator\nA datum defines which ellipsoid to use and how to orient it:\n\nWGS84 — global datum, used by GPS and internet maps\nCH1903+ / LV95 — Swiss national datum, optimized for Switzerland\n\nThe same point has different coordinates in different datums",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -132,7 +401,8 @@
     "section": "Projections",
     "text": "Projections\n\nA projection transforms 3D ellipsoid coordinates onto a flat 2D plane\nEvery projection distorts at least one property — there is no undistorted flat map:\n\nEqual-area — preserves area; distorts shape and angles\nConformal — preserves local shape / angles; distorts area\nEquidistant — preserves distance from a point; distorts area and shape\n\nNational systems (e.g. LV95 / EPSG:2056) are conformal, minimizing distortion locally",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -142,7 +412,8 @@
     "section": "EPSG codes",
     "text": "EPSG codes\n\nEPSG codes are the standard identifiers for coordinate reference systems:\n\n\n\n\nEPSG\nName\nUnit\nTypical use\n\n\n\n\n4326\nWGS84\ndegree\nGPS, global data, GeoJSON default\n\n\n2056\nCH1903+ / LV95\nmeter\nSwiss national datasets\n\n\n3857\nWeb Mercator\nmeter\nWeb map tiles (Google, OSM)\n\n\n25832\nETRS89 / UTM Zone 32N\nmeter\nCentral Europe",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -152,7 +423,8 @@
     "section": "CRS in practice: the silent error",
     "text": "CRS in practice: the silent error\n\nMeasurement operations (distance, area, buffer) use the CRS unit\nEPSG:4326 unit is degrees — st_buffer(x, 1000) means 1000 degrees, not meters\n\n\nzh &lt;- st_sfc(st_point(c(8.54, 47.38)), crs = 4326)\nst_crs(zh)$ud_unit       \n\n1 [°]\n\n\nhttps://www.google.com/maps/place/8°32'24.0\"N+47°22'48.0\"E/@8.54,47.3774197,10z",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -162,7 +434,8 @@
     "section": "GDAL: one library, many tools",
     "text": "GDAL: one library, many tools\n\nGDAL (Geospatial Data Abstraction Library) underlies almost all GIS software:\n\nQGIS, ArcGIS, GRASS, SAGA, FME, …\nR (sf)\nPython (geopandas)\nPostGIS\n\n\n\n# sf delegates format detection to GDAL — driver chosen from file extension\nstationen &lt;- read_sf(\"data/uebung1/stationen_schweiz.geojson\")   # → GeoJSON driver\nhoheitsgebiet &lt;- read_sf(\"data/Spatial_Analysis_I/Hoheitsgebiet/HOHEITSGEBIET_FR.shp\")  # → Shapefile driver\n\n\nGDAL supports 80+ vector formats; sf inherits all of them",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -172,7 +445,8 @@
     "section": "Important Vector file formats",
     "text": "Important Vector file formats\n\n\n\n\n\n\n\n\n\nFormat\nExtension\nStrengths\nLimitations\n\n\n\n\nShapefile\n.shp (+ 4 files)\nUniversal legacy support\n10-char field names; 2 GB limit; no nulls\n\n\nGeoJSON\n.geojson\nHuman-readable; single file; web-native\nLarge files; no spatial index\n\n\nGeoPackage\n.gpkg\nModern; single file; multiple layers; SQLite inside\nLess universal than Shapefile\n\n\nPostGIS\n(database)\nLive DB; concurrent access; fast spatial index\nRequires a server\n\n\nFlatGeobuf\n.fgb\nVery fast; streamable; built-in spatial index\nNewer, less tool support\n\n\nDuckDB\n.duckdb\nColumnar analytics; spatial extension; queries remote files\nNot a traditional GIS format",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -182,7 +456,8 @@
     "section": "Spatial relationships as questions",
     "text": "Spatial relationships as questions\n\nBinary predicates return TRUE/FALSE for a pair of geometries\nThe question determines the correct predicate:\n\nIs this building inside the flood zone? → st_within(building, zone)\nDoes this road cross the zone? → st_crosses(road, zone)\nDoes any part of this forest touch Luzern? → st_intersects(forest, luzern)\n\nThe same pair can satisfy multiple predicates — wrong choice gives silently wrong results",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -192,7 +467,8 @@
     "section": "Named predicates",
     "text": "Named predicates\n\n\n\n\n\n\n\n\n\nPredicate\n\nWhen TRUE\nTypical use case\n\n\n\n\nintersects\n\nAny overlap exists (broadest)\nInitial spatial filter\n\n\ndisjoint\n\nNo overlap whatsoever\nExclusion / NOT queries\n\n\ntouches\n\nBoundaries meet; interiors do not\nAdjacent parcels, shared borders\n\n\n\n\n\nintersects is almost always TRUE for non-trivial pairs — rarely the right predicate for a precise question",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -202,7 +478,8 @@
     "section": "Named predicates",
     "text": "Named predicates\n\n\n\n\n\n\n\n\n\nPredicate\n\nWhen TRUE\nTypical use case\n\n\n\n\nwithin\n\nAll of A is inside B\nPoint-in-polygon, containment\n\n\ncontains\n\nAll of B is inside A\nInverse of within\n\n\noverlaps\n\nInteriors intersect; neither contains the other\nPartial overlap of same-type features\n\n\ncrosses\n\nInterior of A intersects interior of B in lower dimension\nRoad through a zone",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -212,7 +489,8 @@
     "section": "Choosing the right predicate",
     "text": "Choosing the right predicate\n\n# intersects: any part of the forest touches Luzern (including tiny overlap at the border)\nwald_intersects &lt;- st_filter(tlm_wald, luzern, .predicate = st_intersects)\n\n# within: the *entire* forest polygon lies inside Luzern\nwald_within &lt;- st_filter(tlm_wald, luzern, .predicate = st_within)\n\nnrow(wald_intersects)  # more: includes forests that merely touch the border\n\n[1] 3852\n\nnrow(wald_within)      # fewer: only forests completely inside\n\n[1] 3729",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -222,7 +500,8 @@
     "section": "Unary operations",
     "text": "Unary operations\n\nTake one geometry, return a (possibly different type of) geometry:\n\n\n\n\n\n\n\n\n\nOperation\nWhat it does\nOutput type\n\n\n\n\nst_buffer(x, dist)\nExpand by distance\nPolygon\n\n\nst_centroid(x)\nCenter point\nPoint\n\n\nst_simplify(x, tol)\nReduce vertex count\nSame type\n\n\nst_convex_hull(x)\nSmallest convex polygon enclosing the geometry\nPolygon\n\n\nst_boundary(x)\nThe boundary of the geometry\nLower dimension",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -232,7 +511,8 @@
     "section": "Binary set operations",
     "text": "Binary set operations\n\nSet algebra on geometries — same logic as SQL set operations\nst_union() on a single layer: dissolve / aggregate — analogous to GROUP BY in SQL\n\n\n\n\nOperation\nReturns\nSet notation\n\n\n\n\nst_intersection(A, B)\nParts where A and B overlap\nA ∩ B\n\n\nst_union(A, B)\nAll of A and B, merged\nA ∪ B\n\n\nst_difference(A, B)\nParts of A outside B\nA  B\n\n\nst_sym_difference(A, B)\nParts of A or B, but not both\nA △ B",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -242,7 +522,8 @@
     "section": "Operations can change geometry type",
     "text": "Operations can change geometry type\n\nOutput type depends on the geometry relationship, not just the operation\nIntersecting two polygons can yield a polygon, a line, or a point:\n\nOverlapping → polygon;\nsharing only an edge → line;\nsharing only a corner → point\n\nCode expecting a polygon fails silently if inputs only touch",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -252,7 +533,8 @@
     "section": "Write an algorithm",
     "text": "Write an algorithm\nHow do you make a Peanutbutter & Jelly Sandwitch (PB&J)",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -262,7 +544,8 @@
     "section": "Challenge 1: Bounding box of a point stream",
     "text": "Challenge 1: Bounding box of a point stream\n\n\nA continuous stream of 2D coordinates arrives one point at a time.\nTask: develop an algorithm for the smallest axis-aligned bounding box of all points received so far.\nConstraints: process each point once; do not store the full list; update the box on each new point.\nExample stream:\n2489750, 1117500\n2506250, 1172500\n2552750, 1223500  ...\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -272,7 +555,8 @@
     "section": "Challenge 2: Is a point inside a polygon?",
     "text": "Challenge 2: Is a point inside a polygon?\n\n\nGiven: an ordered sequence of 2D polygon vertices and a point with known coordinates.\nTask: develop an algorithm that determines whether the point is inside or outside the polygon.\nConstraints: use only the vertex coordinates; no visual inspection; must work for arbitrary simple polygons.\n\n\n\n\n\n\n\n\nClosed book!\n\n\nDo not use any external sources. Solve with your own ideas in groups",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -282,7 +566,8 @@
     "section": "References",
     "text": "References\n\n\n\n\nDorman, Michael. 2023. Spatial Data Programming with Python — Geobgu.xyz. Https://geobgu.xyz/py/.\n\n\nPebesma, Edzer. 2018. “Simple Features for R: Standardized Support for Spatial Vector Data.” The R Journal 10 (1): 439–46. https://doi.org/10.32614/RJ-2018-009.",
     "crumbs": [
-      "Vecor Data Slides"
+      "Session 1: Vector Data",
+      "Slides"
     ]
   },
   {
@@ -292,7 +577,8 @@
     "section": "",
     "text": "Apply spatial vector operations to real-world planning questions using Swiss topographic data. Choose at least 2 scenarios.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!\n\n\nAll data is available on moodle, under the section Spatial Analysis I:\n\nswiss_TLM3D.gpkg contains:\n\ntlm_bb: Land cover polygons with attribute objektart (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)\ntlm_strassen: Road network with attribute objektart (Autobahn, Autostrasse, various street widths, paths, etc.)\n\nswissBOUNDARIES3D.gpkg contains:\n\nkantonsgebiet_lu: Canton of Luzern boundary\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95).",
     "crumbs": [
-      "Vecor Data Exercise"
+      "Session 1: Vector Data",
+      "Exercise"
     ]
   },
   {
@@ -302,7 +588,8 @@
     "section": "",
     "text": "Apply spatial vector operations to real-world planning questions using Swiss topographic data. Choose at least 2 scenarios.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!\n\n\nAll data is available on moodle, under the section Spatial Analysis I:\n\nswiss_TLM3D.gpkg contains:\n\ntlm_bb: Land cover polygons with attribute objektart (Wald, Stehende Gewaesser, Feuchtgebiet, Fels, Lockergestein, Gletscher, etc.)\ntlm_strassen: Road network with attribute objektart (Autobahn, Autostrasse, various street widths, paths, etc.)\n\nswissBOUNDARIES3D.gpkg contains:\n\nkantonsgebiet_lu: Canton of Luzern boundary\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95).",
     "crumbs": [
-      "Vecor Data Exercise"
+      "Session 1: Vector Data",
+      "Exercise"
     ]
   },
   {
@@ -312,7 +599,8 @@
     "section": "Scenario 1: Protected Area Planning",
     "text": "Scenario 1: Protected Area Planning\nAnalyse wetland ecosystems to inform nature protection planning.\n\n1.1: How much wetland area (“Feuchtgebiet”) exists in Canton Luzern (km²)?\n1.2: Identify wetlands within 50m of standing water (“Stehende Gewaesser”). What percentage of total wetland area does this represent?\n1.3: Map all wetlands, water-connected wetlands (highlighted), and standing water bodies.",
     "crumbs": [
-      "Vecor Data Exercise"
+      "Session 1: Vector Data",
+      "Exercise"
     ]
   },
   {
@@ -322,7 +610,8 @@
     "section": "Scenario 2: Accessibility Analysis",
     "text": "Scenario 2: Accessibility Analysis\nAnalyse forest accessibility for a hiking organisation.\n\n2.1: How much forest area in Luzern is within 200m of small paths (“1m Weg”, “2m Weg”)?\n2.2: What percentage of total forest area does this represent?\n2.3: Compare with accessibility by major roads (Autobahn, Autostrasse, streets ≥6m).\n2.4: Map your findings.",
     "crumbs": [
-      "Vecor Data Exercise"
+      "Session 1: Vector Data",
+      "Exercise"
     ]
   },
   {
@@ -332,7 +621,8 @@
     "section": "Scenario 3: Alpine Environment Analysis",
     "text": "Scenario 3: Alpine Environment Analysis\nAnalyse high-altitude land cover for climate research.\n\n3.1: Combine all rocky types (“Fels”, “Fels locker”, “Felsbloecke”, “Felsbloecke locker”, “Lockergestein”). What is their total area?\n3.2: Find rocky areas within 100m of glaciers (“Gletscher”) or snow fields (“Schneefeld Toteis”). What share does this represent?\n3.3: Map rocky areas, rocky areas near ice/snow, and glaciers/snow fields.",
     "crumbs": [
-      "Vecor Data Exercise"
+      "Session 1: Vector Data",
+      "Exercise"
     ]
   },
   {
@@ -342,7 +632,134 @@
     "section": "Scenario 4: Integrated Analysis",
     "text": "Scenario 4: Integrated Analysis\nIdentify potential sites for small agricultural reservoirs. Suitable areas must meet all of:\n\nWithin 20m of wetlands\nWithin 300m of any road\nNot in forest\nNot on rocky terrain (“Fels”, “Felsbloecke”)\n\nMap suitable areas and report the total area.",
     "crumbs": [
-      "Vecor Data Exercise"
+      "Session 1: Vector Data",
+      "Exercise"
     ]
+  },
+  {
+    "objectID": "spherical-geometry.html#today",
+    "href": "spherical-geometry.html#today",
+    "title": "Spherical Geometry in sf",
+    "section": "Today",
+    "text": "Today\n\nS² and R² — two models of space, one hidden default\nWhen flat breaks — antimeridian rendering and predicate failures\nA polygon has two sides — the core challenge of spherical geometry\nSemi-open boundaries — why adjacent polygons share more than a border\nDiscussion — when does it matter in practice?"
+  },
+  {
+    "objectID": "spherical-geometry.html#two-models-of-space",
+    "href": "spherical-geometry.html#two-models-of-space",
+    "title": "Spherical Geometry in sf",
+    "section": "Two models of space",
+    "text": "Two models of space\n\n\nR² (flat)\n\nPoints are (x, y) on an infinite plane\nUsed by GEOS — the geometry engine behind QGIS, PostGIS, sf historically\nAssumes straight lines, Euclidean distances\nAppropriate for projected CRS\n\n\nS² (sphere)\n\nPoints are (lon, lat) on a unit sphere\nUsed by s2 — Google’s C++ spherical geometry library, wrapped by the s2 R package\nLines follow great circles; distances are geodesic\nAppropriate for geographic CRS\nPowers Google Maps, Earth Engine, and BigQuery GIS"
+  },
+  {
+    "objectID": "spherical-geometry.html#the-switch",
+    "href": "spherical-geometry.html#the-switch",
+    "title": "Spherical Geometry in sf",
+    "section": "The switch",
+    "text": "The switch\n\nSince sf version 1.0 (2021), geographic coordinates automatically use s2 instead of GEOS.\nSame function call; different geometry engine; potentially very different results\nThe switch affects: st_area(), st_length(), st_distance(), st_buffer(), all predicates\n\n\nsf_use_s2()        # check current engine\n\n[1] TRUE\n\n\n\nsf_use_s2(FALSE)   # switch to GEOS (flat, R²)\nsf_use_s2(TRUE)    # switch back to s2 (spherical, S²)\n\n\nThis is the key lever. When students see unexpected results with geographic data, checking sf_use_s2() is a good first step. Most of the time s2 gives the right answer; occasionally an operation isn’t yet implemented and you need to fall back to GEOS."
+  },
+  {
+    "objectID": "spherical-geometry.html#when-flat-breaks-the-antimeridian",
+    "href": "spherical-geometry.html#when-flat-breaks-the-antimeridian",
+    "title": "Spherical Geometry in sf",
+    "section": "When flat breaks: the antimeridian",
+    "text": "When flat breaks: the antimeridian\nSame two endpoints — completely different rendering:"
+  },
+  {
+    "objectID": "spherical-geometry.html#when-flat-breaks-predicates",
+    "href": "spherical-geometry.html#when-flat-breaks-predicates",
+    "title": "Spherical Geometry in sf",
+    "section": "When flat breaks: predicates",
+    "text": "When flat breaks: predicates\nThe same polygon, the same point — different answer:\n\nsf_use_s2(FALSE)\nst_contains(pol, pole)   # R²: pole is outside\n\nSparse geometry binary predicate list of length 1, where the predicate\nwas `contains'\n 1: (empty)\n\n\n\nsf_use_s2(TRUE)\nst_contains(pol, pole)   # S²: pole is inside\n\nSparse geometry binary predicate list of length 1, where the predicate\nwas `contains'\n 1: 1"
+  },
+  {
+    "objectID": "spherical-geometry.html#two-regions-from-one-ring",
+    "href": "spherical-geometry.html#two-regions-from-one-ring",
+    "title": "Spherical Geometry in sf",
+    "section": "Two regions from one ring",
+    "text": "Two regions from one ring\nIn R²: a polygon ring encloses a bounded area. The outside extends to infinity — obviously “outside.”\nIn S²: a ring on a sphere divides it into exactly two finite regions. There is no infinity. Which side is “inside” depends entirely on ring direction.\n\n# Same 4 corners — different winding order\nsq_ccw &lt;- st_sfc(st_polygon(list(matrix(          # CCW → small region\n  c(-10,-10, 10,-10, 10,10, -10,10, -10,-10),\n  ncol = 2, byrow = TRUE))), crs = 4326)\n\nsq_cw  &lt;- st_sfc(st_polygon(list(matrix(          # CW  → large region\n  c(-10,-10, -10,10, 10,10, 10,-10, -10,-10),\n  ncol = 2, byrow = TRUE))), crs = 4326)\n\n\nunits::set_units(st_area(sq_ccw), \"km^2\")   # small square\n\n4969697 [km^2]\n\nunits::set_units(st_area(sq_cw),  \"km^2\")   # rest of Earth\n\n4969697 [km^2]"
+  },
+  {
+    "objectID": "spherical-geometry.html#ring-direction",
+    "href": "spherical-geometry.html#ring-direction",
+    "title": "Spherical Geometry in sf",
+    "section": "Ring direction",
+    "text": "Ring direction\n\nIn S²: interior is the region to the left when walking the boundary\nCCW ring (counter-clockwise) → interior is the small side — same as R²\nCW ring (clockwise) → interior is the large side — the “rest of the globe”\n\n\n\n\nRing\nR² behaviour\nS² behaviour\n\n\n\n\nCCW exterior\nStandard polygon\nSmall-side interior\n\n\nCW exterior\nInvalid / hole\nLarge-side interior\n\n\n\n\nst_as_s2(x, oriented = FALSE) auto-corrects ring direction, assuming the intended interior is less than half the sphere"
+  },
+  {
+    "objectID": "spherical-geometry.html#stop-and-think",
+    "href": "spherical-geometry.html#stop-and-think",
+    "title": "Spherical Geometry in sf",
+    "section": "Stop and think",
+    "text": "Stop and think\n\nYou are building a global land cover database. One of the classes is ocean.\n\nHow would you represent the ocean as a geometry in a GIS?\n\nDiscuss in pairs. Consider:\n\nWhat are its boundaries?\nCan you define it as a simple polygon in R²?\nWhat about in S²?"
+  },
+  {
+    "objectID": "spherical-geometry.html#the-shared-edge-problem",
+    "href": "spherical-geometry.html#the-shared-edge-problem",
+    "title": "Spherical Geometry in sf",
+    "section": "The shared edge problem",
+    "text": "The shared edge problem\nAdjacent polygons share an edge. Under S² (or GEOS with model = \"closed\"):\n\nA point on the shared edge intersects both polygons\nFor spatial joins or point-in-polygon counts: double-counting\n\n\n# Default: closed model — adjacent counties intersect each other\nst_intersects(nc[1:3, ], nc[1:3, ], sparse = FALSE)\n\n      [,1] [,2]  [,3]\n[1,]  TRUE TRUE FALSE\n[2,]  TRUE TRUE  TRUE\n[3,] FALSE TRUE  TRUE\n\n\n\n# Semi-open: each county only intersects itself\nst_intersects(nc[1:3, ], nc[1:3, ], sparse = FALSE, model = \"semi-open\")\n\n      [,1]  [,2]  [,3]\n[1,]  TRUE FALSE FALSE\n[2,] FALSE  TRUE FALSE\n[3,] FALSE FALSE  TRUE"
+  },
+  {
+    "objectID": "spherical-geometry.html#how-different-are-measurements",
+    "href": "spherical-geometry.html#how-different-are-measurements",
+    "title": "Spherical Geometry in sf",
+    "section": "How different are measurements?",
+    "text": "How different are measurements?\nFor typical geographic analyses: negligible.\n\n\n\nMeasure\nRelative difference (s2 vs flat)\nAbsolute example\n\n\n\n\nArea\n±0.007%\n~7 km² per 100 000 km²\n\n\nLength\n±0.013%\n~13 m per 100 km\n\n\nDistance\nup to ~0.5%\n~1–2 km over 500 km\n\n\n\nFor continental or global scale: not negligible. The antimeridian is the clearest failure case."
+  },
+  {
+    "objectID": "spherical-geometry.html#when-to-use-each-engine",
+    "href": "spherical-geometry.html#when-to-use-each-engine",
+    "title": "Spherical Geometry in sf",
+    "section": "When to use each engine",
+    "text": "When to use each engine\n\nsf_use_s2(TRUE)   # default — always correct for geographic CRS\nsf_use_s2(FALSE)  # fall back to GEOS when:\n                  #  • working with projected CRS (s2 adds no benefit)\n                  #  • an operation is not yet in s2 (e.g. st_voronoi())\n                  #  • debugging: compare results between engines\n\nRule of thumb:\n\nGeographic CRS (degrees) → leave s2 on\nProjected CRS (metres) → irrelevant which engine; GEOS is used anyway\nOperation fails or warns → check if the operation is implemented in s2; fall back if needed"
+  },
+  {
+    "objectID": "spherical-geometry.html#discussion-challenge",
+    "href": "spherical-geometry.html#discussion-challenge",
+    "title": "Spherical Geometry in sf",
+    "section": "Discussion challenge",
+    "text": "Discussion challenge\n\nYour colleague downloads Swiss municipality boundaries in EPSG:4326 and runs:\n\nmunicipalities |&gt;\n  st_join(cantons, join = st_intersects) |&gt;\n  group_by(canton_id) |&gt;\n  summarise(total_pop = sum(pop))\n\nSome municipalities on cantonal borders appear in two cantons and their population is counted twice.\n\nWhat is causing this?\nHow do you fix it?\nAre there cases where model = \"closed\" is actually the right choice?\n\n\n\n\n\n\n\n\nDiscuss in groups\n\n\nNo external sources — reason from what you know about s2 boundary models"
+  },
+  {
+    "objectID": "spherical-geometry.html#refs",
+    "href": "spherical-geometry.html#refs",
+    "title": "Spherical Geometry in sf",
+    "section": "References",
+    "text": "References"
+  },
+  {
+    "objectID": "geometry-operations-exercise.html",
+    "href": "geometry-operations-exercise.html",
+    "title": "Vector Geometry Operations",
+    "section": "",
+    "text": "Practice the geometry operations from today’s lecture using Swiss spatial data. Choose at least 2 scenarios.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!\n\n\nData is available on Moodle, under Spatial Analysis I:\n\nswissBOUNDARIES3D.gpkg: Canton of Luzern boundary\nswiss_TLM3D.gpkg:\n\ntlm_bb — land cover polygons with attribute objektart (Wald, Feuchtgebiet, Stehende Gewaesser, etc.)\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95)."
+  },
+  {
+    "objectID": "geometry-operations-exercise.html#introduction",
+    "href": "geometry-operations-exercise.html#introduction",
+    "title": "Vector Geometry Operations",
+    "section": "",
+    "text": "Practice the geometry operations from today’s lecture using Swiss spatial data. Choose at least 2 scenarios.\n\n\n\n\n\n\nNoteNo AI!\n\n\n\nThese tasks were specifically designed to be solvable without AI. Solve them without it!\n\n\nData is available on Moodle, under Spatial Analysis I:\n\nswissBOUNDARIES3D.gpkg: Canton of Luzern boundary\nswiss_TLM3D.gpkg:\n\ntlm_bb — land cover polygons with attribute objektart (Wald, Feuchtgebiet, Stehende Gewaesser, etc.)\n\n\nAll data use CRS EPSG:2056 (CH1903+ / LV95)."
+  },
+  {
+    "objectID": "geometry-operations-exercise.html#scenario-1-centroids-and-point-placement",
+    "href": "geometry-operations-exercise.html#scenario-1-centroids-and-point-placement",
+    "title": "Vector Geometry Operations",
+    "section": "Scenario 1: Centroids and Point Placement",
+    "text": "Scenario 1: Centroids and Point Placement\nAnalyse land cover polygons in Canton Luzern to understand when centroids misbehave.\n\n1.1: Load all wetland polygons (“Feuchtgebiet”) within Canton Luzern. Compute their centroids using st_centroid(). How many wetland polygons are there?\n1.2: Use st_within() to check whether each centroid lies inside its source polygon. What proportion of centroids fall outside?\n1.3: For the first five wetlands whose centroid is outside, compute st_point_on_surface() as well. Map these polygons with both point types (centroid in red, point-on-surface in blue). What do you notice about the polygon shapes?"
+  },
+  {
+    "objectID": "geometry-operations-exercise.html#scenario-2-affine-transformations",
+    "href": "geometry-operations-exercise.html#scenario-2-affine-transformations",
+    "title": "Vector Geometry Operations",
+    "section": "Scenario 2: Affine Transformations",
+    "text": "Scenario 2: Affine Transformations\nApply shift, scale, and rotation to the Canton Luzern boundary.\n\n2.1: Load the canton geometry. Drop Z coordinates with st_zm() and compute its centroid.\n2.2: Create three transformed versions of the geometry:\n\nShifted 20 km to the east\nScaled to 50% of its original size around the centroid\nRotated 45° around the centroid (you will need to write a rotation() function)\n\n2.3: Map all four versions (original + three transformations) side by side.\n2.4 (Challenge): Compose two operations — shift 10 km east, then rotate 20° around the new centroid. Compare this with rotating first and then shifting. Are the results the same?"
+  },
+  {
+    "objectID": "geometry-operations-exercise.html#scenario-3-simplification",
+    "href": "geometry-operations-exercise.html#scenario-3-simplification",
+    "title": "Vector Geometry Operations",
+    "section": "Scenario 3: Simplification",
+    "text": "Scenario 3: Simplification\nCompare how st_simplify() and ms_simplify() behave, and discover the topology problem.\n\n3.1: Load forest polygons (“Wald”) within Canton Luzern. Apply st_simplify() with tolerances of 100 m and 1 000 m. How many vertices does each version have compared to the original?\n3.2: Load five neighbouring European countries (Switzerland, Germany, France, Austria, Italy) using rnaturalearth::ne_countries(), transform to EPSG:3857. Apply st_simplify() with a tolerance of 50 000 m. Do gaps appear between countries?\n3.3: Apply rmapshaper::ms_simplify() with keep = 0.1 to the same dataset. How do the shared borders compare?\n3.4: Map all three versions (original, st_simplify, ms_simplify) side by side."
   }
 ]
